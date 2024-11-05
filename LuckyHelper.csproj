@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="CelesteMod.props" />
+	
+	<PropertyGroup>
+		<RootNamespace>LuckyHelper</RootNamespace>
+		<LangVersion>preview</LangVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Using Include="System" />
+		<Using Include="System.Collections.Generic" />
+		<Using Include="System.IO" />
+		<Using Include="System.Linq" />
+		<Using Include="System.Threading" />
+		<Using Include="System.Threading.Tasks" />
+		
+		<Using Include="Celeste.Mod"/>
+		<Using Include="Celeste"/>
+		<Using Include="Monocle"/>
+		<Using Include="Microsoft.Xna.Framework"/>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="ModFolder\Graphics\Atlases\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="ExtendedVariantMode">
+	    <HintPath>ModFolder\lib-stripped\ExtendedVariantMode-nstrip.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+
+	<Import Project="CelesteMod.targets" />
+</Project>

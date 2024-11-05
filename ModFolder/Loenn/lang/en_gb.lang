@@ -1,0 +1,26 @@
+entities.LuckyHelper/PixelDebugHelper.placements.name.normal=PixelDebugHelper
+entities.LuckyHelper/PassByRefill.placements.name.normal=PassByRefill
+entities.LuckyHelper/TimerText.placements.name.normal=TimerText
+entities.LuckyHelper/DeathCountText.placements.name.normal=DeathCountText
+
+# Custom Water
+entities.LuckyHelper/CustomWater.placements.name.normal=Custom Water
+entities.LuckyHelper/CustomWater.attributes.description.color=Change the color of the water
+entities.LuckyHelper/CustomWater.attributes.description.hasBottom=Whether the water has a bottom surface
+entities.LuckyHelper/CustomWater.attributes.description.disableSurfaceJump=Disable player's jump at the top of the water
+entities.LuckyHelper/CustomWater.attributes.description.disableSwimRise=Player won't be pushed up when near the top of the water
+entities.LuckyHelper/CustomWater.attributes.description.maxSpeedMultiplierX=Factor of controlling max x speed
+entities.LuckyHelper/CustomWater.attributes.description.maxSpeedMultiplierY=Factor of controlling max y speed
+entities.LuckyHelper/CustomWater.attributes.description.accelerationMultiplierX=Factor of controlling max x acceleration
+entities.LuckyHelper/CustomWater.attributes.description.accelerationMultiplierY=Factor of controlling max y acceleration
+entities.LuckyHelper/CustomWater.attributes.description.killPlayer=The water can kill player
+entities.LuckyHelper/CustomWater.attributes.description.killPlayerDelay=Kill player after defined seconds, if player gets out of water, the timer will reset(only work when 'killPlayer' is enabled)
+entities.LuckyHelper/CustomWater.attributes.description.playerLoseControl=You can't control movement but can still dash or do something else
+entities.LuckyHelper/CustomWater.attributes.description.playerGravity=You will be pushed down in the water, just like having gravity in the air
+entities.LuckyHelper/CustomWater.attributes.description.playerCanJump=You can jump in the water.
+entities.LuckyHelper/CustomWater.attributes.description.refillExtraJump=You can refill extra jump in the water(only work with 'ExtendedVariantMod')
+
+triggers.LuckyHelper/SetPassByRefillDashesTrigger.placements.name.normal=SetPassByRefillDashesTrigger
+triggers.LuckyHelper/SetFallingBlockBlockFloatySpaceBlockTrigger.placements.name.normal=SetFallingBlockBlockFloatySpaceBlockTrigger
+
+

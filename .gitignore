@@ -1,0 +1,5 @@
+.idea/
+bin/
+obj/
+.luarc.json
+Folder.DotSettings.user
