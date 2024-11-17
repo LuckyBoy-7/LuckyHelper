@@ -2,14 +2,13 @@ using System.Reflection;
 using LuckyHelper.Entities;
 using LuckyHelper.Module;
 using Mono.Cecil;
-using Mono.Cecil.Cil;
 
 namespace LuckyHelper.Modules;
 
 public class CustomWaterModule
 {
     private static CustomWater customWater;
-    private static bool isDebug = true;
+    private static bool isDebug = false;
 
     [Load]
     public static void Load()
@@ -40,14 +39,14 @@ public class CustomWaterModule
         cursor.Index = 0;
         // swim rise
         if (!cursor.TryGotoNext(
-                ins => ins.MatchLdcR4(-60),
-                ins => ins.MatchLdcR4(600)
+                ins => ins.MatchLdcR4(-60)
+                // ins => ins.MatchLdcR4(600)
             ))
             return;
 
         if (isDebug)
             Logger.Log(LogLevel.Warn, "Test", "SwimRise OK");
-        cursor.Index += 1;
+        cursor.Index += 2;
         cursor.EmitDelegate(
             () =>
             {
@@ -63,20 +62,15 @@ public class CustomWaterModule
     {
         // max speed x
         cursor.Index = 0;
-        Logger.Log(LogLevel.Warn, "Test", "123 OK");
         if (!cursor.TryGotoNext(
-                //todo: 我不知道为什么突然用数字找不管用了(
-                // ins => ins.MatchLdcR4(out float eighty),
-                // ins => ins.MatchLdcR4(80f),
-                ins => ins.MatchLdcR4(80f) && ins.Next.MatchStloc3()
-                // ins => ins.MatchStloc3()
-                // ins => ins.MatchStloc(3)
+                ins => ins.MatchStloc2()
             ))
             return;
 
         if (isDebug)
-            Logger.Log(LogLevel.Warn, "Test", "MaxSpeed OK");
+            Logger.Log(LogLevel.Warn, "Test", "MaxSpeedX OK");
 
+        cursor.Index += 1;
         cursor.EmitLdloc(2);
         cursor.EmitDelegate(
             () =>
@@ -88,17 +82,27 @@ public class CustomWaterModule
         );
         cursor.EmitMul();
         cursor.EmitStloc(2);
-        // // max speed y
-        // cursor.Index += 2;
-        // cursor.EmitDelegate(
-        //     () =>
-        //     {
-        //         if (customWater == null)
-        //             return 1;
-        //         return customWater.MaxSpeedMultiplierY;
-        //     }
-        // );
-        // cursor.EmitMul();
+
+        // max speed y
+        if (!cursor.TryGotoNext(
+                ins => ins.MatchStloc3()
+            ))
+            return;
+
+        if (isDebug)
+            Logger.Log(LogLevel.Warn, "Test", "MaxSpeedY OK");
+        cursor.Index += 1;
+        cursor.EmitLdloc(3);
+        cursor.EmitDelegate(
+            () =>
+            {
+                if (customWater == null)
+                    return 1;
+                return customWater.MaxSpeedMultiplierY;
+            }
+        );
+        cursor.EmitMul();
+        cursor.EmitStloc(3);
     }
 
     private static void HookAcceleration(ILCursor cursor)
@@ -173,11 +177,15 @@ public class CustomWaterModule
         cursor.Index = 0;
         if (!cursor.TryGotoNext(
                 ins => ins.MatchLdsfld(inputJump),
-                ins => ins.MatchCallvirt(getPressed),
+                ins => ins.MatchCallvirt(getPressed)
+            ))
+            return;
+        // int beforeIndex = cursor.Index;
+        if (!cursor.TryGotoNext(
                 ins => ins.MatchBrfalse(out outLabel)
             ))
             return;
-        cursor.Index += 3;
+        cursor.Index += 1;
         if (isDebug)
             Logger.Log(LogLevel.Warn, "Test", "SwimJumpCheck OK");
         // player can jump
@@ -252,6 +260,7 @@ public class CustomWaterModule
                 ins => ins.MatchBrfalse(out ILLabel label)
             ))
             return;
+        cursor.Index += 1;
         if (isDebug)
             Logger.Log(LogLevel.Warn, "Test", "SwimGravity OK");
         // this.Speed
@@ -261,10 +270,10 @@ public class CustomWaterModule
         cursor.EmitLdarg0();
         cursor.EmitLdflda(speedField);
         cursor.EmitLdfld(yField);
-        // num2 * Vector.UnitY
+        // num2
         cursor.EmitLdloc3();
-        cursor.EmitLdcI4(1);
-        cursor.EmitMul();
+        // cursor.EmitLdcI4(1);
+        // cursor.EmitMul();
         // 600 * Engine.DeltaTime
         cursor.EmitLdcR4(600f);
         cursor.EmitCall(deltaTime);
@@ -284,10 +293,10 @@ public class CustomWaterModule
         ILCursor cursor = new ILCursor(il);
         HookSwimRise(cursor);
         HookMaxSpeed(cursor);
-        // HookAcceleration(cursor);
-        // HookSwimJump(cursor);
-        // HookLoseControl(cursor);
-        // HookGravity(cursor);
+        HookAcceleration(cursor);
+        HookSwimJump(cursor);
+        HookLoseControl(cursor);
+        HookGravity(cursor);
     }
 
     private static void PlayerOnNormalUpdate(ILContext il)
@@ -315,7 +324,7 @@ public class CustomWaterModule
             ))
             return;
         ILLabel jumpLabel = cursor.DefineLabel();
-        
+
         if (isDebug)
             Logger.Log(LogLevel.Warn, "test", "WaterSurfaceJump OK");
         cursor.EmitLdloc(13);
