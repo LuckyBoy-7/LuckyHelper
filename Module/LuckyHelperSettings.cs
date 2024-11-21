@@ -12,6 +12,9 @@ public class LuckyHelperSettings : EverestModuleSettings
     public bool EnableFallingBlockBlockFloatySpaceBlock { get; set; }
     public bool EnablePlayerFallingThroughJumpThru { get; set; }
 
-    [DefaultButtonBinding(Buttons.A, Keys.Space)]
+    [DefaultButtonBinding(Buttons.A, Keys.Enter)]
     public ButtonBinding PlayerFallingThroughJumpThruButton { get; set; }
+    
+    [DefaultButtonBinding(Buttons.A, Keys.Space)]
+    public ButtonBinding GhostTransposeButton { get; set; }
 }

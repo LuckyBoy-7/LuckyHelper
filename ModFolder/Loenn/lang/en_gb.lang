@@ -20,7 +20,18 @@ entities.LuckyHelper/CustomWater.attributes.description.playerGravity=You will b
 entities.LuckyHelper/CustomWater.attributes.description.playerCanJump=You can jump in the water.
 entities.LuckyHelper/CustomWater.attributes.description.refillExtraJump=You can refill extra jump in the water(only work with 'ExtendedVariantMod')
 
+#todo Triggers =======================================================================================================================================
+# SetPassByRefillDashesTrigger
 triggers.LuckyHelper/SetPassByRefillDashesTrigger.placements.name.normal=SetPassByRefillDashesTrigger
+
+# SetFallingBlockBlockFloatySpaceBlockTrigger
 triggers.LuckyHelper/SetFallingBlockBlockFloatySpaceBlockTrigger.placements.name.normal=SetFallingBlockBlockFloatySpaceBlockTrigger
+
+# GhostTransposeTrigger
+triggers.LuckyHelper/GhostTransposeTrigger.placements.name.normal=GhostTransposeTrigger
+triggers.LuckyHelper/GhostTransposeTrigger.attributes.description.ghostOutOfBoundsAction=Defines what happends when the ghost touches the room bounds\nNone: Do nothing\nTreatAsSolid: Regard the bounds as a wall\nKillPlayer: Kill player
+triggers.LuckyHelper/GhostTransposeTrigger.attributes.description.transposeDirType=Defines what dirs player can transpose
+triggers.LuckyHelper/GhostTransposeTrigger.attributes.description.useDashKey=Whether use 'dash key' to trigger ghost, if disabled, you can use default 'Space key' to trigger ghost, which can be customized in settings
+triggers.LuckyHelper/GhostTransposeTrigger.attributes.description.maxGhostNumber=The max number of ghosts that can exist in the room
 
 
