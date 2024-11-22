@@ -62,7 +62,9 @@ public class GhostTranspose : Actor
     public override void Update()
     {
         base.Update();
-        if (MoveH(dir.X * speed * Engine.DeltaTime) || MoveV(dir.Y * speed * Engine.DeltaTime)) // 如果撞到solid了
+
+        bool collide = MoveH(dir.X * speed * Engine.DeltaTime) || MoveV(dir.Y * speed * Engine.DeltaTime);
+        if (collide) // 如果撞到solid了
         {
             Logger.Log(LogLevel.Warn, "Test", "123");
             if (player != null)
