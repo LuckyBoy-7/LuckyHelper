@@ -15,6 +15,7 @@ public class LuckyText : Entity
     private float thickness;
     private Color outlineColor;
     public virtual string Content { get; set; }
+    private bool hiddenOnPause;
 
     public LuckyText(EntityData data, Vector2 offset)
         : base(data.Position + offset)
@@ -25,6 +26,7 @@ public class LuckyText : Entity
         outline = data.Bool("outline");
         thickness = data.Float("thickness");
         outlineColor = data.HexColor("outlineColor");
+        hiddenOnPause = data.Bool("hiddenOnPause");
     }
 
 
@@ -34,9 +36,12 @@ public class LuckyText : Entity
         Vector2 pos = (Position - camera.Position) * 6;
 
 
+        float a = alpha;
+        if (SceneAs<Level>().Paused && hiddenOnPause)
+            a = 0;
         if (outline)
-            ActiveFont.DrawOutline(Content, pos, new Vector2(0f, 0f), Vector2.One * scale, color.WithA(alpha), thickness, outlineColor.WithA(alpha));
+            ActiveFont.DrawOutline(Content, pos, new Vector2(0f, 0f), Vector2.One * scale, color * a, thickness, outlineColor.WithA(alpha));
         else
-            ActiveFont.Draw(Content, pos, new Vector2(0f, 0f), Vector2.One * scale, color.WithA(alpha));
+            ActiveFont.Draw(Content, pos, new Vector2(0f, 0f), Vector2.One * scale, color * a);
     }
 }

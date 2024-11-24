@@ -17,7 +17,7 @@ public class GhostTransposeTrigger : Trigger
     }
 
     public GhostOutOfBoundsActions GhostOutOfBoundsAction;
-    
+
     public enum TransposeDirTypes
     {
         TwoSides, // 左右
@@ -32,6 +32,8 @@ public class GhostTransposeTrigger : Trigger
     public bool UseDashKey; // 不使用dash key的话就用默认按键
     public Color Color;
     public float Alpha;
+    public bool ReverseEnableOnExit;
+    public bool KillPlayerOnTeleportToSpike;
 
     public GhostTransposeTrigger(EntityData data, Vector2 offset)
         : base(data, offset)
@@ -44,6 +46,7 @@ public class GhostTransposeTrigger : Trigger
         GhostOutOfBoundsAction = data.Enum<GhostOutOfBoundsActions>("ghostOutOfBoundsAction");
         TransposeDirType = data.Enum<TransposeDirTypes>("transposeDirType");
         MaxGhostNumber = data.Int("maxGhostNumber");
+        KillPlayerOnTeleportToSpike = data.Bool("killPlayerOnTeleportToSpike");
     }
 
     public override void OnEnter(Player player)
@@ -57,5 +60,13 @@ public class GhostTransposeTrigger : Trigger
         GhostTransposeModule.Alpha = Alpha;
         GhostTransposeModule.MaxGhostNumber = MaxGhostNumber;
         GhostTransposeModule.TransposeDirType = TransposeDirType;
+        GhostTransposeModule.KillPlayerOnTeleportToSpike = KillPlayerOnTeleportToSpike;
+    }
+
+    public override void OnLeave(Player player)
+    {
+        base.OnLeave(player);
+        if (ReverseEnableOnExit)
+            GhostTransposeModule.EnableGhostTranspose = !EnableGhostTranspose;
     }
 }

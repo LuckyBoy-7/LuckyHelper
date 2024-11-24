@@ -12,6 +12,7 @@ entity.placements = {
         outlineColor = "000000",
         
         isShowTotalDeath = false,
+        hiddenOnPause = false
     }
 }
 
@@ -27,6 +28,9 @@ entity.fieldInformation =
         fieldType = "color"
     },
     isShowTotalDeath = {
+        fieldType = "boolean"
+    },
+    hiddenOnPause = {
         fieldType = "boolean"
     }
 }

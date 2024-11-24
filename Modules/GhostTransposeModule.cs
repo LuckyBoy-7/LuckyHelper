@@ -17,6 +17,7 @@ public class GhostTransposeModule
     public static Color Color;
     public static float Alpha;
     public static float MaxGhostNumber;
+    public static bool KillPlayerOnTeleportToSpike;
 
     [Load]
     public static void Load()
@@ -72,8 +73,7 @@ public class GhostTransposeModule
 
         if (ok)
         {
-            GhostTranspose ghost = new GhostTranspose(Vector2.Zero);
-            ghost.Init(self, GhostOutOfBoundsAction, GhostSpeed, Alpha, Color, TransposeDirType);
+            GhostTranspose ghost = new GhostTranspose(self, GhostOutOfBoundsAction, GhostSpeed, Alpha, Color, TransposeDirType, KillPlayerOnTeleportToSpike);
             self.Scene.Add(ghost);
         }
 

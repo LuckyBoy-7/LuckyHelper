@@ -33,5 +33,6 @@ triggers.LuckyHelper/GhostTransposeTrigger.attributes.description.ghostOutOfBoun
 triggers.LuckyHelper/GhostTransposeTrigger.attributes.description.transposeDirType=Defines what dirs player can transpose
 triggers.LuckyHelper/GhostTransposeTrigger.attributes.description.useDashKey=Whether use 'dash key' to trigger ghost, if disabled, you can use default 'Space key' to trigger ghost, which can be customized in settings
 triggers.LuckyHelper/GhostTransposeTrigger.attributes.description.maxGhostNumber=The max number of ghosts that can exist in the room
+triggers.LuckyHelper/GhostTransposeTrigger.attributes.description.killPlayerOnTeleportToSpike=Sometimes having speed along the spike dir will prevent death, that's what this option does
 
 

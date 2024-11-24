@@ -20,6 +20,7 @@ entity.placements = {
         playerGravity = 0,
         playerCanJump = false,
         refillExtraJump = false,
+        disableRay = false,
     }
 }
 
@@ -53,6 +54,9 @@ entity.fieldInformation =
         fieldType = "boolean"
     },
     refillExtraJump = {
+        fieldType = "boolean"
+    },
+    disableRay = {
         fieldType = "boolean"
     }
 }

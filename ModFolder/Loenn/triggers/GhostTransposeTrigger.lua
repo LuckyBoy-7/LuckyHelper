@@ -9,12 +9,14 @@ trigger.placements = {
         --height = 16,
         ghostOutOfBoundsAction = "TreatAsSolid",
         transposeDirType = "TwoSides",
-        enableGhostTranspose = true;
+        enableGhostTranspose = true,
         ghostSpeed = 500;
-        useDashKey = true;
+        useDashKey = true,
         color = "FFFFFF",
         alpha = 0.5,
         maxGhostNumber = 1,
+        reverseEnableOnExit = false,
+        killPlayerOnTeleportToSpike = false
     }
 }
 
@@ -45,6 +47,12 @@ trigger.fieldInformation = {
     },
     maxGhostNumber = {
         fieldType = "integer"
+    },
+    reverseEnableOnExit = {
+        fieldType = "boolean"
+    },
+    killPlayerOnTeleportToSpike = {
+        fieldType = "boolean"
     }
 }
 

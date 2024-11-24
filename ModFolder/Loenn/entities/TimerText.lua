@@ -13,7 +13,8 @@ entity.placements = {
         
         format = "mm\\:ss\\:ff",
         countPauseTime = false,
-        isShowTotalTime = false
+        isShowTotalTime = false,
+        hiddenOnPause = false
     }
 }
 
@@ -35,6 +36,9 @@ entity.fieldInformation =
         fieldType = "boolean"
     },
     isShowTotalTime = {
+        fieldType = "boolean"
+    },
+    hiddenOnPause = {
         fieldType = "boolean"
     }
 }

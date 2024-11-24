@@ -30,6 +30,7 @@ public class CustomWater : Water
     public float PlayerGravity;
     public bool PlayerCanJump;
     public bool RefillExtraJump;
+    public bool DisableRay = false;
     
     // todo: gravity
 
@@ -48,6 +49,7 @@ public class CustomWater : Water
         PlayerGravity = data.Float("playerGravity");
         PlayerCanJump = data.Bool("playerCanJump");
         RefillExtraJump = data.Bool("refillExtraJump");
+        DisableRay = data.Bool("disableRay");
         
         // color
         color = data.HexColor("color");
@@ -64,8 +66,9 @@ public class CustomWater : Water
                 mesh[i].Color = color * 0.3f;
             for (int i = surfaceStartIndex; i < surfaceStartIndex + num1 * 6; ++i)
                 mesh[i].Color = color * 0.8f;
+            if (DisableRay)
+                surface.Rays.Clear();
         }
-
     }
 
 
