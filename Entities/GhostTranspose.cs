@@ -60,8 +60,9 @@ public class GhostTranspose : Actor
     public override void Update()
     {
         base.Update();
-
+        Scene.Tracker.GetEntities<GhostTransposeBarrier>().ForEach(b => b.Collidable = true);
         bool collide = MoveH(dir.X * speed * Engine.DeltaTime) || MoveV(dir.Y * speed * Engine.DeltaTime);
+        Scene.Tracker.GetEntities<GhostTransposeBarrier>().ForEach(b => b.Collidable = false);
         if (collide) // 如果撞到solid了
         {
             // Logger.Log(LogLevel.Warn, "Test", "123");
@@ -114,7 +115,7 @@ public class GhostTranspose : Actor
             player.Die(Vector2.Zero);
     }
 
-    private void Kill()
+    public void Kill()
     {
         Snapshot.RemoveSelf();
         RemoveSelf();

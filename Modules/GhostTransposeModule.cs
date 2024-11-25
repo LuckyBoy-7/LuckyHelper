@@ -51,8 +51,11 @@ public class GhostTransposeModule
 
     private static void PlayerOnUpdate(Player.orig_Update orig, Celeste.Player self)
     {
-        // 没开启功能或是ghost个数达到上限了
-        if (!EnableGhostTranspose || Engine.Scene.Tracker.GetEntities<GhostTranspose>().Count >= MaxGhostNumber)
+        // 没开启功能或是ghost个数达到上限了或者在barrier里
+        self.Scene.Tracker.GetEntities<GhostTransposeBarrier>().ForEach(b => b.Collidable = true);
+        bool inBarrier = self.CollideCheck<GhostTransposeBarrier>();
+        self.Scene.Tracker.GetEntities<GhostTransposeBarrier>().ForEach(b => b.Collidable = false);
+        if (!EnableGhostTranspose || Engine.Scene.Tracker.GetEntities<GhostTranspose>().Count >= MaxGhostNumber || inBarrier)
         {
             orig(self);
             return;
