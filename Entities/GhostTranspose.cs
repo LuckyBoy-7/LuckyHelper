@@ -54,14 +54,16 @@ public class GhostTranspose : Actor
 
 
         Snapshot = LuckyTrailManager.Add(player, color * this.alpha, 999);
-        Snapshot.Speed = Vector2.One * speed * dir;
+        // Snapshot.Speed = Vector2.One * speed * dir;
     }
 
     public override void Update()
     {
         base.Update();
         Scene.Tracker.GetEntities<GhostTransposeBarrier>().ForEach(b => b.Collidable = true);
+        Vector2 prePos = Position;
         bool collide = MoveH(dir.X * speed * Engine.DeltaTime) || MoveV(dir.Y * speed * Engine.DeltaTime);
+        Snapshot.Position += Position - prePos;
         Scene.Tracker.GetEntities<GhostTransposeBarrier>().ForEach(b => b.Collidable = false);
         if (collide) // 如果撞到solid了
         {
