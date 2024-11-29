@@ -33,6 +33,7 @@ public class TestModule
     private static void PlayerOnUpdate(Player.orig_Update orig, Celeste.Player self)
     {
         orig(self);
+        // Logger.Log(LogLevel.Warn, "Test", self.Position.ToString());
         // float timer = self.SceneAs<Level>().Session.Time;
         // Logger.Log(LogLevel.Info, "Test", timer.ToString());
         // Logger.Log(LogLevel.Info, "Test", "Player " + FieldUtils.GetField(self, "actualDepth"));

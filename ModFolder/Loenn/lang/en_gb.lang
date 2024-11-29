@@ -23,6 +23,18 @@ entities.LuckyHelper/CustomWater.attributes.description.refillExtraJump=You can 
 # GhostTransposeBarrier
 entities.LuckyHelper/GhostTransposeBarrier.placements.name.normal=GhostTransposeBarrier
 
+# CustomGondola
+entities.LuckyHelper/CustomGondola.placements.name.normal=CustomGondola
+entities.LuckyHelper/CustomGondola.attributes.description.autoFindStart=Gondola will move from start to end to find a position that has the same Y with start position
+entities.LuckyHelper/CustomGondola.attributes.description.canInteractOnMove=You can still interact to stop and turn back when gondola's speed reaches it's maximum
+entities.LuckyHelper/CustomGondola.attributes.description.addCeiling=Shush...don't ask why it hasn't have one in original celeste
+entities.LuckyHelper/CustomGondola.attributes.description.minPositionPercent=Start percent of left point within the wire
+entities.LuckyHelper/CustomGondola.attributes.description.maxPositionPercent=End percent of right point within the wire
+entities.LuckyHelper/CustomGondola.attributes.description.startPositionPercent=Start percent of Gondola within the wire
+entities.LuckyHelper/CustomGondola.attributes.description.rotationSpeed=Rotation speed when the gondola starts off
+entities.LuckyHelper/CustomGondola.attributes.description.accelerationDuration=how much time gondola takes to start off or slow down
+entities.LuckyHelper/CustomGondola.attributes.description.moveDuration=how much time gondola takes to move within the center segment
+
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger
 triggers.LuckyHelper/SetPassByRefillDashesTrigger.placements.name.normal=SetPassByRefillDashesTrigger
