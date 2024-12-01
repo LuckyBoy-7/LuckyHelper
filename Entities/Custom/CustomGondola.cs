@@ -16,7 +16,7 @@ public class CustomGondola : Gondola
         get
         {
             if (!autoFindStart)
-                return Vector2.Lerp(start, end, minPositionPercent).Floor();
+                return Vector2.Lerp(start, end, startPositionPercent).Floor();
 
             return _realStart;
         }

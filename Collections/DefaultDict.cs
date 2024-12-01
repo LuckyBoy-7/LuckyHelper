@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Lucky.Collections
+namespace Lucky.Kits.Collections
 {
     public class DefaultDict<TKey, TVal> : IDictionary<TKey, TVal>
     {
@@ -13,7 +13,7 @@ namespace Lucky.Collections
 
         public DefaultDict(Func<TVal> getter)
         {
-            if (getter == null)
+            if (getter is null)
                 throw new ArgumentNullException("DefaultDict needs a getter!!");
             this.getter = getter;
         }

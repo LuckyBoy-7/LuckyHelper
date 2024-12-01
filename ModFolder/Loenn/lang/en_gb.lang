@@ -21,10 +21,10 @@ entities.LuckyHelper/CustomWater.attributes.description.playerCanJump=You can ju
 entities.LuckyHelper/CustomWater.attributes.description.refillExtraJump=You can refill extra jump in the water(only work with 'ExtendedVariantMod')
 
 # GhostTransposeBarrier
-entities.LuckyHelper/GhostTransposeBarrier.placements.name.normal=GhostTransposeBarrier
+entities.LuckyHelper/GhostTransposeBarrier.placements.name.normal=Ghost Transpose Barrier
 
 # CustomGondola
-entities.LuckyHelper/CustomGondola.placements.name.normal=CustomGondola
+entities.LuckyHelper/CustomGondola.placements.name.normal=Custom Gondola
 entities.LuckyHelper/CustomGondola.attributes.description.autoFindStart=Gondola will move from start to end to find a position that has the same Y with start position
 entities.LuckyHelper/CustomGondola.attributes.description.canInteractOnMove=You can still interact to stop and turn back when gondola's speed reaches it's maximum
 entities.LuckyHelper/CustomGondola.attributes.description.addCeiling=Shush...don't ask why it hasn't have one in original celeste
@@ -35,6 +35,17 @@ entities.LuckyHelper/CustomGondola.attributes.description.rotationSpeed=Rotation
 entities.LuckyHelper/CustomGondola.attributes.description.accelerationDuration=how much time gondola takes to start off or slow down
 entities.LuckyHelper/CustomGondola.attributes.description.moveDuration=how much time gondola takes to move within the center segment
 
+# ArbitraryShapeConquestArea
+entities.LuckyHelper/ArbitraryShapeConquestArea.placements.name.normal=Arbitrary Shape Conquest Area
+entities.LuckyHelper/ArbitraryShapeConquestArea.attributes.description.totalAmount=The total amount of progress 
+entities.LuckyHelper/ArbitraryShapeConquestArea.attributes.description.conquestSpeed=The speed of conquest one unit can offer 
+entities.LuckyHelper/ArbitraryShapeConquestArea.attributes.description.blueCamp=All names of blue camp entities seperated by comma
+entities.LuckyHelper/ArbitraryShapeConquestArea.attributes.description.redCamp=All names of red camp entities seperated by comma
+entities.LuckyHelper/ArbitraryShapeConquestArea.attributes.description.flagOnCompleted=The flag will be set when conquest is completed
+entities.LuckyHelper/ArbitraryShapeConquestArea.attributes.description.ignoreCollidable=Some entities will disable collision sometimes, so this option will help
+entities.LuckyHelper/ArbitraryShapeConquestArea.attributes.description.ignoreCollidableWhiteList=This option determines which entity 'ignoreCollidable' can apply to
+entities.LuckyHelper/ArbitraryShapeConquestArea.attributes.description.useSpriteShapeAsFallback=Some entities don't have collider, so this option will help
+
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger
 triggers.LuckyHelper/SetPassByRefillDashesTrigger.placements.name.normal=SetPassByRefillDashesTrigger
@@ -43,7 +54,7 @@ triggers.LuckyHelper/SetPassByRefillDashesTrigger.placements.name.normal=SetPass
 triggers.LuckyHelper/SetFallingBlockBlockFloatySpaceBlockTrigger.placements.name.normal=SetFallingBlockBlockFloatySpaceBlockTrigger
 
 # GhostTransposeTrigger
-triggers.LuckyHelper/GhostTransposeTrigger.placements.name.normal=GhostTransposeTrigger
+triggers.LuckyHelper/GhostTransposeTrigger.placements.name.normal=Ghost Transpose Trigger
 triggers.LuckyHelper/GhostTransposeTrigger.attributes.description.ghostOutOfBoundsAction=Defines what happends when the ghost touches the room bounds\nNone: Do nothing\nTreatAsSolid: Regard the bounds as a wall\nKillPlayer: Kill player
 triggers.LuckyHelper/GhostTransposeTrigger.attributes.description.transposeDirType=Defines what dirs player can transpose
 triggers.LuckyHelper/GhostTransposeTrigger.attributes.description.useDashKey=Whether use 'dash key' to trigger ghost, if disabled, you can use default 'Space key' to trigger ghost, which can be customized in settings
@@ -51,5 +62,5 @@ triggers.LuckyHelper/GhostTransposeTrigger.attributes.description.maxGhostNumber
 triggers.LuckyHelper/GhostTransposeTrigger.attributes.description.killPlayerOnTeleportToSpike=Sometimes having speed along the spike dir will prevent death, that's what this option does
 
 # KillGhostTrigger
-triggers.LuckyHelper/KillGhostTrigger.placements.name.normal=KillGhostTrigger
+triggers.LuckyHelper/KillGhostTrigger.placements.name.normal=Kill Ghost Trigger
 

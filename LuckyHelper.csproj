@@ -21,10 +21,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="ModFolder\Graphics\Atlases\" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Reference Include="ExtendedVariantMode">
 	    <HintPath>ModFolder\lib-stripped\ExtendedVariantMode-nstrip.dll</HintPath>
 	  </Reference>

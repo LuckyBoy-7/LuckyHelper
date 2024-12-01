@@ -14,13 +14,13 @@ gondola.placements = {
         name = "normal",
         placementType = "line",
         data = {
-            autoFindStart = true,
+            autoFindStart = true,   
             canInteractOnMove = true,
             addCeiling = true,
             minPositionPercent = 0.2,
             maxPositionPercent = 0.8,
             startPositionPercent = 0.2,
-            rotationSpeed = 0.2,
+            rotationSpeed = 0.7,
             accelerationDuration = 2,
             moveDuration = 6,
 

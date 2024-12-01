@@ -7,7 +7,6 @@ using MonoMod.Utils;
 
 namespace LuckyHelper.Entities;
 
-[CustomEntity("LuckyHelper/GhostTranspose")]
 [Tracked]
 public class GhostTranspose : Actor
 {
