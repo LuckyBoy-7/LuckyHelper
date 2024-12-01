@@ -16,7 +16,7 @@ public class CustomGondola : Gondola
         get
         {
             if (!autoFindStart)
-                return Vector2.Lerp(start, end, startPositionPercent).Floor();
+                return Vector2.Lerp(start, end, minPositionPercent).Floor();
 
             return _realStart;
         }
@@ -51,11 +51,20 @@ public class CustomGondola : Gondola
 
     private TalkComponent interact;
 
+    private Vector2 _targetPos;
+    private Vector2 TargetPos
+    {
+        get => _targetPos.Floor();
+        set => _targetPos = value;
+    }
+
+    private bool lockInteractable;
+
     // todo: 以下都是可供mapper调整的部分
     private bool autoFindStart = false;
     private bool canInteractOnMove = true;
     private bool addCeiling = true;
-    
+
     private float minPositionPercent = 0.05f;
     private float maxPositionPercent = 0.8f;
     private float startPositionPercent = 0.2f;
@@ -76,8 +85,8 @@ public class CustomGondola : Gondola
         rotationSpeed = data.Float("rotationSpeed");
         accelerationDuration = data.Float("accelerationDuration");
         moveDuration = data.Float("moveDuration");
-        
-        
+
+
         start = Position;
         end = data.Nodes[0] + offset;
 
@@ -132,8 +141,11 @@ public class CustomGondola : Gondola
 
             _realStart = Position;
         }
+        else
+        {
+            Position = Vector2.Lerp(RealStart, RealEnd, Calc.Clamp(startPositionPercent, minPositionPercent, maxPositionPercent)).Floor();
+        }
 
-        Position = RealStart;
         if (addCeiling)
         {
             ceiling.Position = Position + new Vector2(0, -CeilingOffsetY);
@@ -147,7 +159,7 @@ public class CustomGondola : Gondola
     public override void Update()
     {
         base.Update();
-        interact.Enabled = (canInteractOnMove && curSpeed == maxSpeed) || curSpeed == 0;
+        interact.Enabled = ((canInteractOnMove && curSpeed == maxSpeed) || curSpeed == 0) && !lockInteractable;
         // debug
         // if (MInput.Keyboard.Pressed(Keys.Space))
         // {
@@ -164,6 +176,22 @@ public class CustomGondola : Gondola
             moveLoopSfx.Stop();
             startOffSoundSource.Stop();
         }
+
+        if (Vector2.Distance(TargetPos, Position) < 10)
+        {
+            lockInteractable = true;
+            curSpeed = 0;
+            if (coroutine != null)
+                coroutine.Cancel();
+            Vector2 dir = (TargetPos - Position).SafeNormalize();
+            CustomMoveH(dir.X);
+            CustomMoveV(dir.Y);
+            if (TargetPos == Position)
+            {
+                lockInteractable = false;
+                state = StateTypes.Idle;
+            }
+        }
     }
 
     private void ChangeState()
@@ -179,12 +207,14 @@ public class CustomGondola : Gondola
                     if (preMoveState == StateTypes.MoveToEnd)
                     {
                         RotationSpeed = -rotationSpeed;
-                        coroutine.Replace(MoveToCoroutine(RealStart));
+                        TargetPos = RealStart;
+                        coroutine.Replace(MoveToTargetPosCoroutine());
                     }
                     else if (preMoveState == StateTypes.MoveToStart)
                     {
                         RotationSpeed = rotationSpeed;
-                        coroutine.Replace(MoveToCoroutine(RealEnd));
+                        TargetPos = RealEnd;
+                        coroutine.Replace(MoveToTargetPosCoroutine());
                     }
 
                     preMoveState = (StateTypes)(((int)preMoveState + 1) % 2);
@@ -197,7 +227,6 @@ public class CustomGondola : Gondola
                 {
                     Lever.Play("pulled", true);
                     coroutine.Replace(SlowDown());
-                    state = StateTypes.Idle;
                 }
 
                 break;
@@ -206,7 +235,6 @@ public class CustomGondola : Gondola
                 {
                     Lever.Play("pulled", true);
                     coroutine.Replace(SlowDown());
-                    state = StateTypes.Idle;
                 }
 
                 break;
@@ -227,12 +255,13 @@ public class CustomGondola : Gondola
 
             yield return null;
         }
+        state = StateTypes.Idle;
     }
 
-    private IEnumerator MoveToCoroutine(Vector2 targetPos)
+    private IEnumerator MoveToTargetPosCoroutine()
     {
-        float dist = (targetPos - Position).Length();
-        dir = (targetPos - Position).SafeNormalize();
+        float dist = (TargetPos - Position).Length();
+        dir = (TargetPos - Position).SafeNormalize();
         // 也就是没必要加到全速
         if (accelerationMoveDist * 2 >= dist)
         {
