@@ -13,10 +13,10 @@ conquestArea.placements = {
         conquestSpeed = 10,
         blueCamp = "Player",
         redCamp = "Seeker, BadelineOldsite, Strawberry",
-        flagOnCompleted = "ConquestTestFlag",
         ignoreCollidable = true,
         ignoreCollidableWhiteList = "BadelineOldsite",
         useSpriteShapeAsFallback = true,
+        flagOnCompleted = "ConquestTestFlag",
 
         polygonFillColor = "00FFFF",
         polygonOutlineColor = "FFFFFF",
@@ -36,6 +36,21 @@ conquestArea.placements = {
         UIBackgroundColor = "888888",
         UIOutlineColor = "000000",
     }
+}
+conquestArea.fieldOrder = {
+    "x", "y",
+    "conquestAreaId", "conquestAreaName",
+    "blueCamp", "redCamp",
+    "totalAmount", "conquestSpeed",
+    "polygonFillColor", "polygonOutlineColor",
+    "polygonAlpha", "polygonOutlineWith",
+    "idFontSize", "idFontColor",
+    "placeFontSize", "placeFontColor",
+    "UITotalWidth", "UITotalHeight",
+    "UIOutlineWidth", "UIFillColor",
+    "UIBackgroundColor", "UIOutlineColor",
+    "flagOnCompleted", "ignoreCollidableWhiteList",
+    "useSpriteShapeAsFallback", "ignoreCollidable",
 }
 
 conquestArea.fieldInformation = {

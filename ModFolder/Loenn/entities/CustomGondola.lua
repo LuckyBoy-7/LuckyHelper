@@ -14,21 +14,31 @@ gondola.placements = {
         name = "normal",
         placementType = "line",
         data = {
-            autoFindStart = true,   
             canInteractOnMove = true,
             addCeiling = true,
-            minPositionPercent = 0.2,
-            maxPositionPercent = 0.8,
-            startPositionPercent = 0.2,
+            startPositionOffsetX = 100,
+            endPositionOffsetX = -100,
             rotationSpeed = 0.7,
-            accelerationDuration = 2,
-            moveDuration = 6,
-
+            accelerationDuration = 0.5,
+            moveDuration = 2,
+            frontTexturePath = "objects/gondola/front",
+            leverTexturePath = "objects/gondola/lever",
+            backTexturePath = "objects/gondola/back",
+            cliffsideLeftTexturePath = "objects/gondola/cliffsideLeft",
+            cliffsideRightTexturePath = "objects/gondola/cliffsideRight",
+            topTexturePath = "objects/gondola/top",
+            
+            startPositionType = "CloseToPlayer"
         }
     }
 }
+gondola.fieldOrder = {
+    "x", "y", "frontTexturePath", "leverTexturePath", "backTexturePath", "topTexturePath", "cliffsideLeftTexturePath", "cliffsideRightTexturePath",
+    "startPositionOffsetX", "endPositionOffsetX", "rotationSpeed", "accelerationDuration", "moveDuration",
+    "addCeiling", "canInteractOnMove", "startPositionType"
+}
 gondola.fieldInformation = {
-    autoFindStart = {
+    autoAlignToStartPosition = {
         fieldType = "boolean"
     },
     canInteractOnMove = {
@@ -37,6 +47,23 @@ gondola.fieldInformation = {
     addCeiling = {
         fieldType = "boolean"
     },
+    startPositionOffsetX = {
+        fieldType = "integer"
+    },
+    endPositionOffsetX = {
+        fieldType = "integer"
+    },
+    autoAlignToGoundPositionOfPlayer = {
+        fieldType = "boolean"
+    },
+    startPositionType = {
+        options = {
+            "Start",
+            "End",
+            "CloseToPlayer"
+        },
+        editable = false
+    }
 }
 
 local leftTexture = "objects/gondola/cliffsideLeft"
