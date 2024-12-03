@@ -44,6 +44,12 @@ entities.LuckyHelper/ArbitraryShapeConquestArea.attributes.description.ignoreCol
 entities.LuckyHelper/ArbitraryShapeConquestArea.attributes.description.ignoreCollidableWhiteList=This option determines which entity 'ignoreCollidable' can apply to
 entities.LuckyHelper/ArbitraryShapeConquestArea.attributes.description.useSpriteShapeAsFallback=Some entities don't have collider, so this option will help
 
+# LootSpeedrunController
+entities.LuckyHelper/LootSpeedrunController.placements.name.normal=LootSpeedrunController
+
+# Loot
+entities.LuckyHelper/Loot.placements.name.normal=Loot
+
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger
 triggers.LuckyHelper/SetPassByRefillDashesTrigger.placements.name.normal=SetPassByRefillDashesTrigger
@@ -61,4 +67,17 @@ triggers.LuckyHelper/GhostTransposeTrigger.attributes.description.killPlayerOnTe
 
 # KillGhostTrigger
 triggers.LuckyHelper/KillGhostTrigger.placements.name.normal=Kill Ghost Trigger
+
+# LootCollectArea
+triggers.LuckyHelper/LootCollectArea.placements.name.normal=Loot Collect Area
+
+# LootSpeedrunStartup
+triggers.LuckyHelper/LootSpeedrunStartup.placements.name.normal=Loot Speedrun Startup
+
+# LootInfoVisibleSet
+triggers.LuckyHelper/LootInfoVisibleSet.attributes.description.visible=Whether to show 'Loot Speedrun Info Display'(Timer and value text)
+
+# LootThresholdFlagSet
+triggers.LuckyHelper/LootThresholdFlagSet.placements.name.normal=Loot Threshold Flag Set
+triggers.LuckyHelper/LootThresholdFlagSet.attributes.description.threshold=If your looted value is equal or greater than the threshold, the flag will be set
 

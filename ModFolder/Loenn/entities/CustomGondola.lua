@@ -75,6 +75,7 @@ local wireThickness = 1
 local function getLeftSprite(room, entity)
     local leftSprite = drawableSprite.fromTexture(leftTexture, entity)
     --leftSprite:addPosition(-124, 0)
+    --leftSprite:addPosition(leftSprite.meta.width, 0)
     leftSprite:setJustification(0.0, 1.0)
     leftSprite.depth = 8998
 

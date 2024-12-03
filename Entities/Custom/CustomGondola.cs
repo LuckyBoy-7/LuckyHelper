@@ -79,6 +79,9 @@ public class CustomGondola : Gondola
     private string cliffsideRightTexturePath = "objects/gondola/cliffsideRight";
     private string topTexturePath = "objects/gondola/top";
 
+
+    DynamicData dd;
+
     public enum StartPositionTypes
     {
         Start,
@@ -90,6 +93,7 @@ public class CustomGondola : Gondola
 
     public CustomGondola(EntityData data, Vector2 offset) : base(data, offset)
     {
+        dd = DynamicData.For(this);
         canInteractOnMove = data.Bool("canInteractOnMove");
         addCeiling = data.Bool("addCeiling");
         startPositionOffsetX = data.Int("startPositionOffsetX");
@@ -104,7 +108,7 @@ public class CustomGondola : Gondola
         cliffsideLeftTexturePath = data.Attr("cliffsideLeftTexturePath");
         cliffsideRightTexturePath = data.Attr("cliffsideRightTexturePath");
         topTexturePath = data.Attr("topTexturePath");
-        
+
         startPositionType = data.Enum<StartPositionTypes>("startPositionType");
 
 
@@ -169,7 +173,7 @@ public class CustomGondola : Gondola
                 preMoveState = StateTypes.MoveToEnd;
                 break;
             case StartPositionTypes.CloseToPlayer:
-                Logger.Log(LogLevel.Warn,"Test","123123");
+                Logger.Log(LogLevel.Warn, "Test", "123123");
                 Vector2 pos = Scene.Tracker.GetEntity<Player>().Position;
                 if (Vector2.Distance(end, pos) < Vector2.Distance(start, pos))
                 {
@@ -181,6 +185,7 @@ public class CustomGondola : Gondola
                     Position = RealStart;
                     preMoveState = StateTypes.MoveToStart;
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -243,12 +248,11 @@ public class CustomGondola : Gondola
         if (addCeiling)
         {
             ceiling.Position = Position + new Vector2(0, -CeilingOffsetY);
-            // DynamicData thisData = DynamicData.For(this);
-            // DynamicData otherData = DynamicData.For(ceiling);
-            // otherData.Set("movementCounter", thisData.Get<Vector2>("movementCounter"));
+            DynamicData thisData = DynamicData.For(this);
+            DynamicData otherData = DynamicData.For(ceiling);
+            otherData.Set("movementCounter", thisData.Get<Vector2>("movementCounter"));
         }
 
-        DynamicData dd = DynamicData.For(this);
 
         // back
         Entity back = dd.Get<Entity>("back");
@@ -313,6 +317,8 @@ public class CustomGondola : Gondola
                 state = StateTypes.Idle;
             }
         }
+
+        dd.Invoke("UpdatePositions");
     }
 
     private void ChangeState()
