@@ -21,7 +21,7 @@ public class LootThresholdFlagSet : Trigger
     public override void OnEnter(Player player)
     {
         base.OnEnter(player);
-        if (this.Session().GetCounter(LootSpeedrunController.LootMaxCreditsID) >= threshold)
+        if (this.Session().GetCounter(LootSpeedrunController.LootMaxValueID) >= threshold)
             this.Session().SetFlag(flag);
     }
 }

@@ -8,20 +8,20 @@ namespace LuckyHelper.Entities.LootSpeedrun;
 [Tracked]
 public class LootSpeedrunStartup : Trigger
 {
-    public const string LootRestartID = "LootRestart";
-    private string startRoom = "";
+    // 启动时触发的flag
+    private string flagOnStart = "";
 
     public LootSpeedrunStartup(EntityData data, Vector2 offset) : base(data, offset)
     {
-        startRoom = data.Attr("startRoom");
+        flagOnStart = data.Attr("flagOnStart");
     }
 
 
     public override void OnEnter(Player player)
     {
         base.OnEnter(player);
-        Vector2 pos = this.Session().MapData.Get(startRoom).Spawns[0];
-        player.Position = pos;
-        this.Session().SetFlag(LootRestartID);
+        this.Session().SetFlag(flagOnStart);
+        // 启动!!!
+        this.GetEntity<LootSpeedrunController>().TryStart();
     }
 }

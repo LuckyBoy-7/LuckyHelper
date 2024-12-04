@@ -50,6 +50,9 @@ entities.LuckyHelper/LootSpeedrunController.placements.name.normal=LootSpeedrunC
 # Loot
 entities.LuckyHelper/Loot.placements.name.normal=Loot
 
+# LootMaxValueText
+entities.LuckyHelper/LootMaxValueText.placements.name.normal=Loot Max Value Text
+
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger
 triggers.LuckyHelper/SetPassByRefillDashesTrigger.placements.name.normal=SetPassByRefillDashesTrigger
@@ -75,6 +78,7 @@ triggers.LuckyHelper/LootCollectArea.placements.name.normal=Loot Collect Area
 triggers.LuckyHelper/LootSpeedrunStartup.placements.name.normal=Loot Speedrun Startup
 
 # LootInfoVisibleSet
+triggers.LuckyHelper/LootInfoVisibleSet.placements.name.normal=Loot Info Visible Set
 triggers.LuckyHelper/LootInfoVisibleSet.attributes.description.visible=Whether to show 'Loot Speedrun Info Display'(Timer and value text)
 
 # LootThresholdFlagSet

@@ -54,7 +54,7 @@ public class LootSpeedrunInfoDisplay : Entity
 
         // 如果当前房间不是劫掠房, 则显示历史最高分
         if (this.GetEntity<LootSpeedrunController>() == null)
-            Value = this.Session().GetCounter(LootSpeedrunController.LootMaxCreditsID);
+            Value = this.Session().GetCounter(LootSpeedrunController.LootMaxValueID);
 
 
         base.Update();
@@ -76,14 +76,14 @@ public class LootSpeedrunInfoDisplay : Entity
         float timeWidth = GetTimeWidth(timeText);
         Vector2 timePos = new Vector2(x - 32 - timeWidth, Y);
         bg.Draw(timePos + new Vector2(-20, 0), new Vector2(bg.Width, 0), Color.Black, new Vector2(-1, 1));
-        Draw.Rect(timePos + new Vector2(40, 0), 500, 38, Color.Black);
+        Draw.Rect(timePos + new Vector2(40, 0), 1920, 38, Color.Black);
         DrawTime(timePos + new Vector2(0, 44), timeText);
 
         // 积分
         string valueString = ((int)curValue).ToString();
         Vector2 valuePos = new Vector2(x - 32 - GetTimeWidth(valueString, 0.6f), Y + 40f + 26.400002f);
         bg.Draw(valuePos + new Vector2(-15, -28), new Vector2(bg.Width, 0), Color.Black, new Vector2(-1, 1) * 0.6f);
-        Draw.Rect(valuePos + new Vector2(0, -28), 500, 38 * 0.6f, Color.Black);
+        Draw.Rect(valuePos + new Vector2(0, -28), 1920, 38 * 0.6f, Color.Black);
         DrawTime(valuePos, valueString, 0.6f, true, false, false, 0.6f);
     }
 

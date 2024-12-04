@@ -19,15 +19,13 @@ public class LootInfoVisibleSet : Trigger
     public override void OnEnter(Player player)
     {
         base.OnEnter(player);
-        LootSpeedrunInfoDisplay display = null;
-        if (this.GetEntity<LootSpeedrunInfoDisplay>() != null)
-            display = this.GetEntity<LootSpeedrunInfoDisplay>();
-        else
+        LootSpeedrunInfoDisplay display = this.GetEntity<LootSpeedrunInfoDisplay>();
+        if (display == null)
             Scene.Add(display = new LootSpeedrunInfoDisplay());
-        
+
         if (visible)
-            display?.Show();
+            display.Show();
         else
-            display?.Hide();
+            display.Hide();
     }
 }

@@ -9,7 +9,7 @@ namespace LuckyHelper.Entities.LootSpeedrun;
 [Tracked]
 public class Loot : Entity
 {
-    public EntityID ID;
+    public int ID;
     public string CollectedID => ID + "_collected";
     private Sprite sprite;
     public Follower Follower;
@@ -37,20 +37,26 @@ public class Loot : Entity
         value = data.Int("value");
 
         ReturnHomeWhenLost = true;
-        ID = gid;
+        ID = gid.ID;
         Position = (start = data.Position + offset);
         Depth = -100;
         Collider = new Hitbox(colliderWidth, colliderHeight, -colliderWidth / 2, -colliderHeight / 2);
         Add(new PlayerCollider(OnPlayer));
         Add(new MirrorReflection());
-        Add(Follower = new Follower(ID, null, OnLoseLeader));
+        Add(Follower = new Follower(gid, null, OnLoseLeader));
         Follower.FollowDelay = 0.3f;
     }
-    
+
 
     public override void Added(Scene scene)
     {
         base.Added(scene);
+
+        if (this.Session().GetFlag(CollectedID))
+        {
+            RemoveSelf();
+            return;
+        }
 
         sprite = new Sprite(GFX.Game, spritePath);
         sprite.AddLoop("idle", "", 0.08f);
@@ -177,13 +183,8 @@ public class Loot : Entity
 
         Audio.Play("event:/game/general/strawberry_get", Position, "colour", 0, "count", 0);
         Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
-        // todo: 明天在这做个wiggle
-        // sprite.Play("collect");
-        // while (sprite.Animating)
-        // {
-        //     yield return null;
-        // }
 
+        // 被收集时的wiggle, 本来应该是动画的, 这样方便点
         float duration = 0.4f;
         float timer = duration;
         while (timer > 0)
@@ -199,7 +200,8 @@ public class Loot : Entity
         this.Session().SetFlag(CollectedID);
 
         LootSpeedrunController controller = this.Tracker().GetEntity<LootSpeedrunController>();
-        controller?.AddValue(value);
+        if (controller != null)
+            controller.CurValue += value;
 
         RemoveSelf();
     }

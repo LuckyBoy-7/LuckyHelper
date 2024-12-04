@@ -5,7 +5,7 @@ startup.placements = {
     {
         name = "normal",
         data = {
-            startRoom = "loot_room_name",
+            flagOnStart = "loot_start_flag",
         }
     }
 }

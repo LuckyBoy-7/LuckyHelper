@@ -9,31 +9,47 @@ namespace LuckyHelper.Entities.LootSpeedrun;
 [Tracked]
 public class LootSpeedrunController : Entity
 {
-    public const string LootMaxCreditsID = "LootMaxCredits";
+    public const string LootMaxValueID = "LootMaxValue";
     private LootSpeedrunInfoDisplay display;
 
     private float leftTime = 0;
-    private string ID => $"{this.Session().LevelData.Name}_LootSpeedrunController";
-    private string LeftTimeID => ID + "_LeftTime";
-    private string CurrentValueID => ID + "_CurrentValue";
-    private int curValue;
+
+    // private string ID => $"{this.Session().LevelData.Name}_LootSpeedrunController";
+    // private string LeftTimeID => ID + "_LeftTime";
+    // private string CurrentValueID => ID + "_CurrentValue";
+    public int CurValue;
+    private bool hasStarted;
+    private Vector2 returnPoint;
+    private string startRoom;
 
     // -----------------------------------------------------------------------
     private float totalTime = 100;
     private float timeReduceSpeedMultiplier = 5;
-    private string teleportToRoomNameWhenTimeOver = "";
-    private bool exitWhenLootsAllCollected = true;
+
 
     public LootSpeedrunController(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
+        Tag = Tags.Global;
         // 保证最后更新最后, 删除restart flag
         Depth = -100000000;
         totalTime = data.Float("totalTime");
         timeReduceSpeedMultiplier = data.Float("timeReduceSpeedMultiplier");
-        teleportToRoomNameWhenTimeOver = data.Attr("teleportToRoomNameWhenTimeOver");
-        exitWhenLootsAllCollected = data.Bool("exitWhenLootsAllCollected");
 
         leftTime = totalTime;
+    }
+
+    public override void Added(Scene scene)
+    {
+        base.Added(scene);
+        var first = this.GetEntity<LootSpeedrunController>();
+        if (first != this) // 如果有别的了,删除自己保持单例
+        {
+            RemoveSelf();
+            return;
+        }
+
+        returnPoint = this.Session().GetSpawnPoint(Position);
+        startRoom = this.Session().Level;
     }
 
     public override void Awake(Scene scene)
@@ -43,91 +59,80 @@ public class LootSpeedrunController : Entity
             Scene.Add(display = new LootSpeedrunInfoDisplay());
         display ??= Scene.Tracker.GetEntity<LootSpeedrunInfoDisplay>();
 
+
+        // // 恢复本局积分
+        // curValue = this.Session().GetCounter(CurrentValueID);
+        //
+        // leftTime = this.Session().GetCounter(LeftTimeID);
+        // if (leftTime == 0)
+        //     leftTime = totalTime;
+        // else
+        //     leftTime = (float)this.Session().GetCounter(LeftTimeID) / 1000;
+    }
+
+    public void TryStart()
+    {
+        if (hasStarted)
+            return;
         // 新的一局
-        if (this.Session().GetFlag(LootSpeedrunStartup.LootRestartID))
+        foreach (var levelData in this.Session().MapData.Levels)
         {
-            foreach (Loot loot in this.Tracker().GetEntities<Loot>())
+            foreach (var entityData in levelData.Entities)
             {
-                // 恢复收集状态
-                this.Session().SetFlag(loot.CollectedID, false);
-                // 恢复时间状态
-                this.Session().SetCounter(LeftTimeID, (int)(totalTime * 1000));
-                // todo: 恢复积分状态
-                this.Session().SetCounter(CurrentValueID, 0);
-                // 删除restart状态
-                this.Session().SetFlag(LootSpeedrunStartup.LootRestartID, false);
-            }
-        }
-        else
-        {
-            foreach (Loot loot in this.Tracker().GetEntities<Loot>())
-            {
-                if (this.Session().GetFlag(loot.CollectedID)) // 当局已收集
-                    loot.RemoveSelf();
+                if (entityData.Name == "LuckyHelper/Loot")
+                {
+                    this.Session().SetFlag(entityData.ID + "_collected", false);
+                }
             }
         }
 
-        // 恢复本局积分
-        curValue = this.Session().GetCounter(CurrentValueID);
-
-        leftTime = this.Session().GetCounter(LeftTimeID);
-        if (leftTime == 0)
-            leftTime = totalTime;
-        else
-            leftTime = (float)this.Session().GetCounter(LeftTimeID) / 1000;
+        leftTime = totalTime;
+        CurValue = 0;
+        hasStarted = true;
 
         display.Show();
     }
 
-    public override void Removed(Scene scene)
-    {
-        base.Removed(scene);
-        display.Hide();
-    }
-
     public override void Update()
     {
-        base.Update();
-
-        leftTime = Math.Max(0, leftTime - Engine.DeltaTime * timeReduceSpeedMultiplier);
-        display.Time = leftTime;
-
-        // if (MInput.Keyboard.Pressed(Keys.Enter))
-        this.Session().SetCounter(LeftTimeID, (int)(leftTime * 1000));
-        this.Session().SetCounter(CurrentValueID, curValue);
-        // 时间结束 或收集完, 返回主大厅
-        // 玩家死亡时停止计数
-        if (leftTime == 0 || (exitWhenLootsAllCollected && this.GetEntities<Loot>().Count == 0))
+        if (MInput.Keyboard.Pressed(Keys.Enter))
         {
-            display.Hide();
-            // 记录剩余时间
-            this.Session().SetCounter(LeftTimeID, (int)(totalTime * 1000));
-            // 记录历史最高分
-            this.Session().SetCounter(LootMaxCreditsID, Math.Max(curValue, this.Session().GetCounter(LootMaxCreditsID)));
-
-            bool playerAlive = this.GetEntity<Player>() != null;
-            Vector2 pos = SceneAs<Level>().Session.MapData.Get(teleportToRoomNameWhenTimeOver).Spawns[0];
-            if (playerAlive)
-            {
-                // 清除player携带的实体
-                Leader leader = this.GetEntity<Player>().Get<Leader>();
-                this.GetEntities<Loot>().ForEach(loot => leader.LoseFollower(loot.Get<Follower>()));
-
-
-                // 因为player死亡的时候timer不会继续更新, 所以在timer为0的时候不用担心player为空
-                Scene.Tracker.GetEntity<Player>().Position = pos;
-            }
-            else
-            {
-                this.Session().RespawnPoint = pos;
-            }
+            OnTimeOver();
         }
 
-        display.Value = curValue;
+
+        base.Update();
+        if (!hasStarted)
+            return;
+
+        if (this.GetEntity<Player>() != null)
+            leftTime = Math.Max(0, leftTime - Engine.DeltaTime * timeReduceSpeedMultiplier);
+        display.Time = leftTime;
+
+        // 时间结束 或收集完, 返回主大厅
+        if (leftTime == 0)
+        {
+            OnTimeOver();
+        }
+
+        // 记录历史最高分
+        this.Session().SetCounter(LootMaxValueID, Math.Max(CurValue, this.Session().GetCounter(LootMaxValueID)));
+        display.Value = CurValue;
     }
 
-    public void AddValue(int value)
+    private void OnTimeOver()
     {
-        curValue += value;
+        hasStarted = false;
+        PlayerDeadBody body;
+        if (this.GetEntity<Player>() != null)
+            body = this.GetEntity<Player>().Die(Vector2.Zero);
+        else
+            body = this.GetEntity<PlayerDeadBody>();
+        body.DeathAction += () =>
+        {
+            this.Session().Level = startRoom;
+            this.Session().RespawnPoint = returnPoint;
+            this.Level().Reload();
+        };
     }
 }
