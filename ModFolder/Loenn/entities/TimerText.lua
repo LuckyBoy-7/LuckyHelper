@@ -12,9 +12,9 @@ entity.placements = {
         outlineColor = "000000",
         
         format = "mm\\:ss\\:ff",
-        countPauseTime = false,
-        isShowTotalTime = false,
-        hiddenOnPause = false
+        hiddenOnPause = false,
+        showType = "CurrentRoom",
+        savedPath = "where the time will be added to"
     }
 }
 
@@ -32,14 +32,16 @@ entity.fieldInformation =
     outlineColor = {
         fieldType = "color"
     },
-    countPauseTime = {
-        fieldType = "boolean"
-    },
-    isShowTotalTime = {
-        fieldType = "boolean"
-    },
     hiddenOnPause = {
         fieldType = "boolean"
+    },
+    showType = {
+        options = {
+            "CurrentRoom",
+            "TotalTimeFromStart",
+            "ReadFromSavedPath"
+        },
+        editable = false
     }
 }
 

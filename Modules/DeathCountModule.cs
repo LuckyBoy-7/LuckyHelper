@@ -1,4 +1,6 @@
+using LuckyHelper.Extensions;
 using LuckyHelper.Module;
+using LuckyHelper.Triggers;
 
 namespace LuckyHelper.Modules;
 
@@ -21,6 +23,12 @@ public class DeathCountModule
         var session = self.SceneAs<Level>().Session;
         session.IncrementCounter(session.Level + "DeathCount");
         session.IncrementCounter("TotalDeathCount");
+
+        DeathCountSavedIn pos = self.GetEntity<DeathCountSavedIn>();
+        if (pos != null)
+        {
+            session.IncrementCounter(pos.SavedIn + "DeathCount");
+        }
         return orig(self, direction, evenifinvincible, registerdeathinstats);
     }
 }

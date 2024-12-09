@@ -10,9 +10,10 @@ entity.placements = {
         outline = false,
         thickness = 2,
         outlineColor = "000000",
-        
-        isShowTotalDeath = false,
-        hiddenOnPause = false
+
+        showType = "CurrentRoom",
+        hiddenOnPause = false,
+        savedPath = "where the death count will be added to"
     }
 }
 
@@ -27,8 +28,13 @@ entity.fieldInformation =
     outlineColor = {
         fieldType = "color"
     },
-    isShowTotalDeath = {
-        fieldType = "boolean"
+    showType = {
+        options = {
+            "CurrentRoom",
+            "TotalDeathFromStart",
+            "ReadFromSavedPath"
+        },
+        editable = false
     },
     hiddenOnPause = {
         fieldType = "boolean"

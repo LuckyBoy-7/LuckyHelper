@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.InteropServices.JavaScript;
 using Celeste.Mod.Entities;
 using LuckyHelper.Extensions;
+using LuckyHelper.Modules;
 
 namespace LuckyHelper.Entities;
 
@@ -9,44 +10,43 @@ namespace LuckyHelper.Entities;
 [Tracked]
 public class TimerText : LuckyText
 {
-    private bool isShowTotalTime;
-    public string id;
-    public long Duration => SceneAs<Level>().Session.GetCounter(id);
+    public enum ShowTypes
+    {
+        CurrentRoom,
+        TotalTimeFromStart,
+        ReadFromSavedPath
+    }
 
-    private string format;
+    private ShowTypes showType;
 
     public override string Content
     {
         get
         {
-            if (isShowTotalTime)
-                return TimeSpan.FromSeconds((float)SceneAs<Level>().Session.Time / 10000000).ToString(format);
-            return TimeSpan.FromSeconds((float)Duration / Resolution).ToString(format);
+            switch (showType)
+            {
+                case ShowTypes.CurrentRoom:
+                    return TimeSpan.FromSeconds((float)SceneAs<Level>().Session.GetCounter(this.Session().Level + "/Lucky/Timer") / TimerModule.Resolution).ToString(format);
+                case ShowTypes.TotalTimeFromStart:
+                    return TimeSpan.FromSeconds((float)SceneAs<Level>().Session.Time / 10_000_000).ToString(format);
+                case ShowTypes.ReadFromSavedPath:
+                    return TimeSpan.FromSeconds((float)SceneAs<Level>().Session.GetCounter(savedPath + "Lucky/Timer") / TimerModule.Resolution).ToString(format);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 
-    private const int Resolution = 100000;
+    private string savedPath;
+    private string format;
+
 
     public TimerText(EntityData data, Vector2 offset) : base(data, offset)
     {
         Tag = Tags.HUD | Tags.TransitionUpdate;
-        if (data.Bool("countPauseTime"))
-            Tag |= Tags.PauseUpdate;
 
-        isShowTotalTime = data.Bool("isShowTotalTime");
         format = data.Attr("format", @"mm\:ss\:ff");
-    }
-
-    public override void Awake(Scene scene)
-    {
-        base.Awake(scene);
-        id = SceneAs<Level>().Session.Level + "Timer" + Scene.Tracker.GetEntities<TimerText>().IndexOf(this);
-    }
-
-    public override void Update()
-    {
-        base.Update();
-        if (!isShowTotalTime)
-            SceneAs<Level>().Session.SetCounter(id, (int)(Duration + Engine.RawDeltaTime * Resolution));
+        savedPath = data.Attr("savedPath");
+        showType = data.Enum<ShowTypes>("showType");
     }
 }

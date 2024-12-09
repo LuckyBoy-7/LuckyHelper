@@ -53,6 +53,10 @@ entities.LuckyHelper/Loot.placements.name.normal=Loot
 # LootMaxValueText
 entities.LuckyHelper/LootMaxValueText.placements.name.normal=Loot Max Value Text
 
+# DeathCountText
+entities.LuckyHelper/DeathCountText.placements.name.normal=Death Count Text
+entities.LuckyHelper/DeathCountText.attributes.description.savedPath=The path where the 'DeathCountSavedIn Trigger' sets.
+
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger
 triggers.LuckyHelper/SetPassByRefillDashesTrigger.placements.name.normal=SetPassByRefillDashesTrigger
@@ -85,3 +89,10 @@ triggers.LuckyHelper/LootInfoVisibleSet.attributes.description.visible=Whether t
 triggers.LuckyHelper/LootThresholdFlagSet.placements.name.normal=Loot Threshold Flag Set
 triggers.LuckyHelper/LootThresholdFlagSet.attributes.description.threshold=If your looted value is equal or greater than the threshold, the flag will be set
 
+# DeathCountSavedIn
+triggers.LuckyHelper/DeathCountSavedIn.placements.name.normal=Death Count Saved In
+triggers.LuckyHelper/DeathCountSavedIn.attributes.description.savedIn=Each death in this room will be counted to the path, then you can read it by DeathCountText later
+
+# TimeSavedIn
+triggers.LuckyHelper/TimeSavedIn.placements.name.normal=Time Saved In
+triggers.LuckyHelper/TimeSavedIn.attributes.description.savedIn=Time in this room will be counted to the path, then you can read it by TimerText later
