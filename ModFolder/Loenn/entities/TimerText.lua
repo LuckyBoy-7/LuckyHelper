@@ -39,7 +39,8 @@ entity.fieldInformation =
         options = {
             "CurrentRoom",
             "TotalTimeFromStart",
-            "ReadFromSavedPath"
+            "ReadFromSavedPath",
+            "CurrentCheckpoint"
         },
         editable = false
     }

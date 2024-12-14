@@ -32,7 +32,8 @@ entity.fieldInformation =
         options = {
             "CurrentRoom",
             "TotalDeathFromStart",
-            "ReadFromSavedPath"
+            "ReadFromSavedPath",
+            "CurrentCheckpoint"
         },
         editable = false
     },

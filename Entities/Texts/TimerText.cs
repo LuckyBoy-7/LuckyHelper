@@ -14,7 +14,8 @@ public class TimerText : LuckyText
     {
         CurrentRoom,
         TotalTimeFromStart,
-        ReadFromSavedPath
+        ReadFromSavedPath,
+        CurrentCheckpoint
     }
 
     private ShowTypes showType;
@@ -26,11 +27,12 @@ public class TimerText : LuckyText
             switch (showType)
             {
                 case ShowTypes.CurrentRoom:
-                    return TimeSpan.FromSeconds((float)SceneAs<Level>().Session.GetCounter(this.Session().Level + "/Lucky/Timer") / TimerModule.Resolution).ToString(format);
+                case ShowTypes.ReadFromSavedPath:
+                case ShowTypes.CurrentCheckpoint:
+                    return TimeSpan.FromSeconds((float)SceneAs<Level>().Session.GetCounter(readTimeFrom) / TimerModule.Resolution).ToString(format);
                 case ShowTypes.TotalTimeFromStart:
                     return TimeSpan.FromSeconds((float)SceneAs<Level>().Session.Time / 10_000_000).ToString(format);
-                case ShowTypes.ReadFromSavedPath:
-                    return TimeSpan.FromSeconds((float)SceneAs<Level>().Session.GetCounter(savedPath + "Lucky/Timer") / TimerModule.Resolution).ToString(format);
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -39,6 +41,7 @@ public class TimerText : LuckyText
 
     private string savedPath;
     private string format;
+    private string readTimeFrom;
 
 
     public TimerText(EntityData data, Vector2 offset) : base(data, offset)
@@ -48,5 +51,22 @@ public class TimerText : LuckyText
         format = data.Attr("format", @"mm\:ss\:ff");
         savedPath = data.Attr("savedPath");
         showType = data.Enum<ShowTypes>("showType");
+    }
+
+    public override void Awake(Scene scene)
+    {
+        base.Awake(scene);
+
+        // Logger.Warn("Test", TimerModule.CurrentCheckpoint);
+        // Logger.Warn("Test", "-------------------------");
+        readTimeFrom = showType switch
+        {
+            ShowTypes.CurrentRoom => this.Session().Level + "/Lucky/Timer",
+            ShowTypes.TotalTimeFromStart => "-1",
+            ShowTypes.ReadFromSavedPath => savedPath + "Lucky/Timer",
+            // todo: 由于checkpoint更新会慢一帧, 所以timertext不能和checkpoint放一个房间
+            ShowTypes.CurrentCheckpoint => TimerModule.CurrentCheckpoint + "/Lucky/Timer",
+            _ => throw new ArgumentOutOfRangeException()
+        };
     }
 }

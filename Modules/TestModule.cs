@@ -1,4 +1,5 @@
 using System.Reflection;
+using LuckyHelper.Extensions;
 using LuckyHelper.Module;
 using LuckyHelper.Utils;
 using MonoMod.RuntimeDetour;
@@ -33,6 +34,8 @@ public class TestModule
     private static void PlayerOnUpdate(Player.orig_Update orig, Celeste.Player self)
     {
         orig(self);
+        // Logger.Warn("Test", self.GetCheckpointName());
+        // Logger.Warn("Test", TimerModule.CurrentCheckpoint);
         // Logger.Log(LogLevel.Warn, "Test", self.Position.ToString());
         // float timer = self.SceneAs<Level>().Session.Time;
         // Logger.Log(LogLevel.Info, "Test", timer.ToString());

@@ -18,9 +18,13 @@ public class DeathCountModule
         On.Celeste.Player.Die -= PlayerOnDie;
     }
 
-    private static PlayerDeadBody PlayerOnDie(On.Celeste.Player.orig_Die orig, Celeste.Player self, Vector2 direction, bool evenifinvincible, bool registerdeathinstats)
+    private static PlayerDeadBody PlayerOnDie(On.Celeste.Player.orig_Die orig, Celeste.Player self, Vector2 direction, bool evenifinvincible,
+        bool registerdeathinstats)
     {
         var session = self.SceneAs<Level>().Session;
+
+
+        session.IncrementCounter(TimerModule.CurrentCheckpoint + "DeathCount");
         session.IncrementCounter(session.Level + "DeathCount");
         session.IncrementCounter("TotalDeathCount");
 
@@ -29,6 +33,7 @@ public class DeathCountModule
         {
             session.IncrementCounter(pos.SavedIn + "DeathCount");
         }
+
         return orig(self, direction, evenifinvincible, registerdeathinstats);
     }
 }

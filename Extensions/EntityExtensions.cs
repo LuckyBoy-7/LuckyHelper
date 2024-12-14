@@ -26,5 +26,14 @@ public static class EntityExtensions
     {
         return entity.Tracker().GetEntities<T>();
     }
+    
+    public static string GetCheckpointName(this Entity entity)
+    {
+        string res = AreaData.GetCheckpointName(entity.Session().Area, entity.Session().Level);
+        if (res == null)
+            // res = "StartCheckpoint";
+            res = "";
+        return res;
+    }
 }
 

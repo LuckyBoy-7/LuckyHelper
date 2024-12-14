@@ -26,12 +26,12 @@ public class PassByRefill : Entity
         Hitbox hitbox = new(64, 64);
         Collider = hitbox;
 
+
         sprite = new Sprite(GFX.Game, "LuckyHelper/pass_by_refill/");
-        Add(sprite);
         sprite.AddLoop("idle", "img", 1);
-        sprite.Play("idle", true);
-        // sprite.Effects = SpriteEffects.FlipHorizontally;
-        sprite.Origin = new Vector2(64, 64);
+        sprite.Play("idle");
+        // sprite.Origin = new Vector2(64, 64);
+        Add(sprite);
     }
 
     public PassByRefill(EntityData data, Vector2 offset)
