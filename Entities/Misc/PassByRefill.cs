@@ -28,10 +28,9 @@ public class PassByRefill : Entity
 
 
         sprite = new Sprite(GFX.Game, "LuckyHelper/pass_by_refill/");
+        Add(sprite);
         sprite.AddLoop("idle", "img", 1);
         sprite.Play("idle");
-        // sprite.Origin = new Vector2(64, 64);
-        Add(sprite);
     }
 
     public PassByRefill(EntityData data, Vector2 offset)

@@ -11,7 +11,7 @@ public static class EntityExtensions
     {
         return entity.Scene.Tracker;
     }
-    
+
     public static Level Level(this Entity entity)
     {
         return entity.SceneAs<Level>();
@@ -21,12 +21,17 @@ public static class EntityExtensions
     {
         return entity.Tracker().GetEntity<T>();
     }
-    
+
     public static List<Entity> GetEntities<T>(this Entity entity) where T : Entity
     {
         return entity.Tracker().GetEntities<T>();
     }
-    
+
+    public static string CurrentRoomName(this Entity entity)
+    {
+        return entity.Session().Level;
+    }
+
     public static string GetCheckpointName(this Entity entity)
     {
         string res = AreaData.GetCheckpointName(entity.Session().Area, entity.Session().Level);
@@ -36,4 +41,3 @@ public static class EntityExtensions
         return res;
     }
 }
-

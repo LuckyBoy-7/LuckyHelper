@@ -13,6 +13,7 @@ entity.placements = {
 
         showType = "CurrentRoom",
         hiddenOnPause = false,
+        remainCurrentValue = false,
         savedPath = "where the death count will be added to"
     }
 }
@@ -31,13 +32,16 @@ entity.fieldInformation =
     showType = {
         options = {
             "CurrentRoom",
-            "TotalDeathFromStart",
-            "ReadFromSavedPath",
-            "CurrentCheckpoint"
+            "SinceStart",
+            "FromSavedPath",
+            "SinceLastCheckpoint"
         },
         editable = false
     },
     hiddenOnPause = {
+        fieldType = "boolean"
+    },
+    remainCurrentValue = {
         fieldType = "boolean"
     }
 }

@@ -10,7 +10,6 @@ namespace LuckyHelper.Modules;
 
 public class TestModule
 {
-
     [Load]
     public static void Load()
     {
@@ -36,7 +35,7 @@ public class TestModule
         orig(self);
         // Logger.Warn("Test", self.GetCheckpointName());
         // Logger.Warn("Test", TimerModule.CurrentCheckpoint);
-        // Logger.Log(LogLevel.Warn, "Test", self.Position.ToString());
+        // Logger.Log(LogLevel.Warn, "Test", self.Session().StartCheckpoint);
         // float timer = self.SceneAs<Level>().Session.Time;
         // Logger.Log(LogLevel.Info, "Test", timer.ToString());
         // Logger.Log(LogLevel.Info, "Test", "Player " + FieldUtils.GetField(self, "actualDepth"));

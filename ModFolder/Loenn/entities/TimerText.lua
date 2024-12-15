@@ -13,6 +13,7 @@ entity.placements = {
         
         format = "mm\\:ss\\:ff",
         hiddenOnPause = false,
+        remainCurrentValue = false,
         showType = "CurrentRoom",
         savedPath = "where the time will be added to"
     }
@@ -35,12 +36,15 @@ entity.fieldInformation =
     hiddenOnPause = {
         fieldType = "boolean"
     },
+    remainCurrentValue = {
+        fieldType = "boolean"
+    },
     showType = {
         options = {
             "CurrentRoom",
-            "TotalTimeFromStart",
-            "ReadFromSavedPath",
-            "CurrentCheckpoint"
+            "SinceStart",
+            "FromSavedPath",
+            "SinceLastCheckpoint"
         },
         editable = false
     }
