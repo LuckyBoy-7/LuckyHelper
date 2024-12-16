@@ -63,14 +63,14 @@ public class DreamZoneModule
     {
         if (dreamZone != null && self.Tracker().GetEntities<Solid>().Any(solid => solid is not DreamZone && self.CollideCheck(solid)))
         {
-            if (dreamZone.stopPlayerOnCollide)
+            if (dreamZone.StopPlayerOnCollide)
             {
                 SetDreamZoneCollidable(self, false);
                 WigglePlayer(self);
                 return Player.StNormal;
             }
 
-            if (dreamZone.killPlayerOnCollide)
+            if (dreamZone.KillPlayerOnCollide)
             {
                 self.Die(Vector2.Zero);
             }

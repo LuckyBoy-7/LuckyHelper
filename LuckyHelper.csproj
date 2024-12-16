@@ -26,15 +26,17 @@
         </Reference>
     </ItemGroup>
 
-<!--    <ItemGroup>-->
-<!--        <PackageReference Include="Krafs.Publicizer" Version="2.3.0">-->
-<!--            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>-->
-<!--            <PrivateAssets>all</PrivateAssets>-->
-<!--        </PackageReference>-->
-<!--        <PropertyGroup>-->
-<!--            <PublicizeAll>true</PublicizeAll>-->
-<!--        </PropertyGroup>-->
-<!--    </ItemGroup>-->
-
+    <ItemGroup>
+        <PackageReference Include="Krafs.Publicizer" Version="2.3.0">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
+    <ItemGroup>
+        <Publicize Include="Celeste"/>
+    </ItemGroup>
+<!--    <PropertyGroup>-->
+    <!--        <PublicizeAll>true</PublicizeAll>-->
+    <!--    </PropertyGroup>-->
     <Import Project="CelesteMod.targets"/>
 </Project>
