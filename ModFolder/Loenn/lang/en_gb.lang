@@ -57,6 +57,9 @@ entities.LuckyHelper/LootMaxValueText.placements.name.normal=Loot Max Value Text
 entities.LuckyHelper/DeathCountText.placements.name.normal=Death Count Text
 entities.LuckyHelper/DeathCountText.attributes.description.savedPath=The path where the 'DeathCountSavedIn Trigger' sets.
 
+# DreamZone
+entities.LuckyHelper/DreamZone.placements.name.normal=DreamZone
+
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger
 triggers.LuckyHelper/SetPassByRefillDashesTrigger.placements.name.normal=SetPassByRefillDashesTrigger

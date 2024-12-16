@@ -1,30 +1,40 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="CelesteMod.props" />
-	
-	<PropertyGroup>
-		<RootNamespace>LuckyHelper</RootNamespace>
-		<LangVersion>preview</LangVersion>
-	</PropertyGroup>
+    <Import Project="CelesteMod.props"/>
 
-	<ItemGroup>
-		<Using Include="System" />
-		<Using Include="System.Collections.Generic" />
-		<Using Include="System.IO" />
-		<Using Include="System.Linq" />
-		<Using Include="System.Threading" />
-		<Using Include="System.Threading.Tasks" />
-		
-		<Using Include="Celeste.Mod"/>
-		<Using Include="Celeste"/>
-		<Using Include="Monocle"/>
-		<Using Include="Microsoft.Xna.Framework"/>
-	</ItemGroup>
+    <PropertyGroup>
+        <RootNamespace>LuckyHelper</RootNamespace>
+        <LangVersion>preview</LangVersion>
+    </PropertyGroup>
 
-	<ItemGroup>
-	  <Reference Include="ExtendedVariantMode">
-	    <HintPath>ModFolder\lib-stripped\ExtendedVariantMode-nstrip.dll</HintPath>
-	  </Reference>
-	</ItemGroup>
+    <ItemGroup>
+        <Using Include="System"/>
+        <Using Include="System.Collections.Generic"/>
+        <Using Include="System.IO"/>
+        <Using Include="System.Linq"/>
+        <Using Include="System.Threading"/>
+        <Using Include="System.Threading.Tasks"/>
 
-	<Import Project="CelesteMod.targets" />
+        <Using Include="Celeste.Mod"/>
+        <Using Include="Celeste"/>
+        <Using Include="Monocle"/>
+        <Using Include="Microsoft.Xna.Framework"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="ExtendedVariantMode">
+            <HintPath>ModFolder\lib-stripped\ExtendedVariantMode-nstrip.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
+<!--    <ItemGroup>-->
+<!--        <PackageReference Include="Krafs.Publicizer" Version="2.3.0">-->
+<!--            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>-->
+<!--            <PrivateAssets>all</PrivateAssets>-->
+<!--        </PackageReference>-->
+<!--        <PropertyGroup>-->
+<!--            <PublicizeAll>true</PublicizeAll>-->
+<!--        </PropertyGroup>-->
+<!--    </ItemGroup>-->
+
+    <Import Project="CelesteMod.targets"/>
 </Project>
