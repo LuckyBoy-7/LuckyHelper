@@ -1,6 +1,7 @@
 using Celeste.Mod.Entities;
 using LuckyHelper.Extensions;
 using Microsoft.Xna.Framework.Graphics;
+using Mono.Cecil.Cil;
 
 namespace LuckyHelper.Entities;
 
@@ -89,7 +90,10 @@ public class DreamZone : DreamBlock
         Color activeLineColorBackup = activeLineColor;
         activeBackColor = BackgroundColor;
         activeLineColor = OutlineColor;
-        Draw.Rect(shake.X + X, shake.Y + Y, Width, Height, (playerHasDreamDash ? activeBackColor : disabledBackColor) * BackgroundAlpha);
+        if (BackgroundAlpha == 1)
+            Draw.Rect(shake.X + X, shake.Y + Y, Width, Height, (playerHasDreamDash ? activeBackColor : disabledBackColor) * BackgroundAlpha);
+        else
+            Draw.Rect(shake.X + X + 1, shake.Y + 1 + Y, Width - 2, Height - 2, (playerHasDreamDash ? activeBackColor : disabledBackColor) * BackgroundAlpha);
 
 
         Vector2 position = SceneAs<Level>().Camera.Position;
@@ -129,6 +133,12 @@ public class DreamZone : DreamBlock
 
 
         // Outline, 最后画应该也是为了顺便遮住星星
+        // Draw.Point(Position, Color.Yellow);
+        // Draw.Point(new Vector2(X + Width, Y), Color.Yellow);
+        // Draw.Line(new Vector2(X + Width, Y),new Vector2(X + Width, Y + 4), Color.Yellow);
+        // Draw.Line(Position-Vector2.UnitY, Position + Vector2.UnitX * 3 -Vector2.UnitY, Color.Yellow);
+        // Draw.Line(Position, Position -Vector2.UnitY*3, Color.Yellow);
+        // Draw.Line(Position - Vector2.UnitY, Position + Vector2.UnitX * 3 - Vector2.UnitY * 3, Color.Yellow);
         CustomWobbleLine(shake + new Vector2(X, Y), shake + new Vector2(X + Width, Y), 0f);
         CustomWobbleLine(shake + new Vector2(X + Width, Y), shake + new Vector2(X + Width, Y + Height), 0.7f);
         CustomWobbleLine(shake + new Vector2(X + Width, Y + Height), shake + new Vector2(X, Y + Height), 1.5f);
@@ -155,25 +165,79 @@ public class DreamZone : DreamBlock
             backgroundColor = Color.Lerp(backgroundColor, Color.White, whiteFill);
         }
 
+        // // test
+        // Draw.Line(from + perpendicular*0.49f, to - dir*0.49f+perpendicular * 0.6f, Color.Red);
+        // Draw.Line(from, to, outlineColor);
+        // return;
+
+        // Draw.Line(Position, TopRight, Color.Yellow);
         if (DisableWobble)
         {
             Draw.Line(from, to, outlineColor);
             return;
         }
 
+
+        // draw.line 结束的位置不会画点
+        // Draw.Line(Position, Position - Vector2.UnitY + Vector2.UnitX *3, Color.Yellow);
         float preAmplitude = 0.0f;
         int gap = 16;
+
+        if (BackgroundAlpha == 1)
+        {
+            for (int index = 2; index < length - 2.0; index += gap)
+            {
+                float curAmplitude = Lerp(LineAmplitude(wobbleFrom + offset, index), LineAmplitude(wobbleTo + offset, index), wobbleEase);
+                if (index + gap >= (double)length)
+                    curAmplitude = 0.0f;
+                float segmentLength = Math.Min(gap, length - 2f - index);
+                Vector2 startPos = from + dir * index + perpendicular * preAmplitude;
+                Vector2 endPos = from + dir * (index + segmentLength) + perpendicular * curAmplitude;
+
+                Draw.Line(startPos - perpendicular, endPos - perpendicular, backgroundColor);
+                Draw.Line(startPos - perpendicular * 2f, endPos - perpendicular * 2f, backgroundColor);
+                Draw.Line(startPos, endPos, outlineColor);
+                preAmplitude = curAmplitude;
+            }
+
+            return;
+        }
+
+        preAmplitude = 0;
         for (int index = 2; index < length - 2.0; index += gap)
         {
             float curAmplitude = Lerp(LineAmplitude(wobbleFrom + offset, index), LineAmplitude(wobbleTo + offset, index), wobbleEase);
             if (index + gap >= (double)length)
                 curAmplitude = 0.0f;
-            float num4 = Math.Min(gap, length - 2f - index);
-            Vector2 start = from + dir * index + perpendicular * preAmplitude;
-            Vector2 end = from + dir * (index + num4) + perpendicular * curAmplitude;
-            Draw.Line(start - perpendicular, end - perpendicular, backgroundColor);
-            Draw.Line(start - perpendicular * 2f, end - perpendicular * 2f, backgroundColor);
-            Draw.Line(start, end, outlineColor);
+            float segmentLength = Math.Min(gap, length - 2f - index);
+            Vector2 startPos = from + dir * index + perpendicular * preAmplitude;
+            Vector2 endPos = from + dir * (index + segmentLength) + perpendicular * curAmplitude;
+            for (int i = 0; i < segmentLength; i++)
+            {
+                // float a = Lerp(LineAmplitude(wobbleFrom + offset, index + i), LineAmplitude(wobbleTo + offset, index + i), wobbleEase);
+                Vector2 s = from + dir * (index + i) - perpendicular;
+                Vector2 e = Vector2.Lerp(startPos, endPos, i / (segmentLength)) - perpendicular;
+
+                Draw.Line(s, e, backgroundColor);
+            }
+
+            preAmplitude = curAmplitude;
+        }
+
+
+        preAmplitude = 0.0f;
+        for (int index = 2; index < length - 2.0; index += gap)
+        {
+            float curAmplitude = Lerp(LineAmplitude(wobbleFrom + offset, index), LineAmplitude(wobbleTo + offset, index), wobbleEase);
+            if (index + gap >= (double)length)
+                curAmplitude = 0.0f;
+            float segmentLength = Math.Min(gap, length - 2f - index);
+            Vector2 startPos = from + dir * index + perpendicular * preAmplitude;
+            Vector2 endPos = from + dir * (index + segmentLength) + perpendicular * curAmplitude;
+
+            // Draw.Line(start - perpendicular, end - perpendicular, backgroundColor);
+            // Draw.Line(start - perpendicular * 2f, end - perpendicular * 2f, backgroundColor);
+            Draw.Line(startPos, endPos, outlineColor);
             preAmplitude = curAmplitude;
         }
     }

@@ -33,6 +33,7 @@ public class DreamZoneModule
     private static void PlayerOnUpdate(On.Celeste.Player.orig_Update orig, Player self)
     {
         // 获取当前接触的zone
+        dreamZone = null;
         foreach (var zone in self.Tracker().GetEntities<DreamZone>())
         {
             bool backup = zone.Collidable;
