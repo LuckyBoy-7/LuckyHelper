@@ -90,7 +90,7 @@ public class DreamZone : DreamBlock
         Color activeLineColorBackup = activeLineColor;
         activeBackColor = BackgroundColor;
         activeLineColor = OutlineColor;
-        if (BackgroundAlpha == 1)
+        if (BackgroundAlpha == 1 && !DisableWobble)
             Draw.Rect(shake.X + X, shake.Y + Y, Width, Height, (playerHasDreamDash ? activeBackColor : disabledBackColor) * BackgroundAlpha);
         else
             Draw.Rect(shake.X + X + 1, shake.Y + 1 + Y, Width - 2, Height - 2, (playerHasDreamDash ? activeBackColor : disabledBackColor) * BackgroundAlpha);
