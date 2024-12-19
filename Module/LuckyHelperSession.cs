@@ -18,4 +18,7 @@ public class LuckyHelperSession : EverestModuleSession
     public DefaultDict<string, float> CurrentRoomTime = new(() => 0);
     public DefaultDict<string, float> SavedPathTime = new(() => 0);
     public DefaultDict<string, float> CurrentCheckpointTime = new(() => 0);
+    
+    // checkpoint
+    public string PlayerLastCheckPoint = "StartCheckpoint";
 }

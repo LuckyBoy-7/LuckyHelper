@@ -26,7 +26,7 @@ public class TimerText : ShowDataText
             ShowTypes.FromSavedPath => TimeSpan.FromSeconds(LuckyHelperModule.Session.SavedPathTime[savedPath]).ToString(format),
             ShowTypes.SinceStart => TimeSpan.FromSeconds(LuckyHelperModule.Session.TotalTime).ToString(format),
             ShowTypes.SinceLastCheckpoint => TimeSpan
-                .FromSeconds(LuckyHelperModule.Session.CurrentCheckpointTime[LuckyHelperModule.SaveData.PlayerLastCheckPoint])
+                .FromSeconds(LuckyHelperModule.Session.CurrentCheckpointTime[LuckyHelperModule.Session.PlayerLastCheckPoint])
                 .ToString(format),
             _ => throw new ArgumentOutOfRangeException()
         };

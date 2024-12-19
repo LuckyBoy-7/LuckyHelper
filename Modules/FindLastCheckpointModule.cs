@@ -23,6 +23,6 @@ public class FindLastCheckpointModule
     private static void CheckpointOnAdded(Checkpoint.orig_Added orig, Celeste.Checkpoint self, Scene scene)
     {
         orig(self, scene);
-        LuckyHelperModule.SaveData.PlayerLastCheckPoint = self.GetCheckpointName();
+        LuckyHelperModule.Session.PlayerLastCheckPoint = self.GetCheckpointName();
     }
 }
