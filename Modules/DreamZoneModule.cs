@@ -126,6 +126,12 @@ public class DreamZoneModule
         cursor.EmitCallvirt(getPressed);
         cursor.EmitBrfalse(outLabel);
 
+        // and touching with dream zone
+        cursor.EmitDelegate(
+            () => dreamZone != null
+        );
+        cursor.EmitBrfalse(outLabel);
+
         // this.dreamJump = true
         FieldInfo playerDreamJump = typeof(Player).GetField("dreamJump", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
         cursor.EmitLdarg0(); // this.
