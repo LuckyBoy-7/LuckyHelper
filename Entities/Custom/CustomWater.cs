@@ -2,6 +2,7 @@ using Celeste.Mod.Entities;
 using ExtendedVariants.Module;
 using ExtendedVariants.Variants;
 using LuckyHelper.Extensions;
+using LuckyHelper.Modules;
 using Microsoft.Xna.Framework.Graphics;
 using MonoMod.Utils;
 
@@ -24,14 +25,15 @@ public class CustomWater : Water
 
     public bool KillPlayer = false;
     public float KillPlayerDelay = 0;
-    private float killPlayerTimer = 0;
+    public float PlayerFlashTimeBeforeKilled;
+    public Color PlayerFlashColor;
 
     public bool PlayerLoseControl = true;
     public float PlayerGravity;
     public bool PlayerCanJump;
     public bool RefillExtraJump;
     public bool DisableRay = false;
-    
+
     // todo: gravity
 
     public CustomWater(EntityData data, Vector2 offset) : base(data, offset)
@@ -45,12 +47,14 @@ public class CustomWater : Water
         AccelerationMultiplierY = data.Float("accelerationMultiplierY");
         KillPlayer = data.Bool("killPlayer");
         KillPlayerDelay = data.Float("killPlayerDelay");
+        PlayerFlashTimeBeforeKilled = data.Float("playerFlashTimeBeforeKilled");
+        PlayerFlashColor = data.HexColor("playerFlashColor");
         PlayerLoseControl = data.Bool("playerLoseControl");
         PlayerGravity = data.Float("playerGravity");
         PlayerCanJump = data.Bool("playerCanJump");
         RefillExtraJump = data.Bool("refillExtraJump");
         DisableRay = data.Bool("disableRay");
-        
+
         // color
         color = data.HexColor("color");
         var dd = DynamicData.For(this);
@@ -88,11 +92,10 @@ public class CustomWater : Water
         Player player = CollideFirst<Player>();
         if (player != null)
         {
-            if (KillPlayer)
+            if (CustomWaterModule.KillPlayerElapse >= KillPlayerDelay)
             {
-                killPlayerTimer -= Engine.DeltaTime;
-                if (killPlayerTimer <= 0)
-                    player.Die(Vector2.Zero);
+                CustomWaterModule.KillPlayerElapse = 0;
+                player.Die(Vector2.Zero);
             }
 
             if (RefillExtraJump)
@@ -101,11 +104,6 @@ public class CustomWater : Water
                 ((JumpCount)jumpCount).RefillJumpBuffer();
                 // typeof(JumpCount).GetMethod("RefillJumpBuffer").Invoke(jumpCount, Type.EmptyTypes);
             }
-                
-        }
-        else
-        {
-            killPlayerTimer = KillPlayerDelay;
         }
     }
 
@@ -115,5 +113,17 @@ public class CustomWater : Water
         FillColor = color * 0.3f;
         base.Render();
         FillColor = preFillColor;
+        
+        Player player = CollideFirst<Player>();
+        if (player != null)
+        {
+            player.Sprite.Color = Color.Black ;
+            if (KillPlayerDelay - CustomWaterModule.KillPlayerElapse < PlayerFlashTimeBeforeKilled)
+            {
+                Logger.Warn("TEst", "awa");
+                // player.Sprite.Color = player.flash ? PlayerFlashColor : Color.White;
+                player.Sprite.Color = Color.Black ;
+            }
+        }
     }
 }

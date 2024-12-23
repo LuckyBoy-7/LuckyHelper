@@ -1,5 +1,6 @@
 using System.Reflection;
 using LuckyHelper.Entities;
+using LuckyHelper.Extensions;
 using LuckyHelper.Module;
 using Mono.Cecil;
 
@@ -9,6 +10,10 @@ public class CustomWaterModule
 {
     private static CustomWater customWater;
     private static bool isDebug = false;
+    public static float KillPlayerElapse = 0;
+
+    private static bool CanFlash => customWater != null && customWater.KillPlayer &&
+                                    customWater.KillPlayerDelay - KillPlayerElapse < customWater.PlayerFlashTimeBeforeKilled && customWater.GetEntity<Player>().flash;
 
     [Load]
     public static void Load()
@@ -17,12 +22,7 @@ public class CustomWaterModule
         On.Celeste.Player.Update += PlayerOnUpdate;
         IL.Celeste.Player.NormalUpdate += PlayerOnNormalUpdate;
         IL.Celeste.Player.SwimUpdate += PlayerOnSwimUpdate;
-    }
-
-    private static void PlayerOnUpdate(On.Celeste.Player.orig_Update orig, Player self)
-    {
-        customWater = self.CollideFirst<CustomWater>();
-        orig(self);
+        IL.Celeste.Player.Render += PlayerOnRender;
     }
 
 
@@ -32,6 +32,65 @@ public class CustomWaterModule
         On.Celeste.Player.Update -= PlayerOnUpdate;
         IL.Celeste.Player.NormalUpdate -= PlayerOnNormalUpdate;
         IL.Celeste.Player.SwimUpdate -= PlayerOnSwimUpdate;
+        IL.Celeste.Player.Render -= PlayerOnRender;
+    }
+
+    private static void PlayerOnRender(ILContext il)
+    {
+        ILCursor cursor = new ILCursor(il);
+
+        // if (this.IsTired YY this.flash)
+        MethodInfo isTiredMethod = typeof(Player).GetMethod("get_IsTired", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+        // 如果需要闪，则跳到改白色的那个位置
+        ILLabel outLabel = null;
+        if (!cursor.TryGotoNext(
+                ins => ins.MatchLdarg0(),
+                ins => ins.MatchCallvirt(isTiredMethod),
+                ins => ins.MatchBrfalse(out outLabel)
+            ))
+            return;
+        cursor.EmitDelegate(() => CanFlash);
+        cursor.EmitBrtrue(outLabel);
+
+        cursor.GotoLabel(outLabel);
+        // cursor.Index += 3;
+
+        // Logger.Warn("Test","Test");
+ 
+        // 这里刚好是白色，可以和我们这个颜色相乘(然后发现颜色不能相乘, 悲), 草, 然后发现加法和减法也没有(乐
+        // MethodInfo mul = typeof(Color).GetMethod("op_Multiply", new[] { typeof(Color), typeof(Color) });
+        // MethodInfo sub = typeof(Color).GetMethod("op_Subtraction", new[] { typeof(Color), typeof(Color) });
+        // MethodInfo add = typeof(Color).GetMethod("op_Addition", new[] { typeof(Color), typeof(Color) });
+        
+        
+        // 如果需要flash就把原来的白色减掉
+        // cursor.EmitDelegate(() => CanFlash ? Color.White : Color.Black);
+        // cursor.EmitCall(sub);
+        // // 如果需要flash就加上新的颜色
+        // cursor.EmitDelegate(() => CanFlash ? customWater.PlayerFlashColor : Color.Black);
+        // cursor.EmitCall(add);
+        cursor.Index += 3;
+        cursor.EmitPop();
+        // 如果需要flash就加上新的颜色
+        cursor.EmitDelegate(() => CanFlash ? customWater.PlayerFlashColor : Color.White);
+    }
+
+    private static void PlayerOnUpdate(On.Celeste.Player.orig_Update orig, Player self)
+    {
+        customWater = self.CollideFirst<CustomWater>();
+
+        if (customWater != null && customWater.KillPlayer)
+        {
+            KillPlayerElapse += Engine.DeltaTime;
+        }
+        else
+        {
+            KillPlayerElapse = 0;
+        }
+
+        orig(self);
+        self.Sprite.Color = Color.Black;
     }
 
     private static void HookSwimRise(ILCursor cursor)

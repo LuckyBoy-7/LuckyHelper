@@ -16,12 +16,28 @@ entity.placements = {
         accelerationMultiplierY = 1,
         killPlayer = false,
         killPlayerDelay = 0,
+        playerFlashTimeBeforeKilled = 2,
+        playerFlashColor = "50a4d4",
         playerLoseControl = false,
         playerGravity = 0,
         playerCanJump = false,
         refillExtraJump = false,
         disableRay = false,
     }
+}
+
+entity.fieldOrder = {
+    "x", "y", 
+    "width", "height",
+    "color", "disableRay", "hasBottom",
+    "maxSpeedMultiplierX", "maxSpeedMultiplierY",
+    "accelerationMultiplierX", "accelerationMultiplierY",
+    "playerFlashTimeBeforeKilled", "playerFlashColor",
+    "killPlayerDelay", "killPlayer",
+    "playerGravity", "",
+    "", "disableSurfaceJump",
+    "disableSwimRise", "playerLoseControl",
+    "playerCanJump", "refillExtraJump",
 }
 
 entity.fieldInformation = 
@@ -58,6 +74,9 @@ entity.fieldInformation =
     },
     disableRay = {
         fieldType = "boolean"
+    },
+    playerFlashColor = {
+        fieldType = "color"
     }
 }
 entity.borderColor = {30 / 255, 164 / 255, 231 / 255}

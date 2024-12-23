@@ -62,6 +62,7 @@ public class DreamZoneModule
 
     private static int PlayerOnDreamDashUpdate(On.Celeste.Player.orig_DreamDashUpdate orig, Player self)
     {
+        int state = orig(self);
         if (dreamZone != null && self.Tracker().GetEntities<Solid>().Any(solid => solid is not DreamZone && self.CollideCheck(solid)))
         {
             if (dreamZone.StopPlayerOnCollide)
@@ -77,7 +78,7 @@ public class DreamZoneModule
             }
         }
 
-        return orig(self);
+        return state;
     }
 
     private static void WigglePlayer(Player self)
