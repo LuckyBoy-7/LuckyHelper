@@ -14,7 +14,6 @@ public class GhostTranspose : Actor
     private GhostTransposeTrigger.TransposeDirTypes dirType;
     private float speed;
     private Vector2 dir;
-    private Player player;
     private LuckyTrailManager.Snapshot Snapshot;
     private float alpha;
     private Color color;
@@ -25,7 +24,6 @@ public class GhostTranspose : Actor
     {
         Depth = -1;
         // Depth = 1;
-        this.player = player;
         this.dirType = dirType;
         this.action = action;
         this.speed = speed;
@@ -42,10 +40,10 @@ public class GhostTranspose : Actor
             case GhostTransposeTrigger.TransposeDirTypes.TwoSides:
                 dir.X = Input.MoveX.Value;
                 if (dir.X == 0)
-                    dir.X = (int)this.player.Facing;
+                    dir.X = (int)player.Facing;
                 break;
             case GhostTransposeTrigger.TransposeDirTypes.EightSides:
-                dir = DynamicData.For(this.player).Get<Vector2>("lastAim");
+                dir = DynamicData.For(player).Get<Vector2>("lastAim");
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(dirType), dirType, null);
@@ -91,7 +89,7 @@ public class GhostTranspose : Actor
                     TrySpikeCollisionCheck();
                     break;
                 case GhostTransposeTrigger.GhostOutOfBoundsActions.KillPlayer:
-                    player?.Die(Vector2.Zero);
+                    this.GetEntity<Player>()?.Die(Vector2.Zero);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -101,8 +99,17 @@ public class GhostTranspose : Actor
         }
     }
 
+    public override void Removed(Scene scene)
+    {
+        base.Removed(scene);
+        Snapshot?.RemoveSelf();
+    }
+
     private void OnCollide()
     {
+        Player player = this.GetEntity<Player>();
+        if (player == null)
+            return;
         player.Position = Position;
         player.Speed = Vector2.Zero;
         Kill();
@@ -110,6 +117,7 @@ public class GhostTranspose : Actor
 
     private void TrySpikeCollisionCheck()
     {
+        Player player = this.GetEntity<Player>();
         if (player == null || !killPlayerOnTeleportToSpike)
             return;
         if (player.CollideCheck<Spikes>())
