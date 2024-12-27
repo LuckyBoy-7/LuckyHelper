@@ -13,7 +13,8 @@ public class CustomWaterModule
     public static float KillPlayerElapse = 0;
 
     private static bool CanFlash => customWater != null && customWater.KillPlayer &&
-                                    customWater.KillPlayerDelay - KillPlayerElapse < customWater.PlayerFlashTimeBeforeKilled && customWater.GetEntity<Player>().flash;
+                                    customWater.KillPlayerDelay - KillPlayerElapse < customWater.PlayerFlashTimeBeforeKilled &&
+                                    customWater.GetEntity<Player>().flash;
 
     [Load]
     public static void Load()
@@ -24,7 +25,6 @@ public class CustomWaterModule
         IL.Celeste.Player.SwimUpdate += PlayerOnSwimUpdate;
         IL.Celeste.Player.Render += PlayerOnRender;
     }
-
 
     [Unload]
     public static void Unload()
@@ -39,45 +39,69 @@ public class CustomWaterModule
     {
         ILCursor cursor = new ILCursor(il);
 
-        // if (this.IsTired YY this.flash)
+        // if (this.IsTired && this.flash)
         MethodInfo isTiredMethod = typeof(Player).GetMethod("get_IsTired", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
+        // CILCodeHelper.CILCodeLogger(cursor, 100);
         // 如果需要闪，则跳到改白色的那个位置
-        ILLabel outLabel = null;
+        // Logger.Warn("Test", "0");
         if (!cursor.TryGotoNext(
                 ins => ins.MatchLdarg0(),
-                ins => ins.MatchCallvirt(isTiredMethod),
+                ins => ins.MatchCallvirt(isTiredMethod)
+            ))
+            return;
+
+        cursor.EmitDelegate(() => CanFlash);
+        int idx = cursor.Index;
+
+        // Logger.Warn("Test", "2");
+        ILLabel outLabel = null;
+        if (!cursor.TryGotoNext(
                 ins => ins.MatchBrfalse(out outLabel)
             ))
             return;
-        cursor.EmitDelegate(() => CanFlash);
+        // Logger.Warn("Test", "3");
+        cursor.Index = idx;
         cursor.EmitBrtrue(outLabel);
-
-        cursor.GotoLabel(outLabel);
+        
+        if (!cursor.TryGotoNext(
+                ins => ins.MatchCall("Microsoft.Xna.Framework.Color", "get_White")
+            ))
+            return;
+        // Logger.Warn("Test", "4");
+        cursor.Index += 1;
+        cursor.EmitDelegate(delegate(Color color)
+        {
+            if (CanFlash)
+                return customWater.PlayerFlashColor;
+            return color;
+        });
+            
         // cursor.Index += 3;
 
         // Logger.Warn("Test","Test");
- 
+
         // 这里刚好是白色，可以和我们这个颜色相乘(然后发现颜色不能相乘, 悲), 草, 然后发现加法和减法也没有(乐
         // MethodInfo mul = typeof(Color).GetMethod("op_Multiply", new[] { typeof(Color), typeof(Color) });
         // MethodInfo sub = typeof(Color).GetMethod("op_Subtraction", new[] { typeof(Color), typeof(Color) });
         // MethodInfo add = typeof(Color).GetMethod("op_Addition", new[] { typeof(Color), typeof(Color) });
-        
-        
+
+
         // 如果需要flash就把原来的白色减掉
         // cursor.EmitDelegate(() => CanFlash ? Color.White : Color.Black);
         // cursor.EmitCall(sub);
         // // 如果需要flash就加上新的颜色
         // cursor.EmitDelegate(() => CanFlash ? customWater.PlayerFlashColor : Color.Black);
         // cursor.EmitCall(add);
-        cursor.Index += 3;
-        cursor.EmitPop();
-        // 如果需要flash就加上新的颜色
-        cursor.EmitDelegate(() => CanFlash ? customWater.PlayerFlashColor : Color.White);
+        // cursor.Index += 3;
+        // cursor.EmitPop();
+        // // 如果需要flash就加上新的颜色
+        // cursor.EmitDelegate(() => CanFlash ? customWater.PlayerFlashColor : Color.White);
     }
 
     private static void PlayerOnUpdate(On.Celeste.Player.orig_Update orig, Player self)
     {
+        Logger.Log("Test", "0");
         customWater = self.CollideFirst<CustomWater>();
 
         if (customWater != null && customWater.KillPlayer)
@@ -90,7 +114,7 @@ public class CustomWaterModule
         }
 
         orig(self);
-        self.Sprite.Color = Color.Black;
+        // self.Sprite.Color = Color.Black;
     }
 
     private static void HookSwimRise(ILCursor cursor)

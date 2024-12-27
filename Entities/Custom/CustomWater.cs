@@ -120,7 +120,7 @@ public class CustomWater : Water
             player.Sprite.Color = Color.Black ;
             if (KillPlayerDelay - CustomWaterModule.KillPlayerElapse < PlayerFlashTimeBeforeKilled)
             {
-                Logger.Warn("TEst", "awa");
+                // Logger.Warn("TEst", "awa");
                 // player.Sprite.Color = player.flash ? PlayerFlashColor : Color.White;
                 player.Sprite.Color = Color.Black ;
             }
