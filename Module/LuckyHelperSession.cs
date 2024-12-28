@@ -21,4 +21,8 @@ public class LuckyHelperSession : EverestModuleSession
     
     // checkpoint
     public string PlayerLastCheckPoint = "StartCheckpoint";
+
+    // custom water
+    public float KillPlayerElapse = 0;
+
 }

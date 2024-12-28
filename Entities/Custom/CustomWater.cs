@@ -2,6 +2,7 @@ using Celeste.Mod.Entities;
 using ExtendedVariants.Module;
 using ExtendedVariants.Variants;
 using LuckyHelper.Extensions;
+using LuckyHelper.Module;
 using LuckyHelper.Modules;
 using Microsoft.Xna.Framework.Graphics;
 using MonoMod.Utils;
@@ -92,9 +93,9 @@ public class CustomWater : Water
         Player player = CollideFirst<Player>();
         if (player != null)
         {
-            if (CustomWaterModule.KillPlayerElapse >= KillPlayerDelay)
+            if (LuckyHelperModule.Session.KillPlayerElapse >= KillPlayerDelay)
             {
-                CustomWaterModule.KillPlayerElapse = 0;
+                LuckyHelperModule.Session.KillPlayerElapse = 0;
                 player.Die(Vector2.Zero);
             }
 
@@ -118,7 +119,7 @@ public class CustomWater : Water
         if (player != null)
         {
             player.Sprite.Color = Color.Black ;
-            if (KillPlayerDelay - CustomWaterModule.KillPlayerElapse < PlayerFlashTimeBeforeKilled)
+            if (KillPlayerDelay - LuckyHelperModule.Session.KillPlayerElapse < PlayerFlashTimeBeforeKilled)
             {
                 // Logger.Warn("TEst", "awa");
                 // player.Sprite.Color = player.flash ? PlayerFlashColor : Color.White;

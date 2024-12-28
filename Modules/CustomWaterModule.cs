@@ -10,11 +10,10 @@ public class CustomWaterModule
 {
     private static CustomWater customWater;
     private static bool isDebug = false;
-    public static float KillPlayerElapse = 0;
 
     private static bool CanFlash => customWater != null && customWater.KillPlayer &&
-                                    customWater.KillPlayerDelay - KillPlayerElapse < customWater.PlayerFlashTimeBeforeKilled &&
-                                    customWater.GetEntity<Player>().flash;
+                                    customWater.KillPlayerDelay - LuckyHelperModule.Session.KillPlayerElapse < customWater.PlayerFlashTimeBeforeKilled &&
+                                    customWater.GetEntity<Player>() != null && customWater.GetEntity<Player>().flash;
 
     [Load]
     public static void Load()
@@ -63,20 +62,22 @@ public class CustomWaterModule
         // Logger.Warn("Test", "3");
         cursor.Index = idx;
         cursor.EmitBrtrue(outLabel);
-        
+
         if (!cursor.TryGotoNext(
                 ins => ins.MatchCall("Microsoft.Xna.Framework.Color", "get_White")
             ))
             return;
         // Logger.Warn("Test", "4");
         cursor.Index += 1;
-        cursor.EmitDelegate(delegate(Color color)
-        {
-            if (CanFlash)
-                return customWater.PlayerFlashColor;
-            return color;
-        });
-            
+        cursor.EmitDelegate(
+            delegate(Color color)
+            {
+                if (CanFlash)
+                    return customWater.PlayerFlashColor;
+                return color;
+            }
+        );
+
         // cursor.Index += 3;
 
         // Logger.Warn("Test","Test");
@@ -101,16 +102,16 @@ public class CustomWaterModule
 
     private static void PlayerOnUpdate(On.Celeste.Player.orig_Update orig, Player self)
     {
-        Logger.Log("Test", "0");
+        // Logger.Warn("Test", LuckyHelperModule.Session.KillPlayerElapse.ToString());
         customWater = self.CollideFirst<CustomWater>();
 
         if (customWater != null && customWater.KillPlayer)
         {
-            KillPlayerElapse += Engine.DeltaTime;
+            LuckyHelperModule.Session.KillPlayerElapse += Engine.DeltaTime;
         }
         else
         {
-            KillPlayerElapse = 0;
+            LuckyHelperModule.Session.KillPlayerElapse = 0;
         }
 
         orig(self);

@@ -9,7 +9,7 @@ public static class EntityExtensions
 
     public static Tracker Tracker(this Entity entity)
     {
-        return entity.Scene.Tracker;
+        return entity.Scene?.Tracker;
     }
 
     public static Level Level(this Entity entity)
@@ -19,12 +19,12 @@ public static class EntityExtensions
 
     public static T GetEntity<T>(this Entity entity) where T : Entity
     {
-        return entity.Tracker().GetEntity<T>();
+        return entity.Tracker()?.GetEntity<T>();
     }
 
     public static List<Entity> GetEntities<T>(this Entity entity) where T : Entity
     {
-        return entity.Tracker().GetEntities<T>();
+        return entity.Tracker()?.GetEntities<T>();
     }
 
     public static string CurrentRoomName(this Entity entity)
