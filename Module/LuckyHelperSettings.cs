@@ -9,7 +9,7 @@ public class LuckyHelperSettings : EverestModuleSettings
     [SettingIgnore]
     public bool IsDebugging { get; set; } = true;
     public bool EnableAutoCB { get; set; }
-    public bool EnableFallingBlockBlockFloatySpaceBlock { get; set; }
+    // public bool EnableFallingBlockBlockFloatySpaceBlock { get; set; }
     public bool EnablePlayerFallingThroughJumpThru { get; set; }
 
     [DefaultButtonBinding(Buttons.A, Keys.Enter)]

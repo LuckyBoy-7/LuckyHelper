@@ -24,19 +24,8 @@ public class GhostTransposeModule
     {
         On.Celeste.Player.Update += PlayerOnUpdate;
         On.Celeste.Level.LoadLevel += LevelOnLoadLevel;
-        On.Celeste.Player.Render += PlayerOnRender;
         // var data = DynamicData.For(typeof(Player));
         // data.Set("EnableGhostTranspose", false);
-    }
-
-    private static void PlayerOnRender(Player.orig_Render orig, Celeste.Player self)
-    {
-        // Vector2 origPos = self.Position;
-        // self.Position += Vector2.UnitX * 10;
-        // self.Hair.AfterUpdate();
-        // orig(self);
-        // self.Position = origPos;
-        orig(self);
     }
 
 
@@ -45,7 +34,6 @@ public class GhostTransposeModule
     {
         On.Celeste.Player.Update -= PlayerOnUpdate;
         On.Celeste.Level.LoadLevel -= LevelOnLoadLevel;
-        On.Celeste.Player.Render -= PlayerOnRender;
     }
 
 

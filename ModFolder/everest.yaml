@@ -3,6 +3,6 @@
   DLL: LuckyHelper.dll
   Dependencies:
     - Name: Everest
-      Version: 1.4986.0
+      Version: 1.5034.0
     - Name: ExtendedVariantMode
       Version: 0.39.2
