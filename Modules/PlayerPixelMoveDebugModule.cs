@@ -31,7 +31,6 @@ public class PlayerPixelMoveDebugModule
                 self.Position += new Vector2(0, -1);
             if (MInput.Keyboard.Pressed(Keys.Down))
                 self.Position += new Vector2(0, 1);
-            
         }
     }
 

@@ -7,6 +7,8 @@ public class LuckyHelperSession : EverestModuleSession
     // misc
     public Dictionary<string, int> RoomIdToPassByRefillDahes = new();
 
+    // Falling Block blocks Floaty Space Block
+    public  bool  EnableFallingBlockBlocksFloatySpaceBlock = false;
     // deathCount
     public int TotalDeathCount = 0;
     public DefaultDict<string, int> CurrentRoomDeathCount = new(() => 0);

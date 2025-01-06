@@ -1,5 +1,3 @@
-modoptions_LuckyHelper_enableautocb=Enable Auto CB(wip)
-modoptions_LuckyHelper_EnableFallingBlockBlockFloatySpaceBlock=EnableFallingBlockBlockFloatySpaceBlock
 modoptions_LuckyHelper_title=LuckyHelper's Mod Settings
 
 Lucky_boy_0=Lucky

@@ -18,6 +18,6 @@ class SetFallingBlockBlockFloatySpaceBlockTrigger : Trigger
     public override void OnEnter(Player player)
     {
         base.OnEnter(player);
-        FallingBlockBlockFloatySpaceBlockModule.Active = enable;
+        LuckyHelperModule.Session.EnableFallingBlockBlocksFloatySpaceBlock = enable;
     }
 }

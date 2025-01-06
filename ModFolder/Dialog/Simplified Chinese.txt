@@ -1,16 +1,1 @@
-modoptions_LuckyHelper_enableautocb=开启自动cb（鸽了）
-modoptions_LuckyHelper_EnableFallingBlockBlockFloatySpaceBlock=开启掉落块阻塞月亮块
 modoptions_LuckyHelper_title=Lucky的Mod设置
-
-
-TESTDIALOG_HELLO=
-    [MADELINE left normal]
-    拥有 flag
-
-TESTDIALOG_HELLO_NOFLAG=
-    [MADELINE left normal]
-    没有 flag
-    TESTDIALOG_FLY
-TESTDIALOG_FLY=
-    [MADELINE left normal]
-    FLYYYYYY
