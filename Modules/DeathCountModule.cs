@@ -21,14 +21,14 @@ public class DeathCountModule
     private static PlayerDeadBody PlayerOnDie(On.Celeste.Player.orig_Die orig, Celeste.Player self, Vector2 direction, bool evenifinvincible,
         bool registerdeathinstats)
     {
-        LuckyHelperModule.Session.CurrentCheckpointDeathCount[LuckyHelperModule.Session.PlayerLastCheckPoint] += 1;
-        LuckyHelperModule.Session.CurrentRoomDeathCount[self.CurrentRoomName()] += 1;
+        LuckyHelperModule.Session.CurrentCheckpointDeathCount.AddInt(LuckyHelperModule.Session.PlayerLastCheckPoint, 1);
+        LuckyHelperModule.Session.CurrentRoomDeathCount.AddInt(self.CurrentRoomName(), 1);
         LuckyHelperModule.Session.TotalDeathCount += 1;
 
         DeathCountSavedIn savedPath = self.GetEntity<DeathCountSavedIn>();
         if (savedPath != null)
         {
-            LuckyHelperModule.Session.SavedPathDeathCount[savedPath.SavedIn] += 1;
+            LuckyHelperModule.Session.SavedPathDeathCount.AddInt(savedPath.SavedIn, 1);
         }
 
         return orig(self, direction, evenifinvincible, registerdeathinstats);

@@ -1,5 +1,3 @@
-using Lucky.Kits.Collections;
-
 namespace LuckyHelper.Module;
 
 public class LuckyHelperSession : EverestModuleSession
@@ -8,19 +6,20 @@ public class LuckyHelperSession : EverestModuleSession
     public Dictionary<string, int> RoomIdToPassByRefillDahes = new();
 
     // Falling Block blocks Floaty Space Block
-    public  bool  EnableFallingBlockBlocksFloatySpaceBlock = false;
+    public bool EnableFallingBlockBlocksFloatySpaceBlock = false;
+
     // deathCount
     public int TotalDeathCount = 0;
-    public DefaultDict<string, int> CurrentRoomDeathCount = new(() => 0);
-    public DefaultDict<string, int> SavedPathDeathCount = new(() => 0);
-    public DefaultDict<string, int> CurrentCheckpointDeathCount = new(() => 0);
-    
+    public Dictionary<string, int> CurrentRoomDeathCount = new();
+    public Dictionary<string, int> SavedPathDeathCount = new();
+    public Dictionary<string, int> CurrentCheckpointDeathCount = new();
+
     // timer
     public float TotalTime = 0;
-    public DefaultDict<string, float> CurrentRoomTime = new(() => 0);
-    public DefaultDict<string, float> SavedPathTime = new(() => 0);
-    public DefaultDict<string, float> CurrentCheckpointTime = new(() => 0);
-    
+    public Dictionary<string, float> CurrentRoomTime = new();
+    public Dictionary<string, float> SavedPathTime = new();
+    public Dictionary<string, float> CurrentCheckpointTime = new();
+
     // checkpoint
     public string PlayerLastCheckPoint = "StartCheckpoint";
 

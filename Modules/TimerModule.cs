@@ -22,14 +22,14 @@ public class TimerModule
 
     private static void PlayerOnUpdate(Player.orig_Update orig, Celeste.Player self)
     {
-        LuckyHelperModule.Session.CurrentCheckpointTime[LuckyHelperModule.Session.PlayerLastCheckPoint] += Engine.DeltaTime;
-        LuckyHelperModule.Session.CurrentRoomTime[self.CurrentRoomName()] += Engine.DeltaTime;
+        LuckyHelperModule.Session.CurrentCheckpointTime.AddFloat(LuckyHelperModule.Session.PlayerLastCheckPoint, Engine.DeltaTime);
+        LuckyHelperModule.Session.CurrentRoomTime.AddFloat(self.CurrentRoomName(), Engine.DeltaTime);
         LuckyHelperModule.Session.TotalTime += Engine.DeltaTime;
 
         TimeSavedIn savedPath = self.GetEntity<TimeSavedIn>();
         if (savedPath != null)
         {
-            LuckyHelperModule.Session.SavedPathTime[savedPath.SavedIn] += Engine.DeltaTime;
+            LuckyHelperModule.Session.SavedPathTime.AddFloat(savedPath.SavedIn, Engine.DeltaTime);
         }
 
         orig(self);

@@ -22,11 +22,11 @@ public class TimerText : ShowDataText
     {
         return showType switch
         {
-            ShowTypes.CurrentRoom => TimeSpan.FromSeconds(LuckyHelperModule.Session.CurrentRoomTime[currentRoom]).ToString(format),
-            ShowTypes.FromSavedPath => TimeSpan.FromSeconds(LuckyHelperModule.Session.SavedPathTime[savedPath]).ToString(format),
+            ShowTypes.CurrentRoom => TimeSpan.FromSeconds(LuckyHelperModule.Session.CurrentRoomTime.GetFloat(currentRoom)).ToString(format),
+            ShowTypes.FromSavedPath => TimeSpan.FromSeconds(LuckyHelperModule.Session.SavedPathTime.GetFloat(savedPath)).ToString(format),
             ShowTypes.SinceStart => TimeSpan.FromSeconds(LuckyHelperModule.Session.TotalTime).ToString(format),
             ShowTypes.SinceLastCheckpoint => TimeSpan
-                .FromSeconds(LuckyHelperModule.Session.CurrentCheckpointTime[LuckyHelperModule.Session.PlayerLastCheckPoint])
+                .FromSeconds(LuckyHelperModule.Session.CurrentCheckpointTime.GetFloat(LuckyHelperModule.Session.PlayerLastCheckPoint))
                 .ToString(format),
             _ => throw new ArgumentOutOfRangeException()
         };

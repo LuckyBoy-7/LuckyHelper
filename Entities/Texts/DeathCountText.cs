@@ -19,10 +19,10 @@ public class DeathCountText : ShowDataText
     {
         return showType switch
         {
-            ShowTypes.CurrentRoom => LuckyHelperModule.Session.CurrentRoomDeathCount[currentRoom].ToString(),
+            ShowTypes.CurrentRoom => LuckyHelperModule.Session.CurrentRoomDeathCount.GetInt(currentRoom).ToString(),
             ShowTypes.SinceStart => LuckyHelperModule.Session.TotalDeathCount.ToString(),
-            ShowTypes.FromSavedPath => LuckyHelperModule.Session.SavedPathDeathCount[savedPath].ToString(),
-            ShowTypes.SinceLastCheckpoint => LuckyHelperModule.Session.SavedPathDeathCount[LuckyHelperModule.Session.PlayerLastCheckPoint].ToString(),
+            ShowTypes.FromSavedPath => LuckyHelperModule.Session.SavedPathDeathCount.GetInt(savedPath).ToString(),
+            ShowTypes.SinceLastCheckpoint => LuckyHelperModule.Session.SavedPathDeathCount.GetInt(LuckyHelperModule.Session.PlayerLastCheckPoint).ToString(),
             _ => throw new ArgumentOutOfRangeException()
         };
     }
