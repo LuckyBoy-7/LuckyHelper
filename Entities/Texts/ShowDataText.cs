@@ -38,7 +38,6 @@ public abstract class ShowDataText : LuckyText
     protected string savedPath;
     protected bool remainCurrentValue;
     protected string remainedContent = "-1";
-    protected string readDataFrom;
 
     public ShowDataText(EntityData data, Vector2 offset) : base(data, offset)
     {

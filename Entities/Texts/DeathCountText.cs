@@ -22,7 +22,7 @@ public class DeathCountText : ShowDataText
             ShowTypes.CurrentRoom => LuckyHelperModule.Session.CurrentRoomDeathCount.GetInt(currentRoom).ToString(),
             ShowTypes.SinceStart => LuckyHelperModule.Session.TotalDeathCount.ToString(),
             ShowTypes.FromSavedPath => LuckyHelperModule.Session.SavedPathDeathCount.GetInt(savedPath).ToString(),
-            ShowTypes.SinceLastCheckpoint => LuckyHelperModule.Session.SavedPathDeathCount.GetInt(LuckyHelperModule.Session.PlayerLastCheckPoint).ToString(),
+            ShowTypes.SinceLastCheckpoint => LuckyHelperModule.Session.CurrentCheckpointDeathCount.GetInt(LuckyHelperModule.Session.PlayerLastCheckPoint).ToString(),
             _ => throw new ArgumentOutOfRangeException()
         };
     }

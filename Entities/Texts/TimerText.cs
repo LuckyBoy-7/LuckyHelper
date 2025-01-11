@@ -31,6 +31,4 @@ public class TimerText : ShowDataText
             _ => throw new ArgumentOutOfRangeException()
         };
     }
-
-
 }
