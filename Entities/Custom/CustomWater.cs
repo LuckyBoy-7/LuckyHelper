@@ -93,7 +93,7 @@ public class CustomWater : Water
         Player player = CollideFirst<Player>();
         if (player != null)
         {
-            if (LuckyHelperModule.Session.KillPlayerElapse >= KillPlayerDelay)
+            if (KillPlayer && LuckyHelperModule.Session.KillPlayerElapse >= KillPlayerDelay)
             {
                 LuckyHelperModule.Session.KillPlayerElapse = 0;
                 player.Die(Vector2.Zero);
@@ -114,16 +114,16 @@ public class CustomWater : Water
         FillColor = color * 0.3f;
         base.Render();
         FillColor = preFillColor;
-        
+
         Player player = CollideFirst<Player>();
         if (player != null)
         {
-            player.Sprite.Color = Color.Black ;
+            player.Sprite.Color = Color.Black;
             if (KillPlayerDelay - LuckyHelperModule.Session.KillPlayerElapse < PlayerFlashTimeBeforeKilled)
             {
                 // Logger.Warn("TEst", "awa");
                 // player.Sprite.Color = player.flash ? PlayerFlashColor : Color.White;
-                player.Sprite.Color = Color.Black ;
+                player.Sprite.Color = Color.Black;
             }
         }
     }
