@@ -29,7 +29,12 @@ gondola.placements = {
             topTexturePath = "objects/gondola/top",
             
             startPositionType = "CloseToPlayer",
-            positionFlag = "GondolaPositionOnStartFlag"
+            positionFlag = "GondolaPositionOnStartFlag",
+
+            moveToStartFlag = "moveToStartFlag",
+            moveToEndFlag = "moveToEndFlag",
+            smoothFlagMove = true,
+            disableInteractOnFlagMove = false,
         }
     }
 }
@@ -41,7 +46,9 @@ gondola.fieldOrder = {
     "startPositionOffsetX", "endPositionOffsetX", 
     "rotationSpeed", "accelerationDuration", 
     "moveDuration", "addCeiling", "canInteractOnMove", 
-    "startPositionType", "positionFlag"
+    "startPositionType", "positionFlag",
+    "moveToStartFlag", "moveToEndFlag",
+    "smoothFlagMove", "disableInteractOnFlagMove",
 }
 gondola.fieldInformation = {
     autoAlignToStartPosition = {

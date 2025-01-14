@@ -33,6 +33,9 @@ entities.LuckyHelper/CustomGondola.attributes.description.rotationSpeed=Rotation
 entities.LuckyHelper/CustomGondola.attributes.description.accelerationDuration=how much time gondola takes to start off or slow down
 entities.LuckyHelper/CustomGondola.attributes.description.moveDuration=how much time gondola takes to move within the center segment
 entities.LuckyHelper/CustomGondola.attributes.description.positionFlag=If have this flag and 'startPositionType' is 'ByFlag', gondola will be placed at start, otherwise the end
+entities.LuckyHelper/CustomGondola.attributes.description.moveToStartFlag=If detect this flag(oneshot), gondola will be placed or moved to start
+entities.LuckyHelper/CustomGondola.attributes.description.moveToEndFlag=If detect this flag(oneshot), gondola will be placed or moved to end
+entities.LuckyHelper/CustomGondola.attributes.description.smoothFlagMove=Whether the gondola will teleport or move to the target pos when flag is triggered
 
 # ArbitraryShapeConquestArea
 entities.LuckyHelper/ArbitraryShapeConquestArea.placements.name.normal=Arbitrary Shape Conquest Area
