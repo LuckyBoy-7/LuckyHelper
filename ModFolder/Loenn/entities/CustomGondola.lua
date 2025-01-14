@@ -28,14 +28,20 @@ gondola.placements = {
             cliffsideRightTexturePath = "objects/gondola/cliffsideRight",
             topTexturePath = "objects/gondola/top",
             
-            startPositionType = "CloseToPlayer"
+            startPositionType = "CloseToPlayer",
+            positionFlag = "GondolaPositionOnStartFlag"
         }
     }
 }
 gondola.fieldOrder = {
-    "x", "y", "frontTexturePath", "leverTexturePath", "backTexturePath", "topTexturePath", "cliffsideLeftTexturePath", "cliffsideRightTexturePath",
-    "startPositionOffsetX", "endPositionOffsetX", "rotationSpeed", "accelerationDuration", "moveDuration",
-    "addCeiling", "canInteractOnMove", "startPositionType"
+    "x", "y", 
+    "frontTexturePath", "leverTexturePath", 
+    "backTexturePath", "topTexturePath", 
+    "cliffsideLeftTexturePath", "cliffsideRightTexturePath",
+    "startPositionOffsetX", "endPositionOffsetX", 
+    "rotationSpeed", "accelerationDuration", 
+    "moveDuration", "addCeiling", "canInteractOnMove", 
+    "startPositionType", "positionFlag"
 }
 gondola.fieldInformation = {
     autoAlignToStartPosition = {
@@ -60,7 +66,8 @@ gondola.fieldInformation = {
         options = {
             "Start",
             "End",
-            "CloseToPlayer"
+            "CloseToPlayer",
+            "ByFlag"
         },
         editable = false
     }

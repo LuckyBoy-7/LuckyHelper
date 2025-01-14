@@ -1,5 +1,6 @@
 using System.Collections;
 using Celeste.Mod.Entities;
+using LuckyHelper.Extensions;
 using MonoMod.Utils;
 
 namespace LuckyHelper.Entities;
@@ -39,7 +40,6 @@ public class CustomGondola : Gondola
     private StateTypes state = StateTypes.Idle;
     private StateTypes preMoveState = StateTypes.MoveToStart;
 
-
     private SoundSource moveLoopSfx;
     private SoundSource startOffSoundSource;
 
@@ -66,40 +66,34 @@ public class CustomGondola : Gondola
     private float accelerationDuration = 2; // 起步和减速的时间
     private float moveDuration = 6; // 中间段的移动时间, 因为加速是匀加速的所所以位移曲线是个等腰梯形, 面积为(accelerationDuration + moveDuration) * curSpeed = dist
 
-    // private string frontTexturePath = "LuckyHelper/objects/gondola/front";
-    // private string leverTexturePath = "LuckyHelper/objects/gondola/lever";
-    // private string backTexturePath = "LuckyHelper/objects/gondola/back";
-    // private string cliffsideLeftTexturePath = "LuckyHelper/objects/gondola/cliffsideLeft";
-    // private string cliffsideRightTexturePath = "LuckyHelper/objects/gondola/cliffsideRight";
-    // private string topTexturePath = "LuckyHelper/objects/gondola/top";
-    private string frontTexturePath = "objects/gondola/front";
-    private string leverTexturePath = "objects/gondola/lever";
-    private string backTexturePath = "objects/gondola/back";
-    private string cliffsideLeftTexturePath = "objects/gondola/cliffsideLeft";
-    private string cliffsideRightTexturePath = "objects/gondola/cliffsideRight";
-    private string topTexturePath = "objects/gondola/top";
-
-
-    DynamicData dd;
+    private string frontTexturePath = "LuckyHelper/objects/gondola/front";
+    private string leverTexturePath = "LuckyHelper/objects/gondola/lever";
+    private string backTexturePath = "LuckyHelper/objects/gondola/back";
+    private string cliffsideLeftTexturePath = "LuckyHelper/objects/gondola/cliffsideLeft";
+    private string cliffsideRightTexturePath = "LuckyHelper/objects/gondola/cliffsideRight";
+    private string topTexturePath = "LuckyHelper/objects/gondola/top";
 
     public enum StartPositionTypes
     {
         Start,
         End,
-        CloseToPlayer
+        CloseToPlayer,
+        ByFlag
     }
 
     private StartPositionTypes startPositionType;
+    private string positionFlag;
 
     public CustomGondola(EntityData data, Vector2 offset) : base(data, offset)
     {
-        dd = DynamicData.For(this);
         canInteractOnMove = data.Bool("canInteractOnMove");
         addCeiling = data.Bool("addCeiling");
         startPositionOffsetX = data.Int("startPositionOffsetX");
         endPositionOffsetX = data.Int("endPositionOffsetX");
         rotationSpeed = data.Float("rotationSpeed");
         accelerationDuration = data.Float("accelerationDuration");
+        if (accelerationDuration == 0)
+            accelerationDuration = 0.0001f;
         moveDuration = data.Float("moveDuration");
 
         frontTexturePath = data.Attr("frontTexturePath");
@@ -110,6 +104,7 @@ public class CustomGondola : Gondola
         topTexturePath = data.Attr("topTexturePath");
 
         startPositionType = data.Enum<StartPositionTypes>("startPositionType");
+        positionFlag = data.Attr("positionFlag");
 
 
         start = Position;
@@ -173,7 +168,7 @@ public class CustomGondola : Gondola
                 preMoveState = StateTypes.MoveToEnd;
                 break;
             case StartPositionTypes.CloseToPlayer:
-                Logger.Log(LogLevel.Warn, "Test", "123123");
+                // Logger.Log(LogLevel.Warn, "Test", "123123");
                 Vector2 pos = Scene.Tracker.GetEntity<Player>().Position;
                 if (Vector2.Distance(end, pos) < Vector2.Distance(start, pos))
                 {
@@ -187,85 +182,38 @@ public class CustomGondola : Gondola
                 }
 
                 break;
+            case StartPositionTypes.ByFlag:
+                if (this.Session().GetFlag(positionFlag))
+                {
+                    Position = RealStart;
+                    preMoveState = StateTypes.MoveToStart;
+                }
+                else
+                {
+                    Position = RealEnd;
+                    preMoveState = StateTypes.MoveToEnd;
+                }
+
+                break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        // if (autoAlignToGoundPositionOfPlayer)
-        // {
-        //     Position = start;
-        //     Player player = Scene.Tracker.GetEntity<Player>();
-        //     Logger.Log(LogLevel.Warn, "Test", (player == null).ToString());
-        //     bool hit = false;
-        //     int hitY = -1;
-        //     for (int i = 1; i < 200; i++)
-        //     {
-        //         if (player.CollideCheck<Solid>(player.Position + Vector2.UnitY * i))
-        //         {
-        //             hit = true;
-        //             hitY = (int)player.Position.Y + i - 1;
-        //             break;
-        //         }
-        //     }
-        //
-        //     if (!hit)
-        //     {
-        //         Position = RealStart;
-        //     }
-        //     else
-        //     {
-        //         curDir = (end - start).SafeNormalize();
-        //         if (Single.Sign(Position.Y - hitY) == Single.Sign(curDir.Y))
-        //             curDir *= -1;
-        //
-        //         while (hitY != Position.Y)
-        //         {
-        //             CustomMoveH(curDir.X * Engine.DeltaTime, false);
-        //             CustomMoveV(curDir.Y * Engine.DeltaTime, false);
-        //         }
-        //
-        //         _realStart = Position;
-        //
-        //         preMoveState = Vector2.Distance(end, Position) < Vector2.Distance(start, Position) ? StateTypes.MoveToEnd : StateTypes.MoveToStart;
-        //     }
-        // }
-        // else if (autoAlignToStartPosition)
-        // {
-        //     Position = start;
-        //     curDir = (end - start).SafeNormalize();
-        //     while (LeftCliffside.Y != Position.Y)
-        //     {
-        //         CustomMoveH(curDir.X * Engine.DeltaTime, false);
-        //         CustomMoveV(curDir.Y * Engine.DeltaTime, false);
-        //     }
-        //
-        //     _realStart = Position;
-        // }
-        // else
-        // {
-        //     Position = RealStart;
-        // }
 
         if (addCeiling)
         {
             ceiling.Position = Position + new Vector2(0, -CeilingOffsetY);
-            DynamicData thisData = DynamicData.For(this);
-            DynamicData otherData = DynamicData.For(ceiling);
-            otherData.Set("movementCounter", thisData.Get<Vector2>("movementCounter"));
+            ceiling.movementCounter = movementCounter;
         }
 
 
         // back
-        Entity back = dd.Get<Entity>("back");
         back.Position = Position;
-        Image backImage = dd.Get<Image>("backImg");
-        backImage.Texture = GFX.Game[backTexturePath];
+        backImg.Texture = GFX.Game[backTexturePath];
 
         // top
-        Image top = dd.Get<Image>("top");
         top.Texture = GFX.Game[topTexturePath];
 
         // front
-        Sprite front = dd.Get<Sprite>("front");
         front.Reset(GFX.Game, frontTexturePath);
         front.Add("idle", "", 0);
         front.Play("idle");
@@ -302,23 +250,7 @@ public class CustomGondola : Gondola
             startOffSoundSource.Stop();
         }
 
-        if (Vector2.Distance(TargetPos, Position) < 5)
-        {
-            lockInteractable = true;
-            curSpeed = 0;
-            if (coroutine != null)
-                coroutine.Cancel();
-            Vector2 dir = (TargetPos - Position).SafeNormalize();
-            CustomMoveH(dir.X);
-            CustomMoveV(dir.Y);
-            if (TargetPos == Position)
-            {
-                lockInteractable = false;
-                state = StateTypes.Idle;
-            }
-        }
-
-        dd.Invoke("UpdatePositions");
+        UpdatePositions();
     }
 
     private void ChangeState()
@@ -375,10 +307,11 @@ public class CustomGondola : Gondola
         float t = curSpeed / a;
         while (elapse != t)
         {
+            float preElapse = elapse;
             elapse = Calc.Approach(elapse, t, Engine.DeltaTime);
             curSpeed = (1 - (elapse / t)) * startSpeed;
-            CustomMoveH((curSpeed * curDir).X * Engine.DeltaTime);
-            CustomMoveV((curSpeed * curDir).Y * Engine.DeltaTime);
+            CustomMoveH((curSpeed * curDir).X * (elapse - preElapse));
+            CustomMoveV((curSpeed * curDir).Y * (elapse - preElapse));
 
             yield return null;
         }
@@ -399,10 +332,11 @@ public class CustomGondola : Gondola
             float elapse = 0;
             while (elapse != t)
             {
+                float preElapse = elapse;
                 elapse = Calc.Approach(elapse, t, Engine.DeltaTime);
                 curSpeed = (elapse / t) * curMaxSpeed;
-                CustomMoveH((curSpeed * curDir).X * Engine.DeltaTime);
-                CustomMoveV((curSpeed * curDir).Y * Engine.DeltaTime);
+                CustomMoveH((curSpeed * curDir).X * (elapse - preElapse));
+                CustomMoveV((curSpeed * curDir).Y * (elapse - preElapse));
 
                 yield return null;
             }
@@ -410,10 +344,11 @@ public class CustomGondola : Gondola
             elapse = 0;
             while (elapse != t)
             {
+                float preElapse = elapse;
                 elapse = Calc.Approach(elapse, t, Engine.DeltaTime);
                 curSpeed = (1 - elapse / t) * curMaxSpeed;
-                CustomMoveH((curSpeed * curDir).X * Engine.DeltaTime);
-                CustomMoveV((curSpeed * curDir).Y * Engine.DeltaTime);
+                CustomMoveH((curSpeed * curDir).X * (elapse - preElapse));
+                CustomMoveV((curSpeed * curDir).Y * (elapse - preElapse));
 
                 yield return null;
             }
@@ -423,10 +358,11 @@ public class CustomGondola : Gondola
             float elapse = 0;
             while (elapse != accelerationDuration)
             {
+                float preElapse = elapse;
                 elapse = Calc.Approach(elapse, accelerationDuration, Engine.DeltaTime);
                 curSpeed = (elapse / accelerationDuration) * maxSpeed;
-                CustomMoveH((curSpeed * curDir).X * Engine.DeltaTime);
-                CustomMoveV((curSpeed * curDir).Y * Engine.DeltaTime);
+                CustomMoveH((curSpeed * curDir).X * (elapse - preElapse));
+                CustomMoveV((curSpeed * curDir).Y * (elapse - preElapse));
 
                 yield return null;
             }
@@ -435,10 +371,11 @@ public class CustomGondola : Gondola
             elapse = 0;
             while (elapse != moveDuration)
             {
+                float preElapse = elapse;
                 elapse = Calc.Approach(elapse, moveDuration, Engine.DeltaTime);
                 curSpeed = maxSpeed;
-                CustomMoveH((curSpeed * curDir).X * Engine.DeltaTime);
-                CustomMoveV((curSpeed * curDir).Y * Engine.DeltaTime);
+                CustomMoveH((curSpeed * curDir).X * (elapse - preElapse));
+                CustomMoveV((curSpeed * curDir).Y * (elapse - preElapse));
 
                 yield return null;
             }
@@ -446,10 +383,11 @@ public class CustomGondola : Gondola
             elapse = 0;
             while (elapse != accelerationDuration)
             {
+                float preElapse = elapse;
                 elapse = Calc.Approach(elapse, accelerationDuration, Engine.DeltaTime);
                 curSpeed = (1 - elapse / accelerationDuration) * maxSpeed;
-                CustomMoveH((curSpeed * curDir).X * Engine.DeltaTime);
-                CustomMoveV((curSpeed * curDir).Y * Engine.DeltaTime);
+                CustomMoveH((curSpeed * curDir).X * (elapse - preElapse));
+                CustomMoveV((curSpeed * curDir).Y * (elapse - preElapse));
 
                 yield return null;
             }
@@ -471,18 +409,26 @@ public class CustomGondola : Gondola
         // Draw.Rect(LeftCliffside.Position, 10, 10, Color.Green);
     }
 
+
     private void CustomMoveH(float value, bool moveCeiling = true)
     {
-        MoveH(value);
         // Logger.Log(LogLevel.Warn, "Test", "123");
+        MoveH(value);
         if (moveCeiling)
             ceiling?.MoveH(value);
     }
 
     private void CustomMoveV(float value, bool moveCeiling = true)
     {
-        MoveV(value);
-        if (moveCeiling)
-            ceiling?.MoveV(value);
+        const float gap = 24;
+        while (value != 0)
+        {
+            float cur = Math.Min(gap, value);
+            value -= cur;
+
+            if (moveCeiling)
+                ceiling?.MoveV(cur);
+            MoveV(cur);
+        }
     }
 }
