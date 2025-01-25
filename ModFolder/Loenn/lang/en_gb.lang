@@ -103,3 +103,6 @@ triggers.LuckyHelper/DeathCountSavedIn.attributes.description.savedIn=Each death
 # TimeSavedIn
 triggers.LuckyHelper/TimeSavedIn.placements.name.normal=Time Saved In
 triggers.LuckyHelper/TimeSavedIn.attributes.description.savedIn=Time in this room will be counted to the path, then you can read it by TimerText later
+
+# FreezeTrigger
+triggers.LuckyHelper/FreezeTrigger.placements.name.normal=FreezeTrigger

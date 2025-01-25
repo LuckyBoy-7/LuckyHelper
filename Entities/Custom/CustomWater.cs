@@ -9,6 +9,7 @@ using MonoMod.Utils;
 
 namespace LuckyHelper.Entities;
 
+
 [CustomEntity("LuckyHelper/CustomWater")]
 [TrackedAs(typeof(Water))]
 [Tracked]
