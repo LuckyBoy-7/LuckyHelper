@@ -83,7 +83,7 @@ public class CustomGondola : Gondola
 
     private StartPositionTypes startPositionType;
     private string positionFlag;
-    
+
     private string moveToStartFlag = "GondolaMoveToStartFlag";
     private string moveToEndFlag = "GondolaMoveToEndFlag";
     private bool smoothFlagMove;
@@ -110,7 +110,7 @@ public class CustomGondola : Gondola
 
         startPositionType = data.Enum<StartPositionTypes>("startPositionType");
         positionFlag = data.Attr("positionFlag");
-        
+
         moveToStartFlag = data.Attr("moveToStartFlag");
         moveToEndFlag = data.Attr("moveToEndFlag");
         smoothFlagMove = data.Bool("smoothFlagMove");
@@ -150,9 +150,10 @@ public class CustomGondola : Gondola
         LeftCliffside.Position = start;
         RightCliffside.Position = end;
 
-        // 对齐到缆车真正的位置
+        // 对齐到缆车绳索真正的位置
         start += new Vector2(34, -6) - new Vector2(0, -52);
         end += new Vector2(-35, 0) - new Vector2(0, -52);
+
 
         startToEndDir = (end - start).SafeNormalize();
         if (startToEndDir.X == 0)
@@ -213,6 +214,8 @@ public class CustomGondola : Gondola
         // back
         back.Position = Position;
         backImg.Texture = GFX.Game[backTexturePath];
+        // 不知道为什么官方让back图层在rope图层之下(先保留, 还是觉得back在上面好点
+        back.Depth = 8998;
 
         // top
         top.Texture = GFX.Game[topTexturePath];
@@ -236,7 +239,7 @@ public class CustomGondola : Gondola
     {
         Position = RealEnd;
         preMoveState = StateTypes.MoveToEnd;
-        
+
         ceiling.Position = Position + new Vector2(0, -CeilingOffsetY);
         ceiling.movementCounter = movementCounter;
     }
@@ -245,7 +248,7 @@ public class CustomGondola : Gondola
     {
         Position = RealStart;
         preMoveState = StateTypes.MoveToStart;
-        
+
         ceiling.Position = Position + new Vector2(0, -CeilingOffsetY);
         ceiling.movementCounter = movementCounter;
     }
@@ -275,6 +278,9 @@ public class CustomGondola : Gondola
         }
 
         UpdatePositions();
+        top.Rotation = Calc.Angle(start, end);
+        if (start.X > end.X)
+            top.Rotation = Calc.Angle(end, start);
     }
 
     private void UpdateFlagMove()
@@ -282,7 +288,8 @@ public class CustomGondola : Gondola
         if (this.Session().GetFlag(moveToStartFlag))
         {
             this.Session().SetFlag(moveToStartFlag, false);
-            if (state == StateTypes.MoveToStart)
+            // 如果gondola正在往start开或者现在正停在start, 那就不触发
+            if (state == StateTypes.MoveToStart || Vector2.Distance(Position, RealStart) < float.Epsilon)
                 return;
             if (!smoothFlagMove)
             {
@@ -290,20 +297,20 @@ public class CustomGondola : Gondola
                 coroutine.Cancel();
                 return;
             }
-            
+
             startOffSoundSource.Play("event:/game/04_cliffside/gondola_cliffmechanism_start");
             moveLoopSfx.Play("event:/game/04_cliffside/gondola_movement_loop");
-            
+
             RotationSpeed = -rotationSpeed;
             TargetPos = RealStart;
             coroutine.Replace(MoveToTargetPosCoroutine(disableInteractOnFlagMove));
-            
+
             state = preMoveState = StateTypes.MoveToStart;
         }
         else if (this.Session().GetFlag(moveToEndFlag))
         {
             this.Session().SetFlag(moveToEndFlag, false);
-            if (state == StateTypes.MoveToEnd)
+            if (state == StateTypes.MoveToEnd || Vector2.Distance(Position, RealEnd) < float.Epsilon)
                 return;
             if (!smoothFlagMove)
             {
@@ -311,9 +318,10 @@ public class CustomGondola : Gondola
                 coroutine.Cancel();
                 return;
             }
+
             startOffSoundSource.Play("event:/game/04_cliffside/gondola_cliffmechanism_start");
             moveLoopSfx.Play("event:/game/04_cliffside/gondola_movement_loop");
-            
+
             RotationSpeed = rotationSpeed;
             TargetPos = RealEnd;
             coroutine.Replace(MoveToTargetPosCoroutine(disableInteractOnFlagMove));
@@ -388,7 +396,7 @@ public class CustomGondola : Gondola
         state = StateTypes.Idle;
     }
 
-    private IEnumerator MoveToTargetPosCoroutine(bool lockInteract=false)
+    private IEnumerator MoveToTargetPosCoroutine(bool lockInteract = false)
     {
         if (lockInteract)
             lockInteractable = true;
