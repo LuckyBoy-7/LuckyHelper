@@ -25,5 +25,12 @@ public class LuckyHelperSession : EverestModuleSession
 
     // custom water
     public float KillPlayerElapse = 0;
+    
+    // bloompointAdjustTrigger
+    public bool LightFactorOn = false;
+    public bool AffectLightRadius = true;
+    public bool AffectLightAlpha = true;
+    public float LightFactor = 1;
+    public List<string> LightFactorTargets = new();
 
 }

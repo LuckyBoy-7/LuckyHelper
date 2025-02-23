@@ -106,3 +106,6 @@ triggers.LuckyHelper/TimeSavedIn.attributes.description.savedIn=Time in this roo
 
 # FreezeTrigger
 triggers.LuckyHelper/FreezeTrigger.placements.name.normal=FreezeTrigger
+
+# LightSourceAdjustTrigger
+triggers.LuckyHelper/LightSourceAdjustTrigger.placements.name.normal=Light Source Adjust Trigger

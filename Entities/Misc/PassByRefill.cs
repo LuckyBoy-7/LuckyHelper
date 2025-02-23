@@ -33,7 +33,6 @@ public class PassByRefill : Entity
         sprite.AddLoop("idle", "img", 1); 
         sprite.Play("idle");
         Add(sprite);
-
     }
 
     public PassByRefill(EntityData data, Vector2 offset)
