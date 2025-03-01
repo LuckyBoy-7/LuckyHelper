@@ -1,4 +1,5 @@
 using Celeste.Mod.Entities;
+using LuckyHelper.Extensions;
 using LuckyHelper.Module;
 using BloomRenderer = On.Celeste.BloomRenderer;
 using LightingRenderer = On.Celeste.LightingRenderer;
@@ -9,15 +10,9 @@ namespace LuckyHelper.Triggers;
 [Tracked]
 public class LightSourceAdjustTrigger : Trigger
 {
-    public static float Factor
-    {
-        get => LuckyHelperModule.Session.LightFactor;
-        set => LuckyHelperModule.Session.LightFactor = value;
-    }
-
     private bool affectRadius;
     private bool affectAlpha;
-    private string targets = "Celeste.Player";
+    private List<string> targets = new();
     private float offsetFrom = 0;
     private float offsetTo = 2;
 
@@ -26,7 +21,12 @@ public class LightSourceAdjustTrigger : Trigger
 
     public LightSourceAdjustTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
-        targets = data.Attr("targets");
+        string tmpTargets = data.Attr("targets");
+        foreach (var str in tmpTargets.Split(","))
+        {
+            targets.Add(str.Trim());
+        }
+
         offsetFrom = data.Float("offsetFrom");
         offsetTo = data.Float("offsetTo");
         positionMode = data.Enum<PositionModes>("positionMode");
@@ -52,31 +52,21 @@ public class LightSourceAdjustTrigger : Trigger
 
     private static void BloomRendererOnApply(BloomRenderer.orig_Apply orig, Celeste.BloomRenderer self, VirtualRenderTarget target, Scene scene)
     {
-        
-        if (!LuckyHelperModule.Session.LightFactorOn && scene.Tracker.GetEntity<LightSourceAdjustTrigger>() != null)
-            LuckyHelperModule.Session.LightFactorOn = true;
-        if (!LuckyHelperModule.Session.LightFactorOn)
-        {
-            orig(self, target, scene);
-            return;
-        }
-
-
         List<Tuple<BloomPoint, float, float>> backup = new List<Tuple<BloomPoint, float, float>>();
+        var targetToAlpha = LuckyHelperModule.Session.LightTargetToAlpha;
+        var targetToRadius = LuckyHelperModule.Session.LightTargetToRadius;
 
-        // if (count++ == 0)
         foreach (BloomPoint bloomPoint in scene.Tracker.GetComponents<BloomPoint>())
         {
             Entity entity = bloomPoint.Entity;
-            if (EntityInTargets(entity))
+            string entityType = entity.GetType().ToString();
+
+            backup.Add(new(bloomPoint, bloomPoint.Alpha, bloomPoint.Radius));
+            if (targetToAlpha.TryGetValue(entityType, out var alpha))
+                bloomPoint.Alpha *= alpha;
+            if (targetToRadius.TryGetValue(entityType, out var radius))
             {
-                backup.Add(new(bloomPoint, bloomPoint.Alpha, bloomPoint.Radius));
-                if (LuckyHelperModule.Session.AffectLightAlpha)
-                    bloomPoint.Alpha *= Factor;
-                if (LuckyHelperModule.Session.AffectLightRadius)
-                {
-                    bloomPoint.Radius *= Factor;
-                }
+                bloomPoint.Radius *= radius;
             }
         }
 
@@ -92,31 +82,21 @@ public class LightSourceAdjustTrigger : Trigger
 
     private static void LightingRendererOnBeforeRender(LightingRenderer.orig_BeforeRender orig, Celeste.LightingRenderer self, Scene scene)
     {
-        if (!LuckyHelperModule.Session.LightFactorOn && scene.Tracker.GetEntity<LightSourceAdjustTrigger>() != null)
-            LuckyHelperModule.Session.LightFactorOn = true;
-        if (!LuckyHelperModule.Session.LightFactorOn)
-        {
-            orig(self, scene);
-            return;
-        }
-
-
         List<Tuple<VertexLight, float, float, float>> backup = new List<Tuple<VertexLight, float, float, float>>();
-
-        // if (count++ == 0)
+        var targetToAlpha = LuckyHelperModule.Session.LightTargetToAlpha;
+        var targetToRadius = LuckyHelperModule.Session.LightTargetToRadius;
         foreach (VertexLight vertexLight in scene.Tracker.GetComponents<VertexLight>())
         {
             Entity entity = vertexLight.Entity;
-            if (EntityInTargets(entity))
+            string entityType = entity.GetType().ToString();
+
+            backup.Add(new(vertexLight, vertexLight.Alpha, vertexLight.StartRadius, vertexLight.EndRadius));
+            if (targetToAlpha.TryGetValue(entityType, out var alpha))
+                vertexLight.Alpha *= alpha;
+            if (targetToRadius.TryGetValue(entityType, out var radius))
             {
-                backup.Add(new(vertexLight, vertexLight.Alpha, vertexLight.StartRadius, vertexLight.EndRadius));
-                if (LuckyHelperModule.Session.AffectLightAlpha)
-                    vertexLight.Alpha *= Factor;
-                if (LuckyHelperModule.Session.AffectLightRadius)
-                {
-                    vertexLight.StartRadius *= Factor;
-                    vertexLight.EndRadius *= Factor;
-                }
+                vertexLight.StartRadius *= radius;
+                vertexLight.EndRadius *= radius;
             }
         }
 
@@ -133,23 +113,12 @@ public class LightSourceAdjustTrigger : Trigger
     public override void OnStay(Player player)
     {
         base.OnStay(player);
-        Factor = MathHelper.Lerp(offsetFrom, offsetTo, GetPositionLerp(player, positionMode));
-    }
-
-    public override void OnEnter(Player player)
-    {
-        base.OnEnter(player);
-
-        // register
-        LuckyHelperModule.Session.LightFactorTargets.Clear();
-        foreach (var str in targets.Split(","))
+        float factor = MathHelper.Lerp(offsetFrom, offsetTo, GetPositionLerp(player, positionMode));
+        var session = LuckyHelperModule.Session;
+        foreach (string target in targets)
         {
-            LuckyHelperModule.Session.LightFactorTargets.Add(str.Trim());
+            session.LightTargetToAlpha[target] = factor;
+            session.LightTargetToRadius[target] = factor;
         }
-
-        LuckyHelperModule.Session.AffectLightRadius = affectRadius;
-        LuckyHelperModule.Session.AffectLightAlpha = affectAlpha;
     }
-
-    private static bool EntityInTargets(Entity entity) => LuckyHelperModule.Session.LightFactorTargets.Contains(entity.GetType().ToString());
 }

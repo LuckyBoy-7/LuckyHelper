@@ -27,10 +27,10 @@ public class LuckyHelperSession : EverestModuleSession
     public float KillPlayerElapse = 0;
     
     // bloompointAdjustTrigger
-    public bool LightFactorOn = false;
-    public bool AffectLightRadius = true;
-    public bool AffectLightAlpha = true;
-    public float LightFactor = 1;
-    public List<string> LightFactorTargets = new();
+    // public bool LightFactorOn = false;
+    // public float LightFactor = 1;
+    public Dictionary<string, float> LightTargetToAlpha = new();
+    public Dictionary<string, float> LightTargetToRadius = new();
+    // public List<string> LightCurrentTargets = new();
 
 }
