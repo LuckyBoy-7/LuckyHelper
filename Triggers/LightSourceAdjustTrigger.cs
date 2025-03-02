@@ -117,8 +117,10 @@ public class LightSourceAdjustTrigger : Trigger
         var session = LuckyHelperModule.Session;
         foreach (string target in targets)
         {
-            session.LightTargetToAlpha[target] = factor;
-            session.LightTargetToRadius[target] = factor;
+            if (affectAlpha)
+                session.LightTargetToAlpha[target] = factor;
+            if (affectRadius)
+                session.LightTargetToRadius[target] = factor;
         }
     }
 }
