@@ -64,6 +64,10 @@ entities.LuckyHelper/DeathCountText.attributes.description.savedPath=The path wh
 # DreamZone
 entities.LuckyHelper/DreamZone.placements.name.normal=DreamZone
 
+# DecalWithCombinedRegistry
+entities.LuckyHelper/DecalWithCombinedRegistry.placements.name.normal=DecalWithCombinedRegistry
+entities.LuckyHelper/DecalWithCombinedRegistry.attributes.description.decalRegistryPaths=Create a 'CombinedDecalRegistry.xml' file in root path of your Mod and do what 'DecalRegistry.xml' do, then add all the registry you want to combine (seperated by comma), like 'path1, path2, ..., path_n'
+
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger
 triggers.LuckyHelper/SetPassByRefillDashesTrigger.placements.name.normal=SetPassByRefillDashesTrigger
