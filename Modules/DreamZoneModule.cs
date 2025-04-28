@@ -20,7 +20,6 @@ public class DreamZoneModule
     }
 
 
-
     [Unload]
     public static void Unload()
     {
@@ -49,6 +48,8 @@ public class DreamZoneModule
         bool on = self.StateMachine.State is Player.StDash or Player.StDreamDash || self.DashAttacking;
         SetDreamZoneCollidable(self, on);
         orig(self);
+        if (on)
+            SetDreamZoneCollidable(self, false);
     }
 
     private static void SetDreamZoneCollidable(Player self, bool on)
@@ -152,5 +153,4 @@ public class DreamZoneModule
 
         cursor.MarkLabel(outLabel);
     }
-
 }
