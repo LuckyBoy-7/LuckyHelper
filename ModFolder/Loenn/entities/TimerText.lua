@@ -10,16 +10,18 @@ entity.placements = {
         outline = false,
         thickness = 2,
         outlineColor = "000000",
-        
+        useEnglishFontAlways = false,
+
         format = "mm\\:ss\\:ff",
         hiddenOnPause = false,
         remainCurrentValue = false,
         showType = "CurrentRoom",
-        savedPath = "where the time will be added to"
+        savedPath = "where the time will be added to",
+        clearDataOnTextLoaded = false
     }
 }
 
-entity.fieldInformation = 
+entity.fieldInformation =
 {
     color = {
         fieldType = "color"

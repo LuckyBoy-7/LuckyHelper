@@ -27,4 +27,24 @@ public class DeathCountText : ShowDataText
         };
     }
 
+    protected override void ClearData()
+    {
+        switch (showType)
+        {
+            case ShowTypes.CurrentRoom:
+                LuckyHelperModule.Session.CurrentRoomDeathCount[currentRoom] = 0;
+                break;
+            case ShowTypes.FromSavedPath:
+                LuckyHelperModule.Session.SavedPathDeathCount[savedPath] = 0;
+                break;
+            case ShowTypes.SinceLastCheckpoint:
+                LuckyHelperModule.Session.CurrentCheckpointDeathCount[LuckyHelperModule.Session.PlayerLastCheckPoint] = 0;
+                break;
+            case ShowTypes.SinceStart:
+                LuckyHelperModule.Session.TotalDeathCount = 0;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
 }

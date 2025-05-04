@@ -1,4 +1,5 @@
 using Celeste.Mod.Entities;
+using LuckyHelper.Extensions;
 using LuckyHelper.Module;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -29,10 +30,10 @@ public class PassByRefill : Entity
         // sprite = GFX.SpriteBank.Create(spriteName);
         // Add(sprite);
 
-        sprite = new Sprite(GFX.Game, "LuckyHelper/pass_by_refill/");
-        sprite.AddLoop("idle", "img", 1); 
-        sprite.Play("idle");
-        Add(sprite);
+        // sprite = new Sprite(GFX.Game, "LuckyHelper/pass_by_refill/");
+        // sprite.AddLoop("idle", "img", 1); 
+        // sprite.Play("idle");
+        // Add(sprite);
     }
 
     public PassByRefill(EntityData data, Vector2 offset)
@@ -48,5 +49,11 @@ public class PassByRefill : Entity
         {
             player.Dashes = Dashes;
         }
+    }
+
+    public override void Render()
+    {
+        base.Render();
+        Draw.Rect(Position, Width, Height, Color.Red.WithA(127));
     }
 }

@@ -16,8 +16,6 @@ namespace LuckyHelper.Entities;
 public class CustomWater : Water
 {
     private Color color;
-    private Color preSurfaceColor;
-    private Color preFillColor;
     public bool DisableSurfaceJump;
     public bool DisableSwimRise = true;
     public float MaxSpeedMultiplierX;

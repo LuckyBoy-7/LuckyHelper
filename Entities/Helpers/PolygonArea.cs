@@ -4,7 +4,6 @@ namespace LuckyHelper.Entities;
 
 public class PolygonArea : Entity
 {
-    private VirtualRenderTarget buffer;
     private List<VertexPositionColor> fillPoints = new();
     private List<Vector2> outlinePoints = new();
     private Vector2 min = Vector2.One * int.MaxValue;

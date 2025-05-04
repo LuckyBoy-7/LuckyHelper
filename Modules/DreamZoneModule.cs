@@ -9,7 +9,6 @@ namespace LuckyHelper.Modules;
 public class DreamZoneModule
 {
     private static DreamZone dreamZone;
-    private static bool isDebug = false;
 
     [Load]
     public static void Load()

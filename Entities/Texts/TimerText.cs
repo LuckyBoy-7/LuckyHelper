@@ -31,4 +31,25 @@ public class TimerText : ShowDataText
             _ => throw new ArgumentOutOfRangeException()
         };
     }
+
+    protected override void ClearData()
+    {
+        switch (showType)
+        {
+            case ShowTypes.CurrentRoom:
+                LuckyHelperModule.Session.CurrentRoomTime[currentRoom] = 0;
+                break;
+            case ShowTypes.FromSavedPath:
+                LuckyHelperModule.Session.SavedPathTime[savedPath] = 0;
+                break;
+            case ShowTypes.SinceLastCheckpoint:
+                LuckyHelperModule.Session.CurrentCheckpointTime[LuckyHelperModule.Session.PlayerLastCheckPoint] = 0;
+                break;
+            case ShowTypes.SinceStart:
+                LuckyHelperModule.Session.TotalTime = 0;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
 }

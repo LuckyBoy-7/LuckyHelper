@@ -134,8 +134,6 @@ public class ArbitraryShapeConquestArea : Entity
         base.Removed(scene);
     }
 
-    private bool flag = true;
-
     public override void Update()
     {
         base.Update();

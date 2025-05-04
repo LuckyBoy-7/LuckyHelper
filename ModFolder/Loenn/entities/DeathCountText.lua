@@ -10,15 +10,17 @@ entity.placements = {
         outline = false,
         thickness = 2,
         outlineColor = "000000",
+        useEnglishFontAlways = false,
 
         showType = "CurrentRoom",
         hiddenOnPause = false,
         remainCurrentValue = false,
-        savedPath = "where the death count will be added to"
+        savedPath = "where the death count will be added to",
+        clearDataOnTextLoaded = false
     }
 }
 
-entity.fieldInformation = 
+entity.fieldInformation =
 {
     color = {
         fieldType = "color"

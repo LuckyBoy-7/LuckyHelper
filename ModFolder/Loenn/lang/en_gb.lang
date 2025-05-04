@@ -1,7 +1,15 @@
 entities.LuckyHelper/PixelDebugHelper.placements.name.normal=PixelDebugHelper
+
+# PassByRefill
 entities.LuckyHelper/PassByRefill.placements.name.normal=PassByRefill
-entities.LuckyHelper/TimerText.placements.name.normal=TimerText
-entities.LuckyHelper/DeathCountText.placements.name.normal=DeathCountText
+
+# Timer Text
+entities.LuckyHelper/TimerText.placements.name.normal=Timer Text
+entities.LuckyHelper/TimerText.attributes.description.showType=Every text shares the same data, so if you want to reset, use "clearDataOnTextLoaded" option 
+
+# Death Count Text
+entities.LuckyHelper/DeathCountText.placements.name.normal=Death Count Text
+entities.LuckyHelper/DeathCountText.attributes.description.showType=Every text shares the same data, so if you want to reset, use "clearDataOnTextLoaded" option 
 
 # Custom Water
 entities.LuckyHelper/CustomWater.placements.name.normal=Custom Water

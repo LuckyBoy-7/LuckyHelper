@@ -17,7 +17,6 @@ public class CustomGondola : Gondola
 
     private Vector2 start;
     private Vector2 end;
-    private Vector2 _realStart;
 
     private Vector2 RealStart => (start + new Vector2(startPositionOffsetX, startPositionOffsetX * k)).Floor();
     private Vector2 RealEnd => (end + new Vector2(endPositionOffsetX, endPositionOffsetX * k)).Floor();

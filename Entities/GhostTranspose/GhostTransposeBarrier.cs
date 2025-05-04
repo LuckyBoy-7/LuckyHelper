@@ -6,8 +6,6 @@ namespace LuckyHelper.Entities;
 [CustomEntity("LuckyHelper/GhostTransposeBarrier")]
 public class GhostTransposeBarrier : Solid
 {
-    private static bool disableRefill;
-
     private readonly List<GhostTransposeBarrier> adjacent = new List<GhostTransposeBarrier>();
     private readonly List<Vector2> particles = new List<Vector2>();
     private readonly float[] speeds = { 12f, 20f, 40f };
