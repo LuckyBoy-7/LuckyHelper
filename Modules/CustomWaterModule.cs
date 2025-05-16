@@ -131,7 +131,7 @@ public class CustomWaterModule
         if (isDebug)
             Logger.Log(LogLevel.Warn, "Test", "SwimRise OK");
         cursor.Index += 2;
-        cursor.EmitDelegate(
+        cursor.EmitDelegate<Func<float>>(
             () =>
             {
                 if (customWater == null || !customWater.DisableSwimRise)
@@ -156,7 +156,7 @@ public class CustomWaterModule
 
         cursor.Index += 1;
         cursor.EmitLdloc(2);
-        cursor.EmitDelegate(
+        cursor.EmitDelegate<Func<float>>(
             () =>
             {
                 if (customWater == null)
@@ -177,7 +177,7 @@ public class CustomWaterModule
             Logger.Log(LogLevel.Warn, "Test", "MaxSpeedY OK");
         cursor.Index += 1;
         cursor.EmitLdloc(3);
-        cursor.EmitDelegate(
+        cursor.EmitDelegate<Func<float>>(
             () =>
             {
                 if (customWater == null)
@@ -278,8 +278,8 @@ public class CustomWaterModule
             () =>
             {
                 if (customWater == null || !customWater.PlayerCanJump)
-                    return 1;
-                return 0;
+                    return true;
+                return false;
             }
         );
         cursor.EmitBrfalse(jumpLabel);
@@ -288,8 +288,8 @@ public class CustomWaterModule
             () =>
             {
                 if (customWater == null || !customWater.DisableSurfaceJump)
-                    return 1;
-                return 0;
+                    return true;
+                return false;
             }
         );
         cursor.EmitBrfalse(outLabel);
@@ -363,7 +363,7 @@ public class CustomWaterModule
         cursor.EmitCall(deltaTime);
         cursor.EmitMul();
         cursor.EmitDelegate(
-            () => customWater == null ? 0 : customWater.PlayerGravity
+            () => customWater == null ? 0f : customWater.PlayerGravity
         );
         cursor.EmitMul();
         // Approach

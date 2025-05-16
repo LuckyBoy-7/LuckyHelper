@@ -22,7 +22,7 @@ public class CombinedDecalRegistryModule
     {
         orig(self);
         LoadCombinedDecalRegistry();
-        Logger.Warn("Test", RegisteredDecals.Count.ToString());
+        // Logger.Warn("Test", RegisteredDecals.Count.ToString());
     }
 
     [Unload]

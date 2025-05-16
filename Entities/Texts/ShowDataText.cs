@@ -53,7 +53,7 @@ public abstract class ShowDataText : LuckyText
     public override void Added(Scene scene)
     {
         base.Added(scene);
-        Logger.Log(LogLevel.Warn, "Test", this.CurrentRoomName());
+        // Logger.Log(LogLevel.Warn, "Test", this.CurrentRoomName());
         currentRoom = this.CurrentRoomName();
         if (clearDataOnTextLoaded)
             ClearData();
