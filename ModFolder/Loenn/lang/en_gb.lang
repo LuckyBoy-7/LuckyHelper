@@ -76,6 +76,9 @@ entities.LuckyHelper/DreamZone.placements.name.normal=DreamZone
 entities.LuckyHelper/DecalWithCombinedRegistry.placements.name.normal=DecalWithCombinedRegistry
 entities.LuckyHelper/DecalWithCombinedRegistry.attributes.description.decalRegistryPaths=Create a 'CombinedDecalRegistry.xml' file in root path of your Mod and do what 'DecalRegistry.xml' do, then add all the registry you want to combine (seperated by comma), like 'path1, path2, ..., path_n'
 
+# ReskinnableBadelineBoost
+entities.LuckyHelper/ReskinnableBadelineBoost.placements.name.normal=Reskinnable Badeline Boost
+
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger
 triggers.LuckyHelper/SetPassByRefillDashesTrigger.placements.name.normal=SetPassByRefillDashesTrigger
