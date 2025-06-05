@@ -73,8 +73,8 @@ entities.LuckyHelper/DeathCountText.attributes.description.savedPath=The path wh
 entities.LuckyHelper/DreamZone.placements.name.normal=DreamZone
 
 # DecalWithCombinedRegistry
-entities.LuckyHelper/DecalWithCombinedRegistry.placements.name.normal=DecalWithCombinedRegistry
-entities.LuckyHelper/DecalWithCombinedRegistry.attributes.description.decalRegistryPaths=Create a 'CombinedDecalRegistry.xml' file in root path of your Mod and do what 'DecalRegistry.xml' do, then add all the registry you want to combine (seperated by comma), like 'path1, path2, ..., path_n'
+entities.LuckyHelper/DecalWithCombinedRegistry.placements.name.normal=Decal With Combined Registry
+entities.LuckyHelper/DecalWithCombinedRegistry.attributes.description.decalRegistryPaths=Create a '{YourModName}_CombinedDecalRegistry.xml' file in root path of your Mod(In LuckyHelper, it's named "LuckyHelper_CombinedDecalRegistry.xml") and do what 'DecalRegistry.xml' do, \nbut...the path works like an id which you can casually combine to this entity, and it's seperated by comma like 'path1, path2, ..., path_n', you can check this xml in LuckyHelper.zip for more detailed information!
 
 # ReskinnableBadelineBoost
 entities.LuckyHelper/ReskinnableBadelineBoost.placements.name.normal=Reskinnable Badeline Boost

@@ -35,7 +35,7 @@ public class CombinedDecalRegistryModule
     {
         foreach (ModContent modContent in Everest.Content.Mods)
         {
-            if (modContent.Map.TryGetValue("CombinedDecalRegistry", out ModAsset modAsset) && modAsset.Type == typeof(AssetTypeXml))
+            if (modContent.Map.TryGetValue(modContent.Name + "_CombinedDecalRegistry", out ModAsset modAsset) && modAsset.Type == typeof(AssetTypeXml))
             {
                 LoadModCombinedDecalRegistry(modAsset);
             }

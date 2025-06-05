@@ -13,13 +13,13 @@ entity.placements = {
         scaleY = 1,
 
         depth = 1,
-        texture = "",
+        texture = "LuckyHelper/test_decal00",
 
         rotation = 0,
         color = "ffffff",
 
 
-        decalRegistryPaths = "",
+        decalRegistryPaths = "lucky_scale,lucky_rotate, lucky_floaty, lucky_smoke",
     }
 }
 

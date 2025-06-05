@@ -31,7 +31,7 @@ public class DecalWithCombinedRegistry : Decal
         base.Added(scene);
         foreach (var path in decalRegistryPaths.Split(","))
         {
-            ApplyDecalRegistry(path.Trim());
+            ApplyDecalRegistry(path.Trim().ToLower());
         }
     }
 
@@ -43,11 +43,11 @@ public class DecalWithCombinedRegistry : Decal
             return;
         }
 
-
         foreach (DecalRegistryHandler decalRegistryHandler in decalInfo.Handlers)
         {
             try
             {
+                Logger.Warn("Test", decalRegistryHandler.Name);
                 decalRegistryHandler.ApplyTo(this);
             }
             catch (Exception ex)
