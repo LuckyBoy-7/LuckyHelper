@@ -1,14 +1,12 @@
 using Celeste.Mod.Entities;
 using ExtendedVariants.Module;
 using ExtendedVariants.Variants;
-using LuckyHelper.Extensions;
 using LuckyHelper.Module;
 using LuckyHelper.Modules;
 using Microsoft.Xna.Framework.Graphics;
 using MonoMod.Utils;
 
 namespace LuckyHelper.Entities;
-
 
 [CustomEntity("LuckyHelper/CustomWater")]
 [TrackedAs(typeof(Water))]
@@ -33,6 +31,7 @@ public class CustomWater : Water
     public bool PlayerCanJump;
     public bool RefillExtraJump;
     public bool DisableRay = false;
+
 
     // todo: gravity
 
@@ -100,11 +99,19 @@ public class CustomWater : Water
 
             if (RefillExtraJump)
             {
-                var jumpCount = ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.JumpCount];
-                ((JumpCount)jumpCount).RefillJumpBuffer();
-                // typeof(JumpCount).GetMethod("RefillJumpBuffer").Invoke(jumpCount, Type.EmptyTypes);
+                // 如果拓展异变已经加载
+                if (CustomWaterModule.ExtendedVariantModeLoaded)
+                {
+                    CallRefillExtraJumpMethod();
+                }
             }
         }
+    }
+
+    public void CallRefillExtraJumpMethod()
+    {
+        var jumpCount = ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.JumpCount];
+        ((JumpCount)jumpCount).RefillJumpBuffer();
     }
 
     public override void Render()

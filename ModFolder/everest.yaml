@@ -1,9 +1,10 @@
 - Name: LuckyHelper
-  Version: 0.9.6
+  Version: 0.9.7
   DLL: LuckyHelper.dll
   Dependencies:
     - Name: Everest
       Version: 1.5285.0
+  OptionalDependencies:
     - Name: ExtendedVariantMode
       Version: 0.39.2
     - Name: AdamsAddons
