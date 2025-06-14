@@ -124,3 +124,11 @@ triggers.LuckyHelper/FreezeTrigger.placements.name.normal=FreezeTrigger
 
 # LightSourceAdjustTrigger
 triggers.LuckyHelper/LightSourceAdjustTrigger.placements.name.normal=Light Source Adjust Trigger
+
+# TalkComponentController
+triggers.LuckyHelper/TalkComponentController.placements.name.normal=TalkComponent Controller
+
+# OverlapPairSetFlagTrigger
+triggers.LuckyHelper/OverlapPairSetFlagTrigger.placements.name.normal=Overlap Pair Set Flag Trigger
+triggers.LuckyHelper/OverlapPairSetFlagTrigger.attributes.description.main=I assume there's only two OverlapPairSetFlagTrigger with the same id, one is main, which do collide check and set flag, while the other is just a dummy trigger.
+triggers.LuckyHelper/OverlapPairSetFlagTrigger.attributes.description.flag=While two OverlapPairSetFlagTrigger with same id has collision, the flag will be set, otherwise removed(one of the two triggers should be 'main' trigger) 
