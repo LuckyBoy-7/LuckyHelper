@@ -127,6 +127,8 @@ triggers.LuckyHelper/LightSourceAdjustTrigger.placements.name.normal=Light Sourc
 
 # TalkComponentController
 triggers.LuckyHelper/TalkComponentController.placements.name.normal=TalkComponent Controller
+triggers.LuckyHelper/TalkComponentController.attributes.description.blackList=Fill the Type of the talkComponent's entity, which will be ignored by the controller
+triggers.LuckyHelper/TalkComponentController.attributes.description.dynamic=Whether the controller will dynamically search for talkComponent's entity, if disabled, it will only remember the collided entity at start
 
 # OverlapPairSetFlagTrigger
 triggers.LuckyHelper/OverlapPairSetFlagTrigger.placements.name.normal=Overlap Pair Set Flag Trigger

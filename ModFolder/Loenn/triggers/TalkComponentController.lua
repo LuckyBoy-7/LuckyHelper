@@ -4,7 +4,9 @@ trigger.name = "LuckyHelper/TalkComponentController"
 trigger.placements = {
     name = "normal",
     data = {
-        enableIfFlag = "",
+        hideIfFlag = "",
+        blackList = "",
+        dynamic = false
     }
 }
 

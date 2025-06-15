@@ -16,7 +16,7 @@ public class OverlapPairSetFlagTrigger : Trigger
     public OverlapPairSetFlagTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
         main = data.Bool("main");
-        ID = data.Attr("id");
+        ID = data.Attr("triggerID");
         flag = data.Attr("flag");
     }
 
@@ -44,7 +44,7 @@ public class OverlapPairSetFlagTrigger : Trigger
             if (tri != null && tri != this && CollideCheck(tri))
             {
                 on = true;
-                break;
+                break; 
             }
         }
 

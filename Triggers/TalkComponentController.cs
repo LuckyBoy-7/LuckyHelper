@@ -1,5 +1,6 @@
 using Celeste.Mod.Entities;
 using LuckyHelper.Extensions;
+using Microsoft.Xna.Framework.Input;
 
 namespace LuckyHelper.Triggers;
 
@@ -7,28 +8,57 @@ namespace LuckyHelper.Triggers;
 [Tracked]
 public class TalkComponentController : Trigger
 {
-    private string enableIfFlag;
-    private TalkComponent talkComponent;
+    // private string enableIfFlag;
+    private string hideIfFlag;
+    private List<TalkComponent> collidedTalkComponents = new();
+    public static List<TalkComponent> TalkComponents = new();
+    private bool dynamic;
+    private HashSet<string> blackLists;
 
     public TalkComponentController(EntityData data, Vector2 offset) : base(data, offset)
     {
-        enableIfFlag = data.Attr("enableIfFlag");
+        // enableIfFlag = data.Attr("enableIfFlag");
+        hideIfFlag = data.Attr("hideIfFlag");
+        dynamic = data.Bool("dynamic"); // 是不断判断呢, 还是只在一开始记录呢
+        blackLists = data.Attr("blackList").Split(",").Select(s => s.Trim()).ToHashSet();
+        Depth = 10;
     }
 
     public override void Awake(Scene scene)
     {
         base.Awake(scene);
+        if (TalkComponents.Count == 0)
+            FindAllTalkComponents(scene);
+
+        if (!dynamic)
+            FillAllCollidedTalkComponents(collidedTalkComponents);
+    }
+
+    private void FillAllCollidedTalkComponents(List<TalkComponent> lst)
+    {
+        foreach (var talkComponent in TalkComponents)
+        {
+            if (CollideWithTalkComponent(talkComponent) && !blackLists.Contains(talkComponent.Entity.GetType().ToString()))
+            {
+                lst.Add(talkComponent);
+            }
+        }
+    }
+
+    private bool CollideWithTalkComponent(TalkComponent t)
+    {
+        Rectangle bounds = new Rectangle((int)(t.Entity.X + t.Bounds.X), (int)(t.Entity.Y + t.Bounds.Y), t.Bounds.Width, t.Bounds.Height);
+        return CollideRect(bounds);
+    }
+
+    private void FindAllTalkComponents(Scene scene)
+    {
         foreach (Entity entity in scene.Entities)
         {
             TalkComponent t = (TalkComponent)entity.Components.components.Find(component => component is TalkComponent);
             if (t != null)
             {
-                Rectangle bounds = new Rectangle((int)(t.Entity.X + t.Bounds.X), (int)(t.Entity.Y + t.Bounds.Y), t.Bounds.Width, t.Bounds.Height);
-                if (CollideRect(bounds))
-                {
-                    talkComponent = t;
-                    break; // 找到第一个就行了
-                }
+                TalkComponents.Add(t);
             }
         }
     }
@@ -36,9 +66,23 @@ public class TalkComponentController : Trigger
     public override void Update()
     {
         base.Update();
-        if (talkComponent == null)
+        if (dynamic)
+        {
+            collidedTalkComponents.Clear();
+            FillAllCollidedTalkComponents(collidedTalkComponents);
+        }
+
+        if (collidedTalkComponents.Count == 0)
             return;
-        bool on = this.Session().GetFlag(enableIfFlag);
-        talkComponent.Enabled = on;
+
+        bool on = !this.Session().GetFlag(hideIfFlag);
+        foreach (var collidedTalkComponent in collidedTalkComponents)
+        {
+            collidedTalkComponent.Enabled = on;
+            if (collidedTalkComponent.UI != null)
+            {
+                collidedTalkComponent.UI.Depth = Depth - 1;
+            }
+        }
     }
 }
