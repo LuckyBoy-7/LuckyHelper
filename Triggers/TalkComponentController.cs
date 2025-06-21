@@ -1,5 +1,7 @@
 using Celeste.Mod.Entities;
 using LuckyHelper.Extensions;
+using LuckyHelper.Modules;
+using LuckyHelper.Utils;
 using Microsoft.Xna.Framework.Input;
 
 namespace LuckyHelper.Triggers;
@@ -11,7 +13,6 @@ public class TalkComponentController : Trigger
     // private string enableIfFlag;
     private string hideIfFlag;
     private List<TalkComponent> collidedTalkComponents = new();
-    public static List<TalkComponent> TalkComponents = new();
     private bool dynamic;
     private HashSet<string> blackLists;
 
@@ -27,8 +28,6 @@ public class TalkComponentController : Trigger
     public override void Awake(Scene scene)
     {
         base.Awake(scene);
-        if (TalkComponents.Count == 0)
-            FindAllTalkComponents(scene);
 
         if (!dynamic)
             FillAllCollidedTalkComponents(collidedTalkComponents);
@@ -36,9 +35,9 @@ public class TalkComponentController : Trigger
 
     private void FillAllCollidedTalkComponents(List<TalkComponent> lst)
     {
-        foreach (var talkComponent in TalkComponents)
+        foreach (TalkComponent talkComponent in TypeToObjectsModule.BriefTypeToComponents["TalkComponent"])
         {
-            if (CollideWithTalkComponent(talkComponent) && !blackLists.Contains(talkComponent.Entity.GetType().ToString()))
+            if (CollideWithTalkComponent(talkComponent) && !blackLists.Contains(talkComponent.Entity.BriefTypeName()))
             {
                 lst.Add(talkComponent);
             }
@@ -49,18 +48,6 @@ public class TalkComponentController : Trigger
     {
         Rectangle bounds = new Rectangle((int)(t.Entity.X + t.Bounds.X), (int)(t.Entity.Y + t.Bounds.Y), t.Bounds.Width, t.Bounds.Height);
         return CollideRect(bounds);
-    }
-
-    private void FindAllTalkComponents(Scene scene)
-    {
-        foreach (Entity entity in scene.Entities)
-        {
-            TalkComponent t = (TalkComponent)entity.Components.components.Find(component => component is TalkComponent);
-            if (t != null)
-            {
-                TalkComponents.Add(t);
-            }
-        }
     }
 
     public override void Update()

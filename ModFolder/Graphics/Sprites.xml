@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Sprites>
+  <entityPinner path="LuckyHelper/" start="idle">
+    <Center/>
+    <Loop id="idle" path="entity_pinner" delay="0.08"/>
+  </entityPinner>
+
+</Sprites>

@@ -79,6 +79,17 @@ entities.LuckyHelper/DecalWithCombinedRegistry.attributes.description.decalRegis
 # ReskinnableBadelineBoost
 entities.LuckyHelper/ReskinnableBadelineBoost.placements.name.normal=Reskinnable Badeline Boost
 
+# EntityPinner
+entities.LuckyHelper/EntityPinner.placements.name.normal=Entity Pinner
+entities.LuckyHelper/EntityPinner.attributes.description.naiveMove=Whether the entity will be attracted with collision(if it can collide with others), and if you are using Eevee Helper's `Holdable Container`, please disable this option 
+entities.LuckyHelper/EntityPinner.attributes.description.adjustX=Adjust the final x position due to some corner cases 
+entities.LuckyHelper/EntityPinner.attributes.description.adjustY=Adjust the final y position due to some corner cases  
+entities.LuckyHelper/EntityPinner.attributes.description.spriteXMLID=ID of the sprite config in Sprites.xml
+entities.LuckyHelper/EntityPinner.attributes.description.boxHeight=Height of your Hitbox if your Collider Type is Rectangle
+entities.LuckyHelper/EntityPinner.attributes.description.boxWidth=Width of your Hitbox if your Collider Type is Rectangle
+entities.LuckyHelper/EntityPinner.attributes.description.radius=Radius of your Hitbox if your Collider Type is Circle
+entities.LuckyHelper/EntityPinner.attributes.description.types=comma-seperated sequence of the types you want to attract
+
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger
 triggers.LuckyHelper/SetPassByRefillDashesTrigger.placements.name.normal=SetPassByRefillDashesTrigger
@@ -133,4 +144,7 @@ triggers.LuckyHelper/TalkComponentController.attributes.description.dynamic=Whet
 # OverlapPairSetFlagTrigger
 triggers.LuckyHelper/OverlapPairSetFlagTrigger.placements.name.normal=Overlap Pair Set Flag Trigger
 triggers.LuckyHelper/OverlapPairSetFlagTrigger.attributes.description.main=I assume there's only two OverlapPairSetFlagTrigger with the same id, one is main, which do collide check and set flag, while the other is just a dummy trigger.
-triggers.LuckyHelper/OverlapPairSetFlagTrigger.attributes.description.flag=While two OverlapPairSetFlagTrigger with same id has collision, the flag will be set, otherwise removed(one of the two triggers should be 'main' trigger) 
+triggers.LuckyHelper/OverlapPairSetFlagTrigger.attributes.description.flag=While two OverlapPairSetFlagTrigger with same id has collision, the flag will be set, otherwise removed(one of the two triggers should be 'main' trigger)
+
+# FastBubbleController 
+triggers.LuckyHelper/FastBubbleController.placements.name.normal=Fast Bubble Controller

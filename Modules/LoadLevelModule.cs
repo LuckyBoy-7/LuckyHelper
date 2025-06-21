@@ -6,8 +6,7 @@ using LuckyHelper.Utils;
 using Microsoft.Xna.Framework.Input;
 using Mono.Cecil.Cil;
 using MonoMod.RuntimeDetour;
-using Level = On.Celeste.Level;
-using Player = Celeste.Player;
+
 using WindController = On.Celeste.WindController;
 
 namespace LuckyHelper.Modules;
@@ -20,10 +19,11 @@ public class LoadLevelModule
         On.Celeste.Level.LoadLevel += LevelOnLoadLevel;
     }
 
-    private static void LevelOnLoadLevel(Level.orig_LoadLevel orig, Celeste.Level self, Player.IntroTypes playerintro, bool isfromloader)
+    private static void LevelOnLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Celeste.Level self, Player.IntroTypes playerintro, bool isfromloader)
     {
         OverlapPairSetFlagTrigger.IdToTriggerSet.Clear();
-        TalkComponentController.TalkComponents.Clear();
+        TypeToObjectsModule.BriefTypeToEntities.Clear();
+        TypeToObjectsModule.BriefTypeToComponents.Clear();
         orig(self, playerintro, isfromloader);
     }
 

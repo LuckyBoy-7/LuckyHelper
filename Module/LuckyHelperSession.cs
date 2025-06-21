@@ -33,4 +33,6 @@ public class LuckyHelperSession : EverestModuleSession
     public Dictionary<string, float> LightTargetToRadius = new();
     // public List<string> LightCurrentTargets = new();
 
+    public bool DisableFastBubble = false;
+
 }
