@@ -18,16 +18,24 @@ entity.placements = {
         boxWidth = 30,
         boxHeight = 10,
         types = "TheoCrystal, Glider",
-        spriteXMLID = "entityPinner"
+        spriteXMLID = "entityPinner",
+        borderColor = "217dff",
+        innerColor = "86ffff",
+        alpha = 0.5,
+        showBorder = true,
+        showBackground = true
     }
 }
 entity.fieldOrder = {
     "x", "y",
     "adjustX", "adjustY",
     "boxWidth", "boxHeight",
-    "depth", "radius", "attractSpeed",
-    "colliderType", "types",
-    "spriteXMLID", "naiveMove"
+    "borderColor", "innerColor",
+    "alpha",
+    "depth", "radius",
+    "attractSpeed", "colliderType",
+    "types", "spriteXMLID",
+    "naiveMove", "showBorder", "showBackground"
 }
 entity.fieldInformation =
 {
@@ -51,6 +59,12 @@ entity.fieldInformation =
     },
     boxHeight = {
         fieldType = "integer"
+    },
+    borderColor = {
+        fieldType = "color"
+    },
+    innerColor = {
+        fieldType = "color"
     },
     colliderType = {
         options = {

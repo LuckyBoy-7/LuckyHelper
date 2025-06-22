@@ -1,4 +1,5 @@
 using Celeste.Mod.Entities;
+using LuckyHelper.Components;
 using LuckyHelper.Extensions;
 using LuckyHelper.Modules;
 using LuckyHelper.Utils;
@@ -17,6 +18,15 @@ public class EntityPinner : Entity
     private int adjustY;
     private string spriteXMLID;
     private ColliderTypes colliderType;
+    private int radius;
+    private int width;
+    private int height;
+    private Color borderColor;
+    private Color innerColor;
+    private float alpha;
+    private bool showBorder;
+    private bool showBackground;
+
 
     public EntityPinner(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
@@ -25,11 +35,14 @@ public class EntityPinner : Entity
 
         Collider c;
         if (colliderType == ColliderTypes.Circle)
-            c = new Circle(data.Int("radius"));
+        {
+            radius = data.Int("radius");
+            c = new Circle(radius);
+        }
         else
         {
-            int width = data.Int("boxWidth");
-            int height = data.Int("boxHeight");
+            width = data.Int("boxWidth");
+            height = data.Int("boxHeight");
             c = new Hitbox(width, height, -width / 2, -height / 2);
         }
 
@@ -41,6 +54,12 @@ public class EntityPinner : Entity
         adjustY = data.Int("adjustY");
         spriteXMLID = data.Attr("spriteXMLID", "booster");
 
+        borderColor = data.HexColor("borderColor");
+        innerColor = data.HexColor("innerColor");
+        alpha = data.Float("alpha");
+        showBorder = data.Bool("showBorder");
+        showBackground = data.Bool("showBackground");
+
 
         briefTypes = ParseUtils.ParseTypesStringToBriefNames(data.Attr("types"));
     }
@@ -51,8 +70,32 @@ public class EntityPinner : Entity
         Entity bg = new Entity();
         bg.Position = Position;
         bg.Depth = spriteDepth;
-        Scene.Add(bg);
+
+        RenderComponent renderComponent = new RenderComponent(true, true);
+        bg.Add(renderComponent);
+        // borderColor = new Color(35, 125, 255);
+        // innerColor = new Color(150, 255, 255);
+        renderComponent.OnRender += () =>
+        {
+            if (colliderType == ColliderTypes.Circle)
+            {
+                Vector2 start = Position - new Vector2(radius, radius);
+                if (showBackground)
+                    Draw.Rect(start, radius * 2, radius * 2, innerColor * alpha);
+                if (showBorder)
+                    Draw.HollowRect(start, radius * 2, radius * 2, borderColor * alpha);
+            }
+            else if (colliderType == ColliderTypes.Rectangle)
+            {
+                Vector2 start = Position - new Vector2(width / 2, height / 2);
+                if (showBackground)
+                    Draw.Rect(start, width, height, innerColor * alpha);
+                if (showBorder)
+                    Draw.HollowRect(start, width, height, borderColor * alpha);
+            }
+        };
         bg.Add(GFX.SpriteBank.Create(spriteXMLID));
+        Scene.Add(bg);
     }
 
 
@@ -83,8 +126,12 @@ public class EntityPinner : Entity
     {
         PinnedEntityHandler config;
         Holdable holdable;
-        if (entity is Player)
+        if (entity is Player player)
+        {
+            if (player.StateMachine.State == Player.StDash)
+                return null;
             config = new PlayerPinnedHandler(entity, naiveMove);
+        }
         else if (entity is Seeker)
             config = new SeekerPinnedHandler(entity, naiveMove);
         else if ((holdable = entity.Get<Holdable>()) != null)
@@ -157,8 +204,6 @@ public class PlayerPinnedHandler(Entity entity, bool naiveMove) : PinnedEntityHa
 
     public override void PinnedAction(DynamicData dyn)
     {
-        if (Player.StateMachine.State == Player.StDash)
-            return;
         dyn.Set("Speed", Vector2.Zero);
     }
 }

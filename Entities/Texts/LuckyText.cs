@@ -44,10 +44,10 @@ public class LuckyText : Entity
             Dialog.Language = Dialog.Languages["english"];
 
         if (outline)
-            ActiveFont.DrawOutline(Content, pos, new Vector2(0f, 0f), Vector2.One * scale, color.WithA(alpha), thickness, outlineColor.WithA(alpha));
+            ActiveFont.DrawOutline(Content, pos, new Vector2(0f, 0f), Vector2.One * scale, color, thickness, outlineColor * alpha);
         else
-            ActiveFont.Draw(Content, pos, new Vector2(0f, 0f), Vector2.One * scale, color.WithA(alpha));
-        
+            ActiveFont.Draw(Content, pos, new Vector2(0f, 0f), Vector2.One * scale, color * alpha);
+
         if (useEnglishFontAlways)
             Dialog.Language = origDialogLanguage;
     }

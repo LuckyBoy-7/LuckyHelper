@@ -54,6 +54,6 @@ public class PassByRefill : Entity
     public override void Render()
     {
         base.Render();
-        Draw.Rect(Position, Width, Height, Color.Red.WithA(127));
+        Draw.Rect(Position, Width, Height, Color.Red * 0.5f);
     }
 }
