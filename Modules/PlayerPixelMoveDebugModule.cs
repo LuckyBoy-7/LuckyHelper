@@ -8,6 +8,7 @@ using SwapBlock = On.Celeste.SwapBlock;
 namespace LuckyHelper.Modules;
 public class PlayerPixelMoveDebugModule
 {
+    private static bool debugging = false;
     [Load]
     public static void Load()
     {
@@ -18,7 +19,7 @@ public class PlayerPixelMoveDebugModule
     private static void PlayerOnUpdate(Player.orig_Update orig, Celeste.Player self)
     {
         orig(self);
-        if (!LuckyHelperModule.Settings.IsDebugging)
+        if (!debugging)
             return;
         // 按住下并且按了空格
         if (MInput.Keyboard.Check(Keys.LeftAlt))

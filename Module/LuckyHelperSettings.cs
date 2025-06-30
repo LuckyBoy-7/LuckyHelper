@@ -6,7 +6,6 @@ namespace LuckyHelper.Module;
 
 public class LuckyHelperSettings : EverestModuleSettings
 {
-    [SettingIgnore] public bool IsDebugging { get; set; } = true;
     public bool EnablePlayerFallingThroughJumpThru { get; set; }
 
     [DefaultButtonBinding(Buttons.A, Keys.Enter)]
@@ -14,4 +13,4 @@ public class LuckyHelperSettings : EverestModuleSettings
 
     [DefaultButtonBinding(Buttons.A, Keys.Space)]
     public ButtonBinding GhostTransposeButton { get; set; }
-}
+}   
