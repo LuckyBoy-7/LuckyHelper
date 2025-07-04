@@ -5,7 +5,7 @@ using LuckyHelper.Modules;
 using LuckyHelper.Utils;
 using MonoMod.Utils;
 
-namespace LuckyHelper.Entities;
+namespace LuckyHelper.Entities.Misc;
 
 [CustomEntity("LuckyHelper/EntityPinner")]
 public class EntityPinner : Entity
@@ -17,7 +17,7 @@ public class EntityPinner : Entity
     private int adjustX;
     private int adjustY;
     private string spriteXMLID;
-    private ColliderTypes colliderType;
+    private ColliderType colliderType;
     private int radius;
     private int width;
     private int height;
@@ -31,10 +31,10 @@ public class EntityPinner : Entity
     public EntityPinner(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
         Depth = -1;
-        colliderType = data.Enum<ColliderTypes>("colliderType");
+        colliderType = data.Enum<ColliderType>("colliderType");
 
         Collider c;
-        if (colliderType == ColliderTypes.Circle)
+        if (colliderType == ColliderType.Circle)
         {
             radius = data.Int("radius");
             c = new Circle(radius);
@@ -77,7 +77,7 @@ public class EntityPinner : Entity
         // innerColor = new Color(150, 255, 255);
         renderComponent.OnRender += () =>
         {
-            if (colliderType == ColliderTypes.Circle)
+            if (colliderType == ColliderType.Circle)
             {
                 Vector2 start = Position - new Vector2(radius, radius);
                 if (showBackground)
@@ -85,7 +85,7 @@ public class EntityPinner : Entity
                 if (showBorder)
                     Draw.HollowRect(start, radius * 2, radius * 2, borderColor * alpha);
             }
-            else if (colliderType == ColliderTypes.Rectangle)
+            else if (colliderType == ColliderType.Rectangle)
             {
                 Vector2 start = Position - new Vector2(width / 2, height / 2);
                 if (showBackground)

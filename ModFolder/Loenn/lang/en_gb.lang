@@ -90,6 +90,26 @@ entities.LuckyHelper/EntityPinner.attributes.description.boxWidth=Width of your 
 entities.LuckyHelper/EntityPinner.attributes.description.radius=Radius of your Hitbox if your Collider Type is Circle
 entities.LuckyHelper/EntityPinner.attributes.description.types=comma-seperated sequence of the types you want to attract
 
+# SpeedRedirect
+entities.LuckyHelper/SpeedRedirect.placements.name.normal=Speed Redirect
+entities.LuckyHelper/SpeedRedirect.attributes.description.triggerRedirectTiming=OnEnter: You'll be shot when you enter this area\nOnAttractedToCenter: You'll be shot when you're attracted this area's center
+entities.LuckyHelper/SpeedRedirect.attributes.description.speedRedirectStrengthType=PlayerEnterSpeed: Shoot spped depends on your enter speed\nFixed: any shoot speed will be set to fixedShootSpeed\nCorrection: any shoot speed between minCorrectionSpeed and maxCorrectionSpeed will be set to fixedShootSpeed
+entities.LuckyHelper/SpeedRedirect.attributes.description.speedRedirectDirType=You can define which dir to shoot by following options: \nCustom: by configuring 'redirectDirX' and 'redirectDirY'\nRebound: Inverse player's speed on enter\nflipX: Inverse player's X speed on enter\nflipY: Inverse player's Y speed on enter
+entities.LuckyHelper/SpeedRedirect.attributes.description.shootSpeedMultiplier=Ultra! Ultra! Ultra! Ultra! Ultra!
+entities.LuckyHelper/SpeedRedirect.attributes.description.minShootSpeed=A limitation to the entity, forcing the final output speed being no lesser than this value
+entities.LuckyHelper/SpeedRedirect.attributes.description.maxShootSpeed=A limitation to the entity, forcing the final output speed being no greater than this value
+entities.LuckyHelper/SpeedRedirect.attributes.description.redirectDirX=The redirect direction vector, where (1, 0) is right and (0, 1) is down
+entities.LuckyHelper/SpeedRedirect.attributes.description.redirectDirY=The redirect direction vector, where (1, 0) is right and (0, 1) is down
+entities.LuckyHelper/SpeedRedirect.attributes.description.radius=The radius of the hitbox under "Circle" collider type
+entities.LuckyHelper/SpeedRedirect.attributes.description.fixedShootSpeed=If the speed redirect strength type is "Fixed", this would be the setup speed \nIf the strength type is "Correction", this would be the speed that the player would be corrected to \nwhen player speed is between the minimum and maximum correction speed
+entities.LuckyHelper/SpeedRedirect.attributes.description.attractSpeed=How fast would the player be pulled towards the center
+entities.LuckyHelper/SpeedRedirect.attributes.description.adjustX=The offset from the center where player is being pulled into
+entities.LuckyHelper/SpeedRedirect.attributes.description.adjustY=The offset from the center where player is being pulled into
+entities.LuckyHelper/SpeedRedirect.attributes.description.boxHeight=The height of the hitbox under "Rectangle" collider type
+entities.LuckyHelper/SpeedRedirect.attributes.description.boxWidth=The width of the hitbox under "Rectangle" collider type
+
+
+
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger
 triggers.LuckyHelper/SetPassByRefillDashesTrigger.placements.name.normal=SetPassByRefillDashesTrigger

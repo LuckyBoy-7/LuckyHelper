@@ -3,6 +3,10 @@
   <entityPinner path="LuckyHelper/" start="idle">
     <Center/>
     <Loop id="idle" path="entity_pinner" delay="0.08"/>
-  </entityPinner>
+  </entityPinner> 
+  <speedRedirect path="LuckyHelper/" start="idle">
+    <Center/>
+    <Loop id="idle" path="right_arrow" delay="0.08"/>
+  </speedRedirect>
 
 </Sprites>
