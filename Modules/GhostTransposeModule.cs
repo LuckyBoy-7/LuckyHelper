@@ -18,6 +18,7 @@ public class GhostTransposeModule
     public static float Alpha;
     public static float MaxGhostNumber;
     public static bool KillPlayerOnTeleportToSpike;
+    public static bool ConserveMomentum;
 
     [Load]
     public static void Load()
@@ -64,7 +65,7 @@ public class GhostTransposeModule
 
         if (ok)
         {
-            GhostTranspose ghost = new GhostTranspose(self, GhostOutOfBoundsAction, GhostSpeed, Alpha, Color, TransposeDirType, KillPlayerOnTeleportToSpike);
+            GhostTranspose ghost = new GhostTranspose(self, GhostOutOfBoundsAction, GhostSpeed, Alpha, Color, TransposeDirType, KillPlayerOnTeleportToSpike, ConserveMomentum);
             self.Scene.Add(ghost);
         }
 

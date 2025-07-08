@@ -16,7 +16,8 @@ trigger.placements = {
         alpha = 0.5,
         maxGhostNumber = 1,
         reverseEnableOnExit = false,
-        killPlayerOnTeleportToSpike = false
+        killPlayerOnTeleportToSpike = false,
+        conserveMomentum = false
     }
 }
 

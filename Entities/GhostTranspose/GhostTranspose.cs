@@ -18,9 +18,10 @@ public class GhostTranspose : Actor
     private float alpha;
     private Color color;
     private bool killPlayerOnTeleportToSpike;
+    private bool conserveMomentum;
 
     public GhostTranspose(Player player, GhostTransposeTrigger.GhostOutOfBoundsActions action, float speed, float alpha, Color color,
-        GhostTransposeTrigger.TransposeDirTypes dirType, bool killPlayerOnTeleportToSpike) : base(Vector2.Zero)
+        GhostTransposeTrigger.TransposeDirTypes dirType, bool killPlayerOnTeleportToSpike, bool conserveMomentum) : base(Vector2.Zero)
     {
         Depth = -1;
         // Depth = 1;
@@ -30,6 +31,7 @@ public class GhostTranspose : Actor
         this.alpha = alpha;
         this.color = color;
         this.killPlayerOnTeleportToSpike = killPlayerOnTeleportToSpike;
+        this.conserveMomentum = conserveMomentum;
 
         Position = player.Position;
         Hitbox hitbox = new(player.Collider.Width, player.Collider.Height, player.Collider.TopLeft.X, player.Collider.TopLeft.Y);
@@ -111,7 +113,8 @@ public class GhostTranspose : Actor
         if (player == null)
             return;
         player.Position = Position;
-        player.Speed = Vector2.Zero;
+        if (!conserveMomentum)
+            player.Speed = Vector2.Zero;
         Kill();
     }
 

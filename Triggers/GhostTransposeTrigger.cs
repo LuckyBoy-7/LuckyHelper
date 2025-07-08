@@ -34,6 +34,7 @@ public class GhostTransposeTrigger : Trigger
     public float Alpha;
     public bool ReverseEnableOnExit;
     public bool KillPlayerOnTeleportToSpike;
+    public bool ConserveMomentum;
 
     public GhostTransposeTrigger(EntityData data, Vector2 offset)
         : base(data, offset)
@@ -47,6 +48,7 @@ public class GhostTransposeTrigger : Trigger
         TransposeDirType = data.Enum<TransposeDirTypes>("transposeDirType");
         MaxGhostNumber = data.Int("maxGhostNumber");
         KillPlayerOnTeleportToSpike = data.Bool("killPlayerOnTeleportToSpike");
+        ConserveMomentum = data.Bool("conserveMomentum");
     }
 
     public override void OnEnter(Player player)
@@ -61,6 +63,7 @@ public class GhostTransposeTrigger : Trigger
         GhostTransposeModule.MaxGhostNumber = MaxGhostNumber;
         GhostTransposeModule.TransposeDirType = TransposeDirType;
         GhostTransposeModule.KillPlayerOnTeleportToSpike = KillPlayerOnTeleportToSpike;
+        GhostTransposeModule.ConserveMomentum = ConserveMomentum;
     }
 
     public override void OnLeave(Player player)
