@@ -15,9 +15,9 @@ dreamBlock.placements = {
         height = 8,
         stopPlayerOnCollide = true,
         killPlayerOnCollide = false,
-        startColors1 = "FFEF11,FF00D0,08a310",
-        startColors2 = "5fcde4,7fb25e,E0564C",
-        startColors3 = "5b6ee1,CC3B3B,7daa64",
+        starColors1 = "FFEF11,FF00D0,08a310",
+        starColors2 = "5fcde4,7fb25e,E0564C",
+        starColors3 = "5b6ee1,CC3B3B,7daa64",
         backgroundColor = "000000",
         outlineColor = "FFFFFF",
         backgroundAlpha = 1,
@@ -46,6 +46,24 @@ dreamBlock.fieldInformation = {
         }
     },
     startColors3 = {
+        fieldType = "list",
+        elementOptions = {
+            fieldType = "color",
+        }
+    },
+    starColors1 = {
+        fieldType = "list",
+        elementOptions = {
+            fieldType = "color",
+        }
+    },
+    starColors2 = {
+        fieldType = "list",
+        elementOptions = {
+            fieldType = "color",
+        }
+    },
+    starColors3 = {
         fieldType = "list",
         elementOptions = {
             fieldType = "color",

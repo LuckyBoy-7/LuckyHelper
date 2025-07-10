@@ -70,7 +70,7 @@ entities.LuckyHelper/DeathCountText.placements.name.normal=Death Count Text
 entities.LuckyHelper/DeathCountText.attributes.description.savedPath=The path where the 'DeathCountSavedIn Trigger' sets.
 
 # DreamZone
-entities.LuckyHelper/DreamZone.placements.name.normal=DreamZone
+entities.LuckyHelper/DreamZone.placements.name.normal=Dream Zone
 
 # DecalWithCombinedRegistry
 entities.LuckyHelper/DecalWithCombinedRegistry.placements.name.normal=Decal With Combined Registry

@@ -19,9 +19,9 @@ public class DreamZone : DreamBlock
     public Color OutlineColor = Color.Black;
     public float OutlineAlpha = 0.5f;
 
-    public string StartColors1 = "FFEF11,FF00D0,08a310";
-    public string StartColors2 = "5fcde4,7fb25e,E0564C";
-    public string StartColors3 = "5b6ee1,CC3B3B,7daa64";
+    public string StarColors1 = "FFEF11,FF00D0,08a310";
+    public string StarColors2 = "5fcde4,7fb25e,E0564C";
+    public string StarColors3 = "5b6ee1,CC3B3B,7daa64";
 
     public bool DisableWobble = true;
 
@@ -35,9 +35,16 @@ public class DreamZone : DreamBlock
         OutlineColor = data.HexColor("outlineColor");
         OutlineAlpha = data.Float("outlineAlpha");
 
-        StartColors1 = data.Attr("startColors1");
-        StartColors2 = data.Attr("startColors2");
-        StartColors3 = data.Attr("startColors3");
+        StarColors1 = data.Attr("starColors1");
+        StarColors2 = data.Attr("starColors2");
+        StarColors3 = data.Attr("starColors3");
+
+        if (data.Has("startColors1"))
+            StarColors1 = data.Attr("startColors1");
+        if (data.Has("startColors2"))
+            StarColors2 = data.Attr("startColors2");
+        if (data.Has("startColors3"))
+            StarColors3 = data.Attr("startColors3");
 
         DisableWobble = data.Bool("disableWobble");
         Collidable = false;
@@ -52,13 +59,13 @@ public class DreamZone : DreamBlock
             {
                 case 0:
 
-                    particles[i].Color = GetRandomColorByString(StartColors1);
+                    particles[i].Color = GetRandomColorByString(StarColors1);
                     break;
                 case 1:
-                    particles[i].Color = GetRandomColorByString(StartColors2);
+                    particles[i].Color = GetRandomColorByString(StarColors2);
                     break;
                 case 2:
-                    particles[i].Color = GetRandomColorByString(StartColors3);
+                    particles[i].Color = GetRandomColorByString(StarColors3);
                     break;
             }
         }
