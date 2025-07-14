@@ -7,7 +7,7 @@ using MonoMod.Utils;
 
 namespace LuckyHelper.Modules;
 
-public class DefaultPortraitPathHook
+public class DefaultTextboxPathHook
 {
     private static ILHook textboxCoroutineHook;
     private static ILHook miniTextboxCtorHook;
@@ -26,20 +26,20 @@ public class DefaultPortraitPathHook
 
     private static void ILHookMiniTextboxCtor(ILContext il)
     {
-        HookDefaultMiniPortraitPath(il);
+        HookDefaultMiniTextboxPath(il);
     }
 
     private static void ILHookDashCoroutine(ILContext il)
     {
-        HookDefaultPortraitPath(il);
+        HookDefaultTextboxPath(il);
     }
 
     private static void TextboxOnctor_string_Language_Func1Array(ILContext il)
     {
-        HookDefaultPortraitPath(il);
+        HookDefaultTextboxPath(il);
     }
 
-    private static void HookDefaultPortraitPath(ILContext il)
+    private static void HookDefaultTextboxPath(ILContext il)
     {
         ILCursor cursor = new ILCursor(il);
 
@@ -52,13 +52,13 @@ public class DefaultPortraitPathHook
             {
                 LuckyHelperSession session = LuckyHelperModule.Session;
                 if (session.LuckyHelperAreaMetadata != null)
-                    return session.LuckyHelperAreaMetadata.DefaultPortraitPath;
+                    return session.LuckyHelperAreaMetadata.DefaultTextboxPath;
                 return path;
             });
         }
     }
 
-    private static void HookDefaultMiniPortraitPath(ILContext il)
+    private static void HookDefaultMiniTextboxPath(ILContext il)
     {
         ILCursor cursor = new ILCursor(il);
 
@@ -72,7 +72,7 @@ public class DefaultPortraitPathHook
             {
                 LuckyHelperSession session = LuckyHelperModule.Session;
                 if (session.LuckyHelperAreaMetadata != null)
-                    return session.LuckyHelperAreaMetadata.DefaultMiniPortraitPath;
+                    return session.LuckyHelperAreaMetadata.DefaultMiniTextboxPath;
                 return path;
             });
         }

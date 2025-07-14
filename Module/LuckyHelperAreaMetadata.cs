@@ -16,6 +16,6 @@ public class LuckyHelperAreaMetadata
         return meta?.LuckyHelperAreaMetaData;
     }
 
-    public string DefaultPortraitPath { get; set; } = "textbox/default";
-    public string DefaultMiniPortraitPath { get; set; } = "textbox/default_mini";
+    public string DefaultTextboxPath { get; set; } = "textbox/default";
+    public string DefaultMiniTextboxPath { get; set; } = "textbox/default_mini";
 }
