@@ -15,8 +15,8 @@
 * FreezeTrigger(Trigger): 给冻结帧的 Trigger -- by Myn
 * DecalWithCombinedRegistry(Entity): 原版 DecalRegistry 基于固定路径, 这个路径就只是一个 id/key, 可以随意组合 -- by Myn
 * ReskinnableBadelineBoost(Entity): 可换皮肤的 Badeline Boost -- by Riki
-* TalkComponentController(Trigger): 调整对话组件的显隐(就是望远镜上面那个 UI) -- by Shynnie
-* OverlapPairSetFlag(Trigger): 相交就设置 Flag 的 Trigger -- by Shynnie
+* TalkComponentController(Trigger): 调整对话组件的显隐(就是望远镜上面那个 UI) -- by Shynnie, AfterDawn
+* OverlapPairSetFlag(Trigger): 相交就设置 Flag 的 Trigger -- by Shynnie, AfterDawn
 * FastBubbleController(Trigger): 控制是否可以泡泡快启 -- by Riki
 * EntityPinner(Entity): 一个可以吸取一些实体的东西, 比如 Theo水晶, 水母, 玩家等 -- by 底龙
 * SpeedRedirect(Entity): 进入时可以随意调整玩家的速度方向和大小 -- by 底龙
