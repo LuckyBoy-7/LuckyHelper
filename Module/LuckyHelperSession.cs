@@ -34,5 +34,6 @@ public class LuckyHelperSession : EverestModuleSession
     // public List<string> LightCurrentTargets = new();
 
     public bool DisableFastBubble = false;
+    public LuckyHelperAreaMetadata LuckyHelperAreaMetadata = null;
 
 }
