@@ -10,7 +10,7 @@
 * CustomGondola(Entity): 自定义缆车 -- by Breaker-K, 底龙
 * ArbitraryShapeConquestArea(Entity): 灵感来源于战地占点 -- by 键盘英雄(由于好像没人用过, 所以可能会有很多 bug)
 * DreamZone(Entity): 梦境区域, 可看作没有碰撞的果冻 -- by 底龙
-* EnablePlayerFallingThroughJumpThru(Settings): 下蹲传单向板
+* EnablePlayerFallingThroughJumpThru(Settings): 下蹲穿单向板
 * LightSourceAdjust(Trigger): 调整光源亮度和透明度(本来应该给别人提 pr 的, 但是人家好像好久没更了就还是选择了抄())  -- by Myn
 * FreezeTrigger(Trigger): 给冻结帧的 Trigger -- by Myn
 * DecalWithCombinedRegistry(Entity): 原版 DecalRegistry 基于固定路径, 这个路径就只是一个 id/key, 可以随意组合 -- by Myn
