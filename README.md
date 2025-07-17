@@ -1,6 +1,6 @@
 ## 所有实体一览
 
-由于基本上都是给别人写的东西, 所以会附上灵感作者
+由于基本上都是给别人写的东西, 所以会附上灵感作者, 同时也非常感谢反馈 bug 的人🥰
 
 * PassByRefill(Entity): 梦...开始的地方 -- by Saplonily
 * SetFallingBlockBlockFloatySpaceBlock(Trigger): 使用后掉落块掉在月亮块上时月亮块会停止, 否则原版会抽搐 -- by Dizer
@@ -20,6 +20,7 @@
 * FastBubbleController(Trigger): 控制是否可以泡泡快启 -- by Riki
 * EntityPinner(Entity): 一个可以吸取一些实体的东西, 比如 Theo水晶, 水母, 玩家等 -- by 底龙
 * SpeedRedirect(Entity): 进入时可以随意调整玩家的速度方向和大小 -- by 底龙
+* PlayerMovementController(Trigger): 调节玩家运动参数(移动/跳跃速度, 加速度之类的, 以后可能还会补充) -- by Molong
 
 ### GhostTranspose -- by Molong
 
