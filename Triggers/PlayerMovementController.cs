@@ -11,6 +11,11 @@ public struct PlayerMovementData
     public float WallJumpForceY;
     public float JumpKeepSpeedTime;
     public float WallJumpKeepSpeedTime;
+    public float LowSpeedAccelerationX;
+    public float HighSpeedAccelerationX;
+    public float MaxSpeedXMultiplier;
+    public float MaxFallSpeed;
+    public float MaxFastFallSpeed;
 }
 
 [CustomEntity("LuckyHelper/PlayerMovementController")]
@@ -32,6 +37,11 @@ public class PlayerMovementController : Trigger
             WallJumpForceY = data.Float("wallJumpForceY"),
             JumpKeepSpeedTime = data.Float("jumpKeepSpeedTime"),
             WallJumpKeepSpeedTime = data.Float("wallJumpKeepSpeedTime"),
+            LowSpeedAccelerationX = data.Float("lowSpeedAccelerationX"),
+            HighSpeedAccelerationX = data.Float("highSpeedAccelerationX"),
+            MaxSpeedXMultiplier = data.Float("maxSpeedXMultiplier"),
+            MaxFallSpeed = data.Float("maxFallSpeed"),
+            MaxFastFallSpeed = data.Float("maxFastFallSpeed"),
         };
     }
 

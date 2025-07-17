@@ -11,10 +11,20 @@ public class PlayerMovementControllerModule
     // private static List<PlayerMovementHandler> handlers = new();
     private static PlayerJumpForceXHandler jumpForceXHandler = new PlayerJumpForceXHandler();
     private static PlayerJumpForceYHandler jumpForceYHandler = new PlayerJumpForceYHandler();
+
     private static PlayerWallJumpForceXHandler wallJumpForceXHandler = new PlayerWallJumpForceXHandler();
     private static PlayerWallJumpForceYHandler wallJumpForceYHandler = new PlayerWallJumpForceYHandler();
+
     private static PlayerJumpKeepSpeedTimeHandler jumpKeepSpeedTimeHandler = new PlayerJumpKeepSpeedTimeHandler();
-    private static PlayerJumpKeepSpeedTimeHandler wallJumpKeepSpeedTimeHandler = new PlayerJumpKeepSpeedTimeHandler();
+    private static PlayerWallJumpKeepSpeedTimeHandler wallJumpKeepSpeedTimeHandler = new PlayerWallJumpKeepSpeedTimeHandler();
+
+    private static PlayerLowSpeedAccelerationXHandler lowSpeedAccelerationXHandler = new PlayerLowSpeedAccelerationXHandler();
+    private static PlayerHighSpeedAccelerationXHandler highSpeedAccelerationXHandler = new PlayerHighSpeedAccelerationXHandler();
+    
+    private static PlayerMaxFallSpeedHandler maxFallSpeedHandler = new PlayerMaxFallSpeedHandler();
+    private static PlayerMaxFastFallSpeedHandler maxFastFallSpeedHandler = new PlayerMaxFastFallSpeedHandler();
+    
+    private static PlayerMaxSpeedXMultiplierHandler maxSpeedXMultiplierHandler = new PlayerMaxSpeedXMultiplierHandler();
 
     private static PlayerMovementController controller;
     private static ILHook wallJumpHook;
@@ -29,6 +39,68 @@ public class PlayerMovementControllerModule
 
         MethodInfo origWallJumpMethod = typeof(Player).GetMethod("orig_WallJump", BindingFlags.Instance | BindingFlags.NonPublic);
         wallJumpHook = new ILHook(origWallJumpMethod, WallJumpHook);
+
+        IL.Celeste.Player.NormalUpdate += PlayerOnNormalUpdate;
+    }
+
+    [Unload]
+    public static void Unload()
+    {
+        IL.Celeste.Player.Jump -= PlayerOnJump;
+        On.Celeste.Player.Update -= PlayerOnUpdate;
+        wallJumpHook.Dispose();
+        IL.Celeste.Player.NormalUpdate -= PlayerOnNormalUpdate;
+    }
+
+    private static void PlayerOnNormalUpdate(ILContext il)
+    {
+        ILCursor cursor = new ILCursor(il);
+
+        FieldInfo levelField = typeof(Player).GetField("level", BindingFlags.Instance|BindingFlags.NonPublic);
+        FieldInfo inSpaceFiel = typeof(Level).GetField("InSpace", BindingFlags.Instance|BindingFlags.Public);
+        if (cursor.TryGotoNext(
+                ins => ins.MatchLdarg0(),
+                ins => ins.MatchLdfld(levelField),
+                ins => ins.MatchLdfld(inSpaceFiel),
+                ins => ins.MatchBrfalse(out ILLabel _)
+            ))
+        {
+            cursor.EmitLdloc(6);
+
+            cursor.EmitLdcR4(1f);
+            cursor.EmitDelegate<Func<float, float>>(origNumber => maxSpeedXMultiplierHandler.GetHandledData(origNumber, controller));
+            cursor.EmitMul();
+            cursor.EmitStloc(6);
+        }
+        
+        
+        if (cursor.TryGotoNext(ins => ins.MatchLdcR4(400f)
+            ))
+        {
+            cursor.Index += 1;
+            cursor.EmitDelegate<Func<float, float>>(origNumber => lowSpeedAccelerationXHandler.GetHandledData(origNumber, controller));
+        }
+
+        if (cursor.TryGotoNext(ins => ins.MatchLdcR4(1000f)
+            ))
+        {
+            cursor.Index += 1;
+            cursor.EmitDelegate<Func<float, float>>(origNumber => highSpeedAccelerationXHandler.GetHandledData(origNumber, controller));
+        }
+        
+        if (cursor.TryGotoNext(ins => ins.MatchLdcR4(160f)
+            ))
+        {
+            cursor.Index += 1;
+            cursor.EmitDelegate<Func<float, float>>(origNumber => maxFallSpeedHandler.GetHandledData(origNumber, controller));
+        }
+        
+        if (cursor.TryGotoNext(ins => ins.MatchLdcR4(240f)
+            ))
+        {
+            cursor.Index += 1;
+            cursor.EmitDelegate<Func<float, float>>(origNumber => maxFastFallSpeedHandler.GetHandledData(origNumber, controller));
+        }
     }
 
     private static void PlayerOnUpdate(On.Celeste.Player.orig_Update orig, Player self)
@@ -85,14 +157,6 @@ public class PlayerMovementControllerModule
             cursor.Index += 1;
             cursor.EmitDelegate<Func<float, float>>(origNumber => jumpForceYHandler.GetHandledData(origNumber, controller));
         }
-    }
-
-    [Unload]
-    public static void Unload()
-    {
-        IL.Celeste.Player.Jump -= PlayerOnJump;
-        On.Celeste.Player.Update -= PlayerOnUpdate;
-        wallJumpHook.Dispose();
     }
 }
 
@@ -154,4 +218,36 @@ public class PlayerWallJumpKeepSpeedTimeHandler : PlayerMovementHandler
     protected override float GetSetData(LuckyHelperSession session) => session.PlayerMovementData.WallJumpKeepSpeedTime;
 
     protected override float GetStayData(PlayerMovementController controller) => controller.PlayerMovementData.WallJumpKeepSpeedTime;
+}
+
+public class PlayerLowSpeedAccelerationXHandler : PlayerMovementHandler
+{
+    protected override float GetSetData(LuckyHelperSession session) => session.PlayerMovementData.LowSpeedAccelerationX;
+
+    protected override float GetStayData(PlayerMovementController controller) => controller.PlayerMovementData.LowSpeedAccelerationX;
+}
+
+public class PlayerHighSpeedAccelerationXHandler : PlayerMovementHandler
+{
+    protected override float GetSetData(LuckyHelperSession session) => session.PlayerMovementData.HighSpeedAccelerationX;
+
+    protected override float GetStayData(PlayerMovementController controller) => controller.PlayerMovementData.HighSpeedAccelerationX;
+}
+
+public class PlayerMaxSpeedXMultiplierHandler : PlayerMovementHandler
+{
+    protected override float GetSetData(LuckyHelperSession session) => session.PlayerMovementData.MaxSpeedXMultiplier;
+
+    protected override float GetStayData(PlayerMovementController controller) => controller.PlayerMovementData.MaxSpeedXMultiplier;
+}
+public class PlayerMaxFallSpeedHandler : PlayerMovementHandler
+{
+    protected override float GetSetData(LuckyHelperSession session) => session.PlayerMovementData.MaxFallSpeed;
+
+    protected override float GetStayData(PlayerMovementController controller) => controller.PlayerMovementData.MaxFallSpeed;
+}public class PlayerMaxFastFallSpeedHandler : PlayerMovementHandler
+{
+    protected override float GetSetData(LuckyHelperSession session) => session.PlayerMovementData.MaxFastFallSpeed;
+
+    protected override float GetStayData(PlayerMovementController controller) => controller.PlayerMovementData.MaxFastFallSpeed;
 }

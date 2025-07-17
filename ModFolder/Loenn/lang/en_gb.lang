@@ -172,3 +172,4 @@ triggers.LuckyHelper/FastBubbleController.placements.name.normal=Fast Bubble Con
 # PlayerMovementController
 triggers.LuckyHelper/PlayerMovementController.placements.name.normal=Player Movement Controller
 triggers.LuckyHelper/PlayerMovementController.attributes.description.activationType=None: Means we will do nothing to player's movements, also used to clear set movement data\nSet: player's movement will keep being controlled\nStay: player's movement will only be controlled when he's in the area
+triggers.LuckyHelper/PlayerMovementController.attributes.description.highSpeedAccelerationX=Also controls the acceleration when player's walking to the max speed

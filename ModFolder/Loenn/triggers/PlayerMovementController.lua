@@ -11,7 +11,14 @@ trigger.placements = {
         wallJumpForceY = -105,
         jumpKeepSpeedTime = 0.2,
         wallJumpKeepSpeedTime = 0.2,
-        activationType = "None"
+       
+        lowSpeedAccelerationX = 400,
+        highSpeedAccelerationX = 1000,
+        maxFallSpeed = 160,
+        maxFastFallSpeed = 240,
+       
+        maxSpeedXMultiplier = 1,
+        activationType = "Set"
     }
 }
 
@@ -21,7 +28,9 @@ trigger.fieldOrder = {
     "jumpForceX", "jumpForceY",
     "wallJumpForceX", "wallJumpForceY",
     "jumpKeepSpeedTime", "wallJumpKeepSpeedTime",
-    "", "",
+    "lowSpeedAccelerationX", "highSpeedAccelerationX",
+    "maxFallSpeed", "maxFastFallSpeed",
+    "maxSpeedXMultiplier", "",
     "activationType", "",
 }
 
