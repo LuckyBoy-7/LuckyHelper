@@ -1,3 +1,5 @@
+using LuckyHelper.Triggers;
+
 namespace LuckyHelper.Module;
 
 public class LuckyHelperSession : EverestModuleSession
@@ -35,5 +37,10 @@ public class LuckyHelperSession : EverestModuleSession
 
     public bool DisableFastBubble = false;
     public LuckyHelperAreaMetadata LuckyHelperAreaMetadata = null;
+    
+    // PlayerMovementController
+    public bool playerUseSetMovementData = false;
+    public PlayerMovementData PlayerMovementData;
+    
 
 }

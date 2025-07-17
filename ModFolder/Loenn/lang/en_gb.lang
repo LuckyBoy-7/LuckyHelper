@@ -168,3 +168,7 @@ triggers.LuckyHelper/OverlapPairSetFlagTrigger.attributes.description.flag=While
 
 # FastBubbleController 
 triggers.LuckyHelper/FastBubbleController.placements.name.normal=Fast Bubble Controller
+
+# PlayerMovementController
+triggers.LuckyHelper/PlayerMovementController.placements.name.normal=Player Movement Controller
+triggers.LuckyHelper/PlayerMovementController.attributes.description.activationType=None: Means we will do nothing to player's movements, also used to clear set movement data\nSet: player's movement will keep being controlled\nStay: player's movement will only be controlled when he's in the area
