@@ -21,6 +21,7 @@
 * EntityPinner(Entity): 一个可以吸取一些实体的东西, 比如 Theo水晶, 水母, 玩家等 -- by 底龙
 * SpeedRedirect(Entity): 进入时可以随意调整玩家的速度方向和大小 -- by 底龙
 * PlayerMovementController(Trigger): 调节玩家运动参数(移动/跳跃速度, 加速度之类的, 以后可能还会补充) -- by Molong
+* CrystalHeartDialogController(Entity): 为水晶之心单独设置文本 -- by Touchme_uwu
 
 ### GhostTranspose -- by Molong
 
