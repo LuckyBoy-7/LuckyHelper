@@ -2,6 +2,8 @@ namespace LuckyHelper.Utils;
 
 public static class ParseUtils
 {
+    public static List<string> ParseCommaSeperatedStringToList(string str) => str.Split(",").Select(s => s.Trim()).ToList();
+
     public static HashSet<string> ParseTypesStringToBriefNames(string str)
     {
         HashSet<string> types = new();

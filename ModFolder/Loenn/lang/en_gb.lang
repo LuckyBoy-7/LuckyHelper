@@ -108,6 +108,9 @@ entities.LuckyHelper/SpeedRedirect.attributes.description.adjustY=The offset fro
 entities.LuckyHelper/SpeedRedirect.attributes.description.boxHeight=The height of the hitbox under "Rectangle" collider type
 entities.LuckyHelper/SpeedRedirect.attributes.description.boxWidth=The width of the hitbox under "Rectangle" collider type
 
+# CrystalHeartDialogController
+entities.LuckyHelper/CrystalHeartDialogController.placements.name.normal=Crystal Heart Dialog Controller
+entities.LuckyHelper/CrystalHeartDialogController.attributes.description.dialogs=comma-seperated dialog_keys to set different crystal heart gem texts in one room(be placed with heart gem) 
 
 
 #todo Triggers =======================================================================================================================================
