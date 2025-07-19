@@ -50,6 +50,7 @@ public class SpeedRedirect : Entity
     private float fixedShootSpeed;
     private float shootSpeedMultiplier = 1.2f;
     private SpeedRedirectStrengthType speedRedirectStrengthType;
+    private Entity bg = new Entity();
 
     private bool shooting;
 
@@ -122,7 +123,7 @@ public class SpeedRedirect : Entity
     public override void Added(Scene scene)
     {
         base.Added(scene);
-        Entity bg = new Entity();
+        bg.Visible = false;
         bg.Position = Position;
         bg.Depth = spriteDepth;
 
@@ -132,22 +133,19 @@ public class SpeedRedirect : Entity
         // innerColor = new Color(150, 255, 255);
         renderComponent.OnRender += () =>
         {
-            if (colliderType == ColliderType.Circle)
+            RenderUtils.RenderBoundsByColldierType(new RenderedBoundsByColliderTypeData()
             {
-                Vector2 start = Position - new Vector2(radius, radius);
-                if (showBackground)
-                    Draw.Rect(start, radius * 2, radius * 2, innerColor * alpha);
-                if (showBorder)
-                    Draw.HollowRect(start, radius * 2, radius * 2, borderColor * alpha);
-            }
-            else if (colliderType == ColliderType.Rectangle)
-            {
-                Vector2 start = Position - new Vector2(width / 2, height / 2);
-                if (showBackground)
-                    Draw.Rect(start, width, height, innerColor * alpha);
-                if (showBorder)
-                    Draw.HollowRect(start, width, height, borderColor * alpha);
-            }
+                ColliderType = colliderType,
+                Position = bg.Position,
+                Radius = radius,
+                Width = width,
+                Height = height,
+                InnerColor = innerColor,
+                BorderColor = borderColor,
+                Alpha = alpha,
+                ShowBackground = showBackground,
+                ShowBorder = showBorder
+            });
         };
         if (showSprite)
         {
@@ -159,6 +157,13 @@ public class SpeedRedirect : Entity
         }
 
         Scene.Add(bg);
+    }
+
+    public override void Render()
+    {
+        base.Render();
+        bg.Position = Position;
+        bg.Render();
     }
 
 
@@ -245,6 +250,7 @@ public class SpeedRedirect : Entity
                 {
                     speedAmount = speed.Length() * shootSpeedMultiplier;
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

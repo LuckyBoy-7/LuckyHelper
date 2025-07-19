@@ -26,6 +26,7 @@ public class EntityPinner : Entity
     private float alpha;
     private bool showBorder;
     private bool showBackground;
+    private Entity bg = new Entity();
 
 
     public EntityPinner(EntityData data, Vector2 offset) : base(data.Position + offset)
@@ -67,7 +68,7 @@ public class EntityPinner : Entity
     public override void Added(Scene scene)
     {
         base.Added(scene);
-        Entity bg = new Entity();
+        bg.Visible = false;
         bg.Position = Position;
         bg.Depth = spriteDepth;
 
@@ -76,7 +77,7 @@ public class EntityPinner : Entity
         // borderColor = new Color(35, 125, 255);
         // innerColor = new Color(150, 255, 255);
         renderComponent.OnRender += () =>
-        {
+        { 
             if (colliderType == ColliderType.Circle)
             {
                 Vector2 start = Position - new Vector2(radius, radius);
@@ -120,6 +121,13 @@ public class EntityPinner : Entity
                 }
             }
         }
+    }
+
+    public override void Render()
+    {
+        base.Render();
+        bg.Position = Position;
+        bg.Render();
     }
 
     private PinnedEntityHandler GetHandler(Entity entity)
