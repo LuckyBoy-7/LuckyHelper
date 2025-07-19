@@ -13,18 +13,25 @@ public class OverlapPairSetFlagTrigger : Trigger
     public string ID;
     private string flag;
     public static DefaultDict<string, HashSet<OverlapPairSetFlagTrigger>> IdToTriggerSet = new(() => new());
+    private Vector2 targetPos;
 
     public OverlapPairSetFlagTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
         main = data.Bool("main");
         ID = data.Attr("triggerID");
         flag = data.Attr("flag");
+        targetPos = Position;
+        if (data.Nodes.Length != 0)
+        {
+            targetPos += data.Nodes[0] + offset - Center;
+        }
     }
 
     public override void Added(Scene scene)
     {
         base.Added(scene);
         IdToTriggerSet[ID].Add(this);
+        Position = targetPos;
     }
 
     public override void Removed(Scene scene)
