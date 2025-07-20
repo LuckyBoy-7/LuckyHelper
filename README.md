@@ -22,6 +22,7 @@
 * SpeedRedirect(Entity): 进入时可以随意调整玩家的速度方向和大小 -- by 底龙
 * PlayerMovementController(Trigger): 调节玩家运动参数(移动/跳跃速度, 加速度之类的, 以后可能还会补充) -- by Molong
 * CrystalHeartDialogController(Entity): 为水晶之心单独设置文本 -- by Touchme_uwu
+* SetConditionFlagTrigger(Trigger): 在玩家做出某种行为时设置 flag -- by Shynnie
 
 ### GhostTranspose -- by Molong
 
