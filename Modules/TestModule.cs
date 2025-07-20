@@ -23,6 +23,28 @@ public class TestModule
         On.Celeste.Player.Update += PlayerOnUpdate;
     }
 
+    private static void BloomRendererOnApply(ILContext il)
+    {
+        ILCursor cursor = new(il);
+        Logger.Log(nameof(LuckyHelperModule),"Try Find");
+        if(
+            cursor.TryGotoNext(
+                ins => ins.MatchLdloca(9),
+                ins => ins.MatchCall(out _),
+                ins => ins.MatchCallvirt(out _),
+                ins => ins.MatchCall(out _),
+                ins => ins.MatchCall(out _)
+            )
+        )
+        {
+            Logger.Log(nameof(LuckyHelperModule),"Try Find (1/2)");
+            if (cursor.TryGotoNext(ins => ins.MatchBrtrue(out _))) {
+                Logger.Log(nameof(LuckyHelperModule),"Found success");
+            }
+            cursor.EmitLdstr("12345").EmitPop();
+        }
+    }
+
     private static Session session;
 
     private static void PlayerOnUpdate(On.Celeste.Player.orig_Update orig, Player self)

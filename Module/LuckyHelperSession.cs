@@ -41,6 +41,6 @@ public class LuckyHelperSession : EverestModuleSession
     // PlayerMovementController
     public bool playerUseSetMovementData = false;
     public PlayerMovementData PlayerMovementData;
-    
 
+    public Dictionary<SetConditionFlagTriggerStateType, SetConditionFlagTriggerData> SetConditionFlagTriggerStateToDatas { get; set; } = new();
 }
