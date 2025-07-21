@@ -1,6 +1,7 @@
 using Celeste.Mod.Entities;
 using LuckyHelper.Extensions;
 using LuckyHelper.Module;
+using LuckyHelper.Utils;
 using BloomRenderer = On.Celeste.BloomRenderer;
 using LightingRenderer = On.Celeste.LightingRenderer;
 
@@ -12,7 +13,7 @@ public class LightSourceAdjustTrigger : Trigger
 {
     private bool affectRadius;
     private bool affectAlpha;
-    private List<string> targets = new();
+    private HashSet<string> targets = new();
     private float offsetFrom = 0;
     private float offsetTo = 2;
 
@@ -21,11 +22,7 @@ public class LightSourceAdjustTrigger : Trigger
 
     public LightSourceAdjustTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
-        string tmpTargets = data.Attr("targets");
-        foreach (var str in tmpTargets.Split(","))
-        {
-            targets.Add(str.Trim());
-        }
+        targets = ParseUtils.ParseTypesStringToBriefNames(data.Attr("targets")); 
 
         offsetFrom = data.Float("offsetFrom");
         offsetTo = data.Float("offsetTo");
@@ -59,12 +56,12 @@ public class LightSourceAdjustTrigger : Trigger
         foreach (BloomPoint bloomPoint in scene.Tracker.GetComponents<BloomPoint>())
         {
             Entity entity = bloomPoint.Entity;
-            string entityType = entity.GetType().ToString();
+            string entityTypeName = entity.GetType().Name;
 
             backup.Add(new(bloomPoint, bloomPoint.Alpha, bloomPoint.Radius));
-            if (targetToAlpha.TryGetValue(entityType, out var alpha))
+            if (targetToAlpha.TryGetValue(entityTypeName, out var alpha))
                 bloomPoint.Alpha *= alpha;
-            if (targetToRadius.TryGetValue(entityType, out var radius))
+            if (targetToRadius.TryGetValue(entityTypeName, out var radius))
             {
                 bloomPoint.Radius *= radius;
             }
@@ -88,12 +85,12 @@ public class LightSourceAdjustTrigger : Trigger
         foreach (VertexLight vertexLight in scene.Tracker.GetComponents<VertexLight>())
         {
             Entity entity = vertexLight.Entity;
-            string entityType = entity.GetType().ToString();
+            string entityTypeName = entity.GetType().Name;
 
             backup.Add(new(vertexLight, vertexLight.Alpha, vertexLight.StartRadius, vertexLight.EndRadius));
-            if (targetToAlpha.TryGetValue(entityType, out var alpha))
+            if (targetToAlpha.TryGetValue(entityTypeName, out var alpha))
                 vertexLight.Alpha *= alpha;
-            if (targetToRadius.TryGetValue(entityType, out var radius))
+            if (targetToRadius.TryGetValue(entityTypeName, out var radius))
             {
                 vertexLight.StartRadius *= radius;
                 vertexLight.EndRadius *= radius;

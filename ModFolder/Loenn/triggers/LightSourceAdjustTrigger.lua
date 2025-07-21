@@ -7,7 +7,7 @@ trigger.placements = {
         offsetFrom = 0,
         offsetTo = 1,
         positionMode = "NoEffect",
-        targets = "Celeste.Player, Celeste.TheoCrystal",
+        targets = "Player, TheoCrystal, PlayerDeadBody",
         affectRadius = true,
         affectAlpha = true,
     }
