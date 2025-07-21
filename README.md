@@ -60,3 +60,31 @@ LuckyHelperAreaMetaData:
     DefaultTextboxPath: "textbox/LuckyHelper/default"
     DefaultMiniTextboxPath: "textbox/LuckyHelper/default_mini"
 ```
+
+## 致谢
+
+我感谢天, 感谢地, 感谢你:
+
+* Saplonily
+* WEGFan(伟哥基)
+* wanmaple(浣熊)
+* Lozen(反向钟)
+* Dizer(谛泽)
+* Molong
+* Breaker-K
+* UnderDragon(底龙)
+* jpyx258(键盘英雄)
+* Myn_Gen(没有你)
+* SSM24
+* Appels
+* paperlock(单个标点符号)
+* ABuffZucchini
+* RikiUwU
+* kuksa
+* nocolm
+* Shynnie(Shy 酱)
+* AfterDawn_Cxwg(晨曦微光)
+* youzi(柚子)
+* Touchme_uwu(ΓΠ)
+* 陌生的下界合金剑
+* 茶杯
