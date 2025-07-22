@@ -5,17 +5,25 @@ trigger.name = "LuckyHelper/SetConditionFlagTrigger"
 trigger.placements = {
     name = "normal",
     data = {
-        on = true,
-        stateType = "OnJump",
+        conditionType = "LuckyHelper_OnJump",
+        activationType = "Stay",
         flag = "OnJumpFlag",
         removeFlagDelayedFrames = -1
     }
 }
 
 trigger.fieldInformation = {
-    stateType = {
+    conditionType = {
         options = {
             "OnJump"
+        },
+        editable = false,
+    }, 
+    activationType = {
+        options = {
+            "None",
+            "Set",
+            "Stay",
         },
         editable = false,
     },
