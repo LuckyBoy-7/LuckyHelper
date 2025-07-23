@@ -88,3 +88,4 @@ LuckyHelperAreaMetaData:
 * Touchme_uwu(ΓΠ)
 * 陌生的下界合金剑
 * 茶杯
+* SunsetQuasar
