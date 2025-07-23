@@ -100,7 +100,7 @@ public class SetConditionFlagTriggerModule
 
         public void OnConditionFit(Player player)
         {
-            if (TryGetTriggerData(out var data))
+            if (!TryGetTriggerData(out var data))
                 return;
 
             SetFlag(player.Session(), data);

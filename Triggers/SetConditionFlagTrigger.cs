@@ -18,7 +18,6 @@ public enum SetFlagConditionType
 
 public struct SetConditionFlagTriggerData
 {
-    public bool On;
     public SetFlagConditionType ConditionType;
     public ActivationType ActivationType;
     public string Flag;
