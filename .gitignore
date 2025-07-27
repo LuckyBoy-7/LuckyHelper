@@ -4,4 +4,3 @@ obj/
 .luarc.json
 Folder.DotSettings.user
 ModFolder/LuckyHelper.*
-Modules/TestModule.cs

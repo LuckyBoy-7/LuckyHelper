@@ -19,6 +19,17 @@ public static class TypeToObjectsModule
         On.Monocle.Component.Removed += ComponentOnRemoved;
     }
 
+    public static IEnumerable<Entity> IterEntitiesByTypes(HashSet<string> types)
+    {
+        foreach (string type in types)
+        {
+            foreach (var entity in BriefTypeToEntities[type])
+            {
+                yield return entity;
+            }
+        }
+    }
+
     private static void ComponentOnAdded(On.Monocle.Component.orig_Added orig, Component self, Entity entity)
     {
         BriefTypeToComponents[self.BriefTypeName()].Add(self);

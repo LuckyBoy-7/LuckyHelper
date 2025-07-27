@@ -179,3 +179,6 @@ triggers.LuckyHelper/PlayerMovementController.attributes.description.highSpeedAc
 
 # SetConditionFlagTrigger
 triggers.LuckyHelper/SetConditionFlagTrigger.placements.name.normal=Set Condition Flag Trigger
+
+# InvertFlagTrigger
+triggers.LuckyHelper/InvertFlagTrigger.placements.name.normal=Invert Flag Trigger
