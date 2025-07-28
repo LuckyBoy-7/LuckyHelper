@@ -15,7 +15,6 @@ public enum SetFlagConditionType
     OnJump
 }
 
-
 public struct SetConditionFlagTriggerData
 {
     public SetFlagConditionType ConditionType;
@@ -29,6 +28,7 @@ public struct SetConditionFlagTriggerData
 public class SetConditionFlagTrigger : Trigger
 {
     public SetConditionFlagTriggerData flagData;
+    private bool coverRoom;
 
     public SetConditionFlagTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
@@ -50,6 +50,17 @@ public class SetConditionFlagTrigger : Trigger
             SetConditionFlagTriggerStateType stateType = data.Enum<SetConditionFlagTriggerStateType>("stateType");
             if (stateType == SetConditionFlagTriggerStateType.OnJump)
                 flagData.ConditionType = SetFlagConditionType.OnJump;
+        }
+
+        coverRoom = data.Bool("coverRoom");
+    }
+
+    public override void Added(Scene scene)
+    {
+        base.Added(scene);
+        if (coverRoom)
+        {
+            this.CoverRoom();
         }
     }
 

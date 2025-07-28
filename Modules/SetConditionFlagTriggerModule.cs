@@ -30,12 +30,12 @@ public class SetConditionFlagTriggerModule
 
     private static void PlayerOnUpdate(On.Celeste.Player.orig_Update orig, Player self)
     {
-        orig(self);
         stateTypeToTriggers.Clear();
         foreach (SetConditionFlagTrigger trigger in self.CollideAll<SetConditionFlagTrigger>())
         {
             stateTypeToTriggers[trigger.flagData.ConditionType].Add(trigger);
         }
+        orig(self);
     }
 
     private static void LevelOnUpdate(On.Celeste.Level.orig_Update orig, Celeste.Level self)
@@ -96,7 +96,7 @@ public class SetConditionFlagTriggerModule
 
     public abstract class SetConditionFlagTriggerHandler
     {
-        public abstract SetFlagConditionType StateType { get; }
+        public abstract SetFlagConditionType ConditionType { get; }
 
         public void OnConditionFit(Player player)
         {
@@ -119,7 +119,7 @@ public class SetConditionFlagTriggerModule
             var stateToDatas = LuckyHelperModule.Session.SetConditionFlagTriggerStateToDatas;
             data = new();
 
-            var collidedTriggers = stateTypeToTriggers[StateType];
+            var collidedTriggers = stateTypeToTriggers[ConditionType];
             var stayModeTrigger = collidedTriggers.FirstOrDefault(trigger => trigger.flagData.ActivationType == ActivationType.Stay, null);
             if (stayModeTrigger != null)
             {
@@ -127,7 +127,7 @@ public class SetConditionFlagTriggerModule
                 return true;
             }
 
-            if (stateToDatas.TryGetValue(StateType, out var tmpData) && tmpData.ActivationType == ActivationType.Set)
+            if (stateToDatas.TryGetValue(ConditionType, out var tmpData) && tmpData.ActivationType == ActivationType.Set)
             {
                 data = tmpData;
                 return true;
@@ -139,6 +139,6 @@ public class SetConditionFlagTriggerModule
 
     public class OnJumpConditionHandler : SetConditionFlagTriggerHandler
     {
-        public override SetFlagConditionType StateType => SetFlagConditionType.OnJump;
+        public override SetFlagConditionType ConditionType => SetFlagConditionType.OnJump;
     }
 }
