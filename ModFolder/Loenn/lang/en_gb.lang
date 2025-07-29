@@ -154,7 +154,7 @@ triggers.LuckyHelper/TimeSavedIn.placements.name.normal=Time Saved In
 triggers.LuckyHelper/TimeSavedIn.attributes.description.savedIn=Time in this room will be counted to the path, then you can read it by TimerText later
 
 # FreezeTrigger
-triggers.LuckyHelper/FreezeTrigger.placements.name.normal=FreezeTrigger
+triggers.LuckyHelper/FreezeTrigger.placements.name.normal=Freeze Trigger
 
 # LightSourceAdjustTrigger
 triggers.LuckyHelper/LightSourceAdjustTrigger.placements.name.normal=Light Source Adjust Trigger
@@ -182,3 +182,6 @@ triggers.LuckyHelper/SetConditionFlagTrigger.placements.name.normal=Set Conditio
 
 # InvertFlagTrigger
 triggers.LuckyHelper/InvertFlagTrigger.placements.name.normal=Invert Flag Trigger
+
+# LogicFlagTrigger
+triggers.LuckyHelper/LogicFlagTrigger.placements.name.normal=Logic Flag Trigger
