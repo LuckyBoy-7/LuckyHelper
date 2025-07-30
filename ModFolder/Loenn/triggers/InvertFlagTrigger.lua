@@ -5,9 +5,20 @@ trigger.placements = {
     name = "normal",
     data = {
         types = "Player",
-        flag = "LuckyHelper_InvertFlag",
-        invertOnEnter = true,
-        invertOnLeave = false,
+        entityTriggerMode = "OnEntityEnter",
+        flag = "InvertFlagTrigger_OutputFlag"
+    }
+}
+
+trigger.fieldInformation = {
+    entityTriggerMode = {
+        options = {
+            "OnEntityEnter",
+            "OnEntityStay",
+            "OnEntityLeave",
+            "Always",
+        },
+        editable = false
     }
 }
 

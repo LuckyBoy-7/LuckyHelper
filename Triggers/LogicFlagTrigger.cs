@@ -1,4 +1,5 @@
-#define debug
+// #define debug
+
 using System.Text;
 using Celeste.Mod.Entities;
 using Lucky.Kits.Extensions;
@@ -106,14 +107,12 @@ public class LogicFlagTrigger : FlagTrigger
 {
     private List<string> debugInfo = new();
     private bool debug;
-    private const string DebugPostfix = "(LuckyHelper_Logic_Flag_Trigger_Debug)";
+    private const string DebugPostfix = "(LuckyHelper/LogicFlagTriggerDebug)";
     private FlagLogicOperator flagLogicJudge;
-    private string flag;
 
     public LogicFlagTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
         string exp = data.Attr("conditionFlagExpression");
-        flag = data.Attr("flag");
         debug = data.Bool("debug");
 
         if (!CheckValidBracket(exp))
@@ -124,130 +123,15 @@ public class LogicFlagTrigger : FlagTrigger
 
 
         HashSet<char> allOperators = FlagLogicOperator.AllOperators;
-
-        List<string> elements = new();
         List<char> brackets = new() { '(', ')' };
-        StringBuilder sb = new();
-        // 预处理, 把操作符都换成一个(clean up)
-        exp = exp.Replace(" ", ""); // 去除空格
-        exp = exp.Replace("!!", ""); // 去除双重否定( 
-        int n = exp.Length;
-        int i = 0;
-        bool preIsNot = false;
-        while (i < n)
-        {
-            char start = exp[i];
-            if (brackets.Contains(start))
-            {
-                elements.Add(start.ToString());
-                i += 1;
-                continue;
-            }
+        List<string> elements = Cleanup(exp, allOperators, brackets);
+        var res = ParseElements(elements, allOperators, brackets);
 
-            if (allOperators.Contains(exp[i]))
-            {
-                while (i < n && start == exp[i]) // 允许 A &&& B 写法(什
-                {
-                    i += 1;
-                }
+        GetRootLogicOperatorByParsedElements(res, allOperators);
+    }
 
-                if (start == '!')
-                {
-                    if (i == n || allOperators.Contains(exp[i]) || brackets.Contains(exp[i]))
-                    {
-                        TryAddWarningData("Invalid Invert Operator");
-                        return;
-                    }
-
-                    preIsNot = true;
-                }
-                else
-                {
-                    elements.Add(start.ToString());
-                }
-            }
-            else
-            {
-                while (i < n && !allOperators.Contains(exp[i]) && !brackets.Contains(exp[i]))
-                {
-                    sb.Append(exp[i++]);
-                }
-
-                string flag = sb.ToString().Trim();
-                sb.Clear();
-                if (debug)
-                {
-                    debugInfo.Add(flag);
-                }
-
-                elements.Add(flag);
-                if (preIsNot)
-                {
-                    preIsNot = false;
-                    elements.Add("!");
-                }
-            }
-        }
-
-#if debug
-
-        foreach (string element in elements)
-        {
-            LogUtils.LogWarning(element);
-        }
-
-        LogUtils.LogWarning("=====================");
-#endif
-
-        List<char> operators = new();
-        List<string> res = new();
-
-
-        foreach (string element in elements)
-        {
-            char op = element[0];
-            if (!allOperators.Contains(op) && !brackets.Contains(op)) // 如果是 flag
-            {
-                res.Add(element);
-            }
-            else if (op == '(')
-            {
-                operators.Add(op);
-            }
-            else if (op == ')')
-            {
-                while (operators[^1] != '(')
-                {
-                    res.Add(operators.Pop().ToString());
-                }
-
-                operators.Pop();
-            }
-            else // 是操作符
-            {
-                while (operators.Count > 0 && operators[^1] != '(' && FlagLogicOperator.HasLessPriority(op, operators[^1]))
-                {
-                    res.Add(operators.Pop().ToString());
-                }
-
-                operators.Add(op);
-            }
-        }
-
-        while (operators.Count > 0)
-        {
-            res.Add(operators.Pop().ToString());
-        }
-#if debug
-
-        foreach (string s in res)
-        {
-            LogUtils.LogWarning(s);
-        }
-
-        LogUtils.LogWarning("=====================");
-#endif
-
+    private void GetRootLogicOperatorByParsedElements(List<string> res, HashSet<char> allOperators)
+    {
         List<FlagLogicOperator> logics = new();
         foreach (var s in res)
         {
@@ -289,14 +173,120 @@ public class LogicFlagTrigger : FlagTrigger
             }
         }
 
-        if (logics.Count > 0)
+        flagLogicJudge = logics.Count > 0 ? logics[0] : new AlwaysTrueFlagLogicOperator();
+    }
+
+    private List<string> ParseElements(List<string> elements, HashSet<char> allOperators, List<char> brackets)
+    {
+        List<char> operators = new();
+        List<string> res = new();
+
+
+        foreach (string element in elements)
         {
-            flagLogicJudge = logics[0];
+            char op = element[0];
+            if (!allOperators.Contains(op) && !brackets.Contains(op)) // 如果是 flag
+            {
+                res.Add(element);
+            }
+            else if (op == '(')
+            {
+                operators.Add(op);
+            }
+            else if (op == ')')
+            {
+                while (operators[^1] != '(')
+                {
+                    res.Add(operators.Pop().ToString());
+                }
+
+                operators.Pop();
+            }
+            else // 是操作符
+            {
+                while (operators.Count > 0 && operators[^1] != '(' && FlagLogicOperator.HasLessPriority(op, operators[^1]))
+                {
+                    res.Add(operators.Pop().ToString());
+                }
+
+                operators.Add(op);
+            }
         }
-        else
+
+        while (operators.Count > 0)
         {
-            flagLogicJudge = new AlwaysTrueFlagLogicOperator();
+            res.Add(operators.Pop().ToString());
         }
+#if debug
+        foreach (string s in res)
+        {
+            LogUtils.LogWarning(s);
+        }
+
+        LogUtils.LogWarning("=====================");
+#endif
+        if (debug)
+            debugInfo.Add($"[{string.Join(" ", res)}](Parsed Expression)");
+
+        return res;
+    }
+
+    private List<string> Cleanup(string exp, HashSet<char> allOperators, List<char> brackets)
+    {
+        List<string> elements = new();
+        StringBuilder sb = new();
+        // 预处理, 把操作符都换成一个(clean up)
+        exp = exp.Replace(" ", ""); // 去除空格
+        exp = exp.Replace("!!", ""); // 去除双重否定( 
+        int n = exp.Length;
+        int i = 0;
+        bool preIsNot = false;
+        while (i < n)
+        {
+            char start = exp[i];
+            if (brackets.Contains(start))
+            {
+                elements.Add(start.ToString());
+                i += 1;
+                continue;
+            }
+
+            if (allOperators.Contains(exp[i]))
+            {
+                while (i < n && start == exp[i]) // 允许 A &&& B 写法(什
+                {
+                    i += 1;
+                }
+
+                elements.Add(start.ToString());
+            }
+            else
+            {
+                while (i < n && !allOperators.Contains(exp[i]) && !brackets.Contains(exp[i]))
+                {
+                    sb.Append(exp[i++]);
+                }
+
+                string flag = sb.ToString().Trim();
+                sb.Clear();
+                elements.Add(flag);
+            }
+        }
+
+        if (debug)
+        {
+            debugInfo.Add($"[{string.Join("", elements)}](Cleaned Expression)");
+        }
+
+#if debug
+        foreach (string element in elements)
+        {
+            LogUtils.LogWarning(element);
+        }
+
+        LogUtils.LogWarning("=====================");
+#endif
+        return elements;
     }
 
     private void TryAddWarningData(string warning = "Invalid Expression")
@@ -310,9 +300,18 @@ public class LogicFlagTrigger : FlagTrigger
         base.Added(scene);
         if (debug)
         {
+            Session session = this.Session();
+            List<string> toRemove = new();
+            foreach (var sessionFlag in session.Flags)
+            {
+                if (sessionFlag.EndsWith(DebugPostfix))
+                    toRemove.Add(sessionFlag);
+            }
+
+            toRemove.ForEach(flag => session.SetFlag(flag, false));
             foreach (var parsedConditionFlag in debugInfo)
             {
-                this.Session().SetFlag(parsedConditionFlag + DebugPostfix);
+                session.SetFlag(parsedConditionFlag + DebugPostfix);
             }
         }
     }
@@ -338,6 +337,12 @@ public class LogicFlagTrigger : FlagTrigger
     public override bool TrySetFlag()
     {
         Session session = this.Session();
+        if (flagLogicJudge == null)
+        {
+            session.SetFlag(flag, false);
+            return false;
+        }
+
         bool canSet = flagLogicJudge.GetResult(session);
         session.SetFlag(flag, canSet);
         return canSet;

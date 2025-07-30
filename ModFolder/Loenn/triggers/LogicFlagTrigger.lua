@@ -5,15 +5,15 @@ trigger.placements = {
     name = "normal",
     data = {
         types = "Player",
-        flagTriggerMode = "OnEntityEnter",
-        conditionFlagExpression = "!LuckyHelper_Flag1 && LuckyHelperFlag2 || LuckyHelperFlag3",
-        flag = "LuckyHelper_OutputFlag",
+        entityTriggerMode = "OnEntityEnter",
+        flag = "LogicFlagTrigger_OutputFlag",
+        conditionFlagExpression = "!flag1 && (flag2 || flag3)",
         debug = false
     }
 }
 
 trigger.fieldInformation = {
-    flagTriggerMode = {
+    entityTriggerMode = {
         options = {
             "OnEntityEnter",
             "OnEntityStay",

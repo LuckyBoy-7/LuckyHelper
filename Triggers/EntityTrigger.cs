@@ -4,25 +4,39 @@ using LuckyHelper.Utils;
 
 namespace LuckyHelper.Triggers;
 
+public enum EntityTriggerMode
+{
+    OnEntityEnter,
+    OnEntityStay,
+    OnEntityLeave,
+    Always
+}
+
 public abstract class EntityTrigger : Trigger
 {
+    public EntityTriggerMode EntityTriggerMode;
+    
     private HashSet<string> briefTypes = new();
 
     private HashSet<Entity> preCollidedEntities = new();
 
     private bool hasPlayer;
+    
+    
 
     public EntityTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
+        EntityTriggerMode = data.Enum<EntityTriggerMode>("entityTriggerMode");
         briefTypes = ParseUtils.ParseTypesStringToBriefNames(data.Attr("types"));
         Depth = -1000000;
-        
+
         if (briefTypes.Contains(nameof(Player)))
         {
             hasPlayer = true;
             briefTypes.Remove(nameof(Player));
         }
     }
+    public abstract void OnTriggered();
 
     public override void Update()
     {
@@ -50,8 +64,30 @@ public abstract class EntityTrigger : Trigger
         }
 
         preCollidedEntities = curCollidedEntities;
+
+        if (EntityTriggerMode == EntityTriggerMode.Always)
+            OnTriggered();
     }
 
+    public virtual void OnCustomEnter(Entity entity)
+    {
+        if (EntityTriggerMode == EntityTriggerMode.OnEntityEnter)
+            OnTriggered();
+    }
+
+    public virtual void OnCustomLeave(Entity entity)
+    {
+        if (EntityTriggerMode == EntityTriggerMode.OnEntityLeave)
+            OnTriggered();
+    }
+
+    public virtual void OnCustomStay(Entity entity)
+    {
+        if (EntityTriggerMode == EntityTriggerMode.OnEntityStay)
+            OnTriggered();
+    }
+
+    
     private bool EntityInsideTrigger(Entity entity)
     {
         if (entity.Collider == null)
@@ -62,10 +98,6 @@ public abstract class EntityTrigger : Trigger
         return CollideCheck(entity);
     }
 
-
-    public abstract void OnCustomEnter(Entity entity);
-    public abstract void OnCustomLeave(Entity entity);
-    public abstract void OnCustomStay(Entity entity);
 
 
     public override void OnEnter(Player player)

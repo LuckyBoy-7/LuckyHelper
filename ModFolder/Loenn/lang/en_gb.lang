@@ -166,7 +166,7 @@ triggers.LuckyHelper/TalkComponentController.attributes.description.dynamic=Whet
 
 # OverlapPairSetFlagTrigger
 triggers.LuckyHelper/OverlapPairSetFlagTrigger.placements.name.normal=Overlap Pair Set Flag Trigger
-triggers.LuckyHelper/OverlapPairSetFlagTrigger.attributes.description.main=I assume there's only two OverlapPairSetFlagTrigger with the same id, one is main, which do collide check and set flag, while the other is just a dummy trigger.
+triggers.LuckyHelper/OverlapPairSetFlagTrigger.attributes.description.main=I assume there are at least two OverlapPairSetFlagTrigger with the same id, only one can be main, which do collide check and set flag, while the others are just dummy triggers that do nothing.
 triggers.LuckyHelper/OverlapPairSetFlagTrigger.attributes.description.flag=While two OverlapPairSetFlagTrigger with same id has collision, the flag will be set, otherwise removed(one of the two triggers should be 'main' trigger)
 
 # FastBubbleController 
@@ -182,6 +182,14 @@ triggers.LuckyHelper/SetConditionFlagTrigger.placements.name.normal=Set Conditio
 
 # InvertFlagTrigger
 triggers.LuckyHelper/InvertFlagTrigger.placements.name.normal=Invert Flag Trigger
+triggers.LuckyHelper/InvertFlagTrigger.attributes.description.types=Comma-separated list of entity class names to interact (e.g. Player, Strawberry, Booster, etc)
+triggers.LuckyHelper/InvertFlagTrigger.attributes.description.entityTriggerMode=Determines when the trigger will do a triggered action\nOnEntityEnter: On entities in the types list enter the trigger\nOnEntityStay: On entities in the types list stay in the trigger\nOnEntityLeave: On entities in the types list leave the trigger\nAlways: Do it in every frame. Works like a controller
+triggers.LuckyHelper/InvertFlagTrigger.attributes.description.flag=Flag you want to invert
 
 # LogicFlagTrigger
 triggers.LuckyHelper/LogicFlagTrigger.placements.name.normal=Logic Flag Trigger
+triggers.LuckyHelper/LogicFlagTrigger.attributes.description.types=Comma-separated list of entity class names to interact (e.g. Player, Strawberry, Booster, etc)
+triggers.LuckyHelper/LogicFlagTrigger.attributes.description.entityTriggerMode=Determines when the trigger will do a triggered action\nOnEntityEnter: On entities in the types list enter the trigger\nOnEntityStay: On entities in the types list stay in the trigger\nOnEntityLeave: On entities in the types list leave the trigger\nAlways: Do it in every frame. Works like a controller
+triggers.LuckyHelper/LogicFlagTrigger.attributes.description.flag=Flag you want to set if conditionFlagExpression fits the condition
+triggers.LuckyHelper/LogicFlagTrigger.attributes.description.debug=You can see debug info with flag format, check it with mapping utils!(You can see how the expression is parsed if your Condition Flag Expression not works as you like)
+triggers.LuckyHelper/LogicFlagTrigger.attributes.description.conditionFlagExpression=Logic expression with flag format like (!flag1 && (flag2 || flag3)) means when flag1 doesn't exist and there's flag2 or flag3, it can output the flag you want.\n&& for both flags exist\n|| for either of flags exist\n! for invert flag or invert expression like !(flag1 && flag2)

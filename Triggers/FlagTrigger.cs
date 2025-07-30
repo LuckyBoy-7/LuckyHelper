@@ -5,47 +5,19 @@ using LuckyHelper.Utils;
 
 namespace LuckyHelper.Triggers;
 
-public enum FlagTriggerMode
-{
-    OnEntityEnter,
-    OnEntityStay,
-    OnEntityLeave,
-    Always
-}
+
 
 public abstract class FlagTrigger : EntityTrigger
 {
-    public FlagTriggerMode FlagTriggerMode;
-
-    public FlagTrigger(EntityData data, Vector2 offset) : base(data, offset)
+    protected string flag;
+    protected FlagTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
-        FlagTriggerMode = data.Enum<FlagTriggerMode>("flagTriggerMode");
+        flag = data.Attr("flag");
     }
 
-    public override void Update()
+    public override void OnTriggered()
     {
-        base.Update();
-        if (FlagTriggerMode == FlagTriggerMode.Always)
-            TrySetFlag();
-    }
-
-    public override void OnCustomEnter(Entity entity)
-    {
-        if (FlagTriggerMode == FlagTriggerMode.OnEntityEnter)
-            TrySetFlag();
-            
-    }
-
-    public override void OnCustomLeave(Entity entity)
-    {
-        if (FlagTriggerMode == FlagTriggerMode.OnEntityLeave)
-            TrySetFlag();
-    }
-
-    public override void OnCustomStay(Entity entity)
-    {
-        if (FlagTriggerMode == FlagTriggerMode.OnEntityStay)
-            TrySetFlag();
+        TrySetFlag();
     }
 
     public abstract bool TrySetFlag();
