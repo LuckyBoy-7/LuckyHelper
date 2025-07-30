@@ -7,22 +7,24 @@
 * Custom Water(Entity): 自定义的水 -- by Molong
 * Death Count Text(Entity): 死亡计数器 -- by Molong
 * Timer Text(Entity): 计时器 -- by Molong
-* CustomGondola(Entity): 自定义缆车 -- by Breaker-K, 底龙
-* ArbitraryShapeConquestArea(Entity): 灵感来源于战地占点 -- by 键盘英雄(由于好像没人用过, 所以可能会有很多 bug)
-* DreamZone(Entity): 梦境区域, 可看作没有碰撞的果冻 -- by 底龙
-* EnablePlayerFallingThroughJumpThru(Settings): 下蹲穿单向板
-* LightSourceAdjust(Trigger): 调整光源亮度和透明度(本来应该给别人提 pr 的, 但是人家好像好久没更了就还是选择了抄())  -- by Myn
-* FreezeTrigger(Trigger): 给冻结帧的 Trigger -- by Myn
-* DecalWithCombinedRegistry(Entity): 原版 DecalRegistry 基于固定路径, 这个路径就只是一个 id/key, 可以随意组合 -- by Myn
-* ReskinnableBadelineBoost(Entity): 可换皮肤的 Badeline Boost -- by Riki
-* TalkComponentController(Trigger): 调整对话组件的显隐(就是望远镜上面那个 UI) -- by Shynnie, AfterDawn
-* OverlapPairSetFlag(Trigger): 相交就设置 Flag 的 Trigger -- by Shynnie, AfterDawn
-* FastBubbleController(Trigger): 控制是否可以泡泡快启 -- by Riki
-* EntityPinner(Entity): 一个可以吸取一些实体的东西, 比如 Theo水晶, 水母, 玩家等 -- by 底龙
-* SpeedRedirect(Entity): 进入时可以随意调整玩家的速度方向和大小 -- by 底龙
-* PlayerMovementController(Trigger): 调节玩家运动参数(移动/跳跃速度, 加速度之类的, 以后可能还会补充) -- by Molong
-* CrystalHeartDialogController(Entity): 为水晶之心单独设置文本 -- by Touchme_uwu
-* SetConditionFlagTrigger(Trigger): 在玩家做出某种行为时设置 flag -- by Shynnie
+* Custom Gondola(Entity): 自定义缆车 -- by Breaker-K, 底龙
+* Arbitrary Shape Conquest Area(Entity): 灵感来源于战地占点 -- by 键盘英雄(由于好像没人用过, 所以可能会有很多 bug)
+* Dream Zone(Entity): 梦境区域, 可看作没有碰撞的果冻 -- by 底龙
+* Enable Player Falling Through JumpThru(Settings): 下蹲穿单向板
+* Light Source Adjust(Trigger): 调整光源亮度和透明度(本来应该给别人提 pr 的, 但是人家好像好久没更了就还是选择了抄())  -- by Myn
+* Freeze Trigger(Trigger): 给冻结帧的 Trigger -- by Myn
+* Decal With Combined Registry(Entity): 原版 DecalRegistry 基于固定路径, 这个路径就只是一个 id/key, 可以随意组合 -- by Myn
+* Reskinnable Badeline Boost(Entity): 可换皮肤的 Badeline Boost -- by Riki
+* TalkComponent Controller(Trigger): 调整对话组件的显隐(就是望远镜上面那个 UI) -- by Shynnie, AfterDawn
+* Overlap Pair Set Flag(Trigger): 相交就设置 Flag 的 Trigger -- by Shynnie, AfterDawn
+* Fast Bubble Controller(Trigger): 控制是否可以泡泡快启 -- by Riki
+* Entity Pinner(Entity): 一个可以吸取一些实体的东西, 比如 Theo水晶, 水母, 玩家等 -- by 底龙
+* Speed Redirect(Entity): 进入时可以随意调整玩家的速度方向和大小 -- by 底龙
+* Player Movement Controller(Trigger): 调节玩家运动参数(移动/跳跃速度, 加速度之类的, 以后可能还会补充) -- by Molong
+* Crystal Heart Dialog Controller(Entity): 为水晶之心单独设置文本 -- by Touchme_uwu
+* Set Condition Flag(Trigger): 在玩家做出某种行为时设置 flag -- by Shynnie
+* Invert Flag(Trigger): 反转某个 flag
+* Logic Flag(Trigger): 根据逻辑判断是否设置 flag, 比如如果条件 (flag1 && (flag2 || !flag3)) 成立, 则设置对应 flag
 
 ### GhostTranspose -- by Molong
 
