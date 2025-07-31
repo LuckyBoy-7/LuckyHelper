@@ -28,9 +28,9 @@
 
 ### GhostTranspose -- by Molong
 
-* GhostTranposeTrigger(Trigger): 像 iwannna 中的 nang s9 一样可以发射幻影传送到碰撞位置
-* GhostTransposeBarrier(Entity): 一堵阻挡幻影的墙, 玩家可以自由穿过
-* KillGhostTrigger(Trigger): 清除幻影的 Trigger
+* GhostTranpose(Trigger): 像 iwannna 中的 nang s9 一样可以发射幻影传送到碰撞位置
+* GhostTranspose Barrier(Entity): 一堵阻挡幻影的墙, 玩家可以自由穿过
+* Kill Ghost(Trigger): 清除幻影的 Trigger
 
 ### LootSpeedrun -- by 键盘英雄(由于好像没人用过, 所以可能会有很多 bug)
 
@@ -91,3 +91,4 @@ LuckyHelperAreaMetaData:
 * 陌生的下界合金剑
 * 茶杯
 * SunsetQuasar
+* shadowRo
