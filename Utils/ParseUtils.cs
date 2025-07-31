@@ -2,7 +2,7 @@ namespace LuckyHelper.Utils;
 
 public static class ParseUtils
 {
-    public static List<string> ParseCommaSeperatedStringToList(string str) => str.Split(",").Select(s => s.Trim()).ToList();
+    public static List<string> ParseCommaSeperatedStringToList(string str) => str.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
 
     public static HashSet<string> ParseTypesStringToBriefNames(string str)
     {
