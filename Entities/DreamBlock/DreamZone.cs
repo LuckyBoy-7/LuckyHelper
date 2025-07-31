@@ -24,6 +24,7 @@ public class DreamZone : DreamBlock
     public string StarColors3 = "5b6ee1,CC3B3B,7daa64";
 
     public bool DisableWobble = true;
+    public bool DisableInteraction = false;
 
     public DreamZone(EntityData data, Vector2 offset) : base(data, offset)
     {
@@ -47,6 +48,7 @@ public class DreamZone : DreamBlock
             StarColors3 = data.Attr("startColors3");
 
         DisableWobble = data.Bool("disableWobble");
+        DisableInteraction = data.Bool("disableInteraction");
         Collidable = false;
     }
 

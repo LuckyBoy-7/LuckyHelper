@@ -23,6 +23,7 @@ dreamBlock.placements = {
         backgroundAlpha = 1,
         outlineAlpha = 1,
         disableWobble = false,
+        disableInteraction = false
     }
 }
 

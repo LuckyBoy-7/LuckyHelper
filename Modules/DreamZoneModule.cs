@@ -53,8 +53,10 @@ public class DreamZoneModule
 
     private static void SetDreamZoneCollidable(Player self, bool on)
     {
-        foreach (var zone in self.Tracker().GetEntities<DreamZone>())
+        foreach (DreamZone zone in self.Tracker().GetEntities<DreamZone>())
         {
+            if (zone.DisableInteraction)
+                continue;
             zone.Collidable = on;
         }
     }
@@ -128,8 +130,7 @@ public class DreamZoneModule
         cursor.EmitBrfalse(outLabel);
 
         // and touching with dream zone
-        cursor.EmitDelegate(
-            () => dreamZone != null
+        cursor.EmitDelegate(() => dreamZone != null
         );
         cursor.EmitBrfalse(outLabel);
 
