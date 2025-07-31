@@ -2,6 +2,7 @@ using System.Reflection;
 using LuckyHelper.Entities;
 using LuckyHelper.Extensions;
 using LuckyHelper.Module;
+using LuckyHelper.Utils;
 using Mono.Cecil;
 
 namespace LuckyHelper.Modules;
@@ -9,24 +10,33 @@ namespace LuckyHelper.Modules;
 public class DreamZoneModule
 {
     private static DreamZone dreamZone;
+    private static List<DreamZone> playerStartDashInDreamzones = new();
 
     [Load]
     public static void Load()
     {
+        On.Celeste.Player.DashBegin += PlayerOnDashBegin;
         On.Celeste.Player.Update += PlayerOnUpdate;
         IL.Celeste.Player.DreamDashUpdate += PlayerOnDreamDashUpdate;
         On.Celeste.Player.DreamDashUpdate += PlayerOnDreamDashUpdate;
     }
 
-
     [Unload]
     public static void Unload()
     {
+        On.Celeste.Player.DashBegin -= PlayerOnDashBegin;
         On.Celeste.Player.Update -= PlayerOnUpdate;
         IL.Celeste.Player.DreamDashUpdate -= PlayerOnDreamDashUpdate;
         On.Celeste.Player.DreamDashUpdate -= PlayerOnDreamDashUpdate;
     }
 
+    private static void PlayerOnDashBegin(On.Celeste.Player.orig_DashBegin orig, Player self)
+    {
+        orig(self);
+        SetDreamZoneCollidable(self, true, true);
+        playerStartDashInDreamzones = self.CollideAll<DreamZone>().Cast<DreamZone>().ToList();
+        SetDreamZoneCollidable(self, false, true);
+    }
 
     private static void PlayerOnUpdate(On.Celeste.Player.orig_Update orig, Player self)
     {
@@ -51,11 +61,17 @@ public class DreamZoneModule
             SetDreamZoneCollidable(self, false);
     }
 
-    private static void SetDreamZoneCollidable(Player self, bool on)
+    private static void SetDreamZoneCollidable(Player self, bool on, bool force = false)
     {
         foreach (DreamZone zone in self.Tracker().GetEntities<DreamZone>())
         {
-            if (zone.DisableInteraction)
+            if (force)
+            {
+                zone.Collidable = on;
+                continue;
+            }
+
+            if (zone.DisableInteraction || (playerStartDashInDreamzones.Contains(zone) && !zone.playerHasDreamDash))
                 continue;
             zone.Collidable = on;
         }
