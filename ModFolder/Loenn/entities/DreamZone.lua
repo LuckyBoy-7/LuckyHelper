@@ -24,7 +24,8 @@ dreamBlock.placements = {
         outlineAlpha = 1,
         disableWobble = false,
         disableInteraction = false,
-        disableCollisioinOnNotDreaming = false
+        disableCollisionOnNotDreaming = false,
+        cancelDreamDashOnNotDreaming = false
     }
 }
 

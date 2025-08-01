@@ -33,9 +33,9 @@ public class DreamZoneModule
     private static void PlayerOnDashBegin(On.Celeste.Player.orig_DashBegin orig, Player self)
     {
         orig(self);
-        SetDreamZoneCollidable(self, true, true);
+        SetDreamZoneCollidable(self, true);
         playerStartDashInDreamzones = self.CollideAll<DreamZone>().Cast<DreamZone>().ToList();
-        SetDreamZoneCollidable(self, false, true);
+        SetDreamZoneCollidable(self, false);
     }
 
     private static void PlayerOnUpdate(On.Celeste.Player.orig_Update orig, Player self)
@@ -55,25 +55,23 @@ public class DreamZoneModule
 
         // 开关zone
         bool on = self.StateMachine.State is Player.StDash or Player.StDreamDash || self.DashAttacking;
-        SetDreamZoneCollidable(self, on);
+        SetDreamZoneCollidable(self, on, zone => !zone.DisableInteraction // 可交互
+                                                 // 果冻开启状态, 或者关闭状态但是从外面开始冲
+                                                 && (zone.playerHasDreamDash || (!playerStartDashInDreamzones.Contains(zone) && !zone.DisableCollisionOnNotDreaming)));
+        // 如果
         orig(self);
-        if (on)
-            SetDreamZoneCollidable(self, false);
+        SetDreamZoneCollidable(self, false);
     }
 
-    private static void SetDreamZoneCollidable(Player self, bool on, bool force = false)
+
+    private static void SetDreamZoneCollidable(Player self, bool on, Func<DreamZone, bool> condition = null)
     {
         foreach (DreamZone zone in self.Tracker().GetEntities<DreamZone>())
         {
-            if (force)
+            if (condition == null || condition.Invoke(zone))
             {
                 zone.Collidable = on;
-                continue;
             }
-
-            if (zone.DisableInteraction || (playerStartDashInDreamzones.Contains(zone) && !zone.playerHasDreamDash) || (!zone.playerHasDreamDash && zone.DisableCollisioinOnNotDreaming))
-                continue;
-            zone.Collidable = on;
         }
     }
 
@@ -95,6 +93,23 @@ public class DreamZoneModule
                 self.Die(Vector2.Zero);
             }
         }
+
+        // 如果在冲刺过程中果冻关闭了, 那就取消果冻状态
+        bool inActiveDreamZone = false;
+        bool tryCancelDreamDash = false;
+        foreach (DreamZone zone in self.Tracker().GetEntities<DreamZone>())
+        {
+            if (!zone.CollideCheck(self))
+                continue;
+
+            if (zone.CancelDreamDashOnNotDreaming)
+                tryCancelDreamDash = true;
+            if (zone.playerHasDreamDash)
+                inActiveDreamZone = true;
+        }
+
+        if (tryCancelDreamDash && !inActiveDreamZone)
+            return Player.StNormal;
 
         return state;
     }

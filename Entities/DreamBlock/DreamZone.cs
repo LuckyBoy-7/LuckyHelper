@@ -25,7 +25,8 @@ public class DreamZone : DreamBlock
 
     public bool DisableWobble = true;
     public bool DisableInteraction = false;
-    public bool DisableCollisioinOnNotDreaming = false;
+    public bool DisableCollisionOnNotDreaming = false;
+    public bool CancelDreamDashOnNotDreaming = false;
 
     public DreamZone(EntityData data, Vector2 offset) : base(data, offset)
     {
@@ -50,7 +51,12 @@ public class DreamZone : DreamBlock
 
         DisableWobble = data.Bool("disableWobble");
         DisableInteraction = data.Bool("disableInteraction");
-        DisableCollisioinOnNotDreaming = data.Bool("disableCollisioinOnNotDreaming");
+        DisableCollisionOnNotDreaming = data.Bool("disableCollisionOnNotDreaming");
+        // 打错字惹
+        if (data.Has("disableCollisioinOnNotDreaming"))
+            DisableCollisionOnNotDreaming = data.Bool("disableCollisioinOnNotDreaming");
+        CancelDreamDashOnNotDreaming = data.Bool("cancelDreamDashOnNotDreaming");
+        
         Collidable = false;
     }
 
