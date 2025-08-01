@@ -1,6 +1,5 @@
-#define rect
-#define tmpA
-#define strength
+#if DEBUG
+
 using Lucky.Kits.Collections;
 using LuckyHelper.Extensions;
 using LuckyHelper.Module;
@@ -25,3 +24,4 @@ public static class TestModule
     {
     }
 }
+#endif

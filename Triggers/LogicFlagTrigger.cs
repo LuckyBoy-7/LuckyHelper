@@ -1,5 +1,3 @@
-// #define debug
-
 using System.Text;
 using Celeste.Mod.Entities;
 using Lucky.Kits.Extensions;
@@ -217,7 +215,7 @@ public class LogicFlagTrigger : FlagTrigger
         {
             res.Add(operators.Pop().ToString());
         }
-#if debug
+#if DEBUG
         foreach (string s in res)
         {
             LogUtils.LogWarning(s);
@@ -278,7 +276,7 @@ public class LogicFlagTrigger : FlagTrigger
             debugInfo.Add($"[{string.Join("", elements)}](Cleaned Expression)");
         }
 
-#if debug
+#if DEBUG
         foreach (string element in elements)
         {
             LogUtils.LogWarning(element);
