@@ -25,6 +25,7 @@ public class DreamZone : DreamBlock
 
     public bool DisableWobble = true;
     public bool DisableInteraction = false;
+    public bool DisableCollisioinOnNotDreaming = false;
 
     public DreamZone(EntityData data, Vector2 offset) : base(data, offset)
     {
@@ -49,6 +50,7 @@ public class DreamZone : DreamBlock
 
         DisableWobble = data.Bool("disableWobble");
         DisableInteraction = data.Bool("disableInteraction");
+        DisableCollisioinOnNotDreaming = data.Bool("disableCollisioinOnNotDreaming");
         Collidable = false;
     }
 

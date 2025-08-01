@@ -71,7 +71,7 @@ public class DreamZoneModule
                 continue;
             }
 
-            if (zone.DisableInteraction || (playerStartDashInDreamzones.Contains(zone) && !zone.playerHasDreamDash))
+            if (zone.DisableInteraction || (playerStartDashInDreamzones.Contains(zone) && !zone.playerHasDreamDash) || (!zone.playerHasDreamDash && zone.DisableCollisioinOnNotDreaming))
                 continue;
             zone.Collidable = on;
         }
