@@ -1,5 +1,6 @@
 using System.Reflection;
 using LuckyHelper.Module;
+using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 

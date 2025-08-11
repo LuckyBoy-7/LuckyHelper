@@ -1,80 +1,64 @@
 <Project>
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
 
-    <CommonCelesteUsings>false</CommonCelesteUsings>
-    <EverestCoreVersion>false</EverestCoreVersion>
-    <ModAssetsFolderName>ModFolder</ModAssetsFolderName>
-    <ModAssetsCopyType>copy</ModAssetsCopyType>
-    <CoreOnlyMod>True</CoreOnlyMod>
-    <CelesteRootPath/>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <ModAssetsFolderName>ModFolder</ModAssetsFolderName>
+        <ModAssetsCopyType>copy</ModAssetsCopyType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitCelesteReference>true</ImplicitCelesteReference>
+        <!--To copy dependencies file into the output-->
+        <EnableDynamicLoading>true</EnableDynamicLoading>
+        <!--Everest won't read these files (yet for now)-->
+        <GenerateRuntimeConfigurationFiles>false</GenerateRuntimeConfigurationFiles>
+        <GenerateDependencyFile>false</GenerateDependencyFile>
+        <UseCelesteAnalyzer>true</UseCelesteAnalyzer>
+        <!--        <UseCelestePublicizer>true</UseCelestePublicizer>-->
+    </PropertyGroup>
 
-  <Import Project="Common.props"/>
-  
-  <PropertyGroup Condition="'$(CoreOnlyMod)' == 'false'">
-    <TargetFramework>net452</TargetFramework>
-    <Platforms>x86</Platforms>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(CoreOnlyMod)' == 'true'">
-    <TargetFramework>net8.0</TargetFramework>
-  </PropertyGroup>
+    <ItemGroup Condition="'$(ImplicitUsings)' == 'true' Or '$(ImplicitUsings)' == 'enable'">
+        <Using Include="Microsoft.Xna.Framework"/>
+        <Using Include="Monocle"/>
+        <Using Include="Celeste"/>
+        <Using Include="Celeste.Mod"/>
+    </ItemGroup>
 
-  <PropertyGroup>
-    <EverestCoreVersion Condition="Exists('$(CelesteRootPath)/Celeste.dll')">true</EverestCoreVersion>
-    <CelesteAssemblyPath>$(CelesteRootPath)</CelesteAssemblyPath>
-    <CelesteAssemblyPath Condition="'$(EverestCoreVersion)' == 'true' and '$(CoreOnlyMod)' == 'false'">$(CelesteRootPath)/legacyRef</CelesteAssemblyPath>
-  </PropertyGroup>
+    <ItemGroup Condition="'$(UseCelesteAnalyzer)' == 'true'">
+        <PackageReference Include="CelesteAnalyzer" Version="1.0.3.1"/>
+    </ItemGroup>
 
-  <!--common usings-->
-  <ItemGroup Condition="'$(CommonCelesteUsings)' == 'true'">
-    <Using Include="Microsoft.Xna.Framework"/>
-    <Using Include="Monocle"/>
-    <Using Include="Celeste"/>
-    <Using Include="Celeste.Mod"/>
-    <Using Include="MonoMod.Cil"/>
-  </ItemGroup>
+    <ItemGroup Condition="'$(ImplicitCelesteReference)' == 'true'">
+        <Reference Include="Celeste" Private="False" Publicize="True" > 
+            <HintPath>$(CelesteRootPath)/Celeste.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="FNA">
+            <HintPath>$(CelesteRootPath)/FNA.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="MMHOOK_Celeste">
+            <HintPath>$(CelesteRootPath)/MMHOOK_Celeste.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="YamlDotNet">
+            <HintPath>$(CelesteRootPath)/YamlDotNet.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="MonoMod.Utils">
+            <HintPath>$(CelesteRootPath)/MonoMod.Utils.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="Mono.Cecil">
+            <HintPath>$(CelesteRootPath)/Mono.Cecil.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="MonoMod.RuntimeDetour">
+            <HintPath>$(CelesteRootPath)/MonoMod.RuntimeDetour.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="MonoMod.Patcher">
+            <HintPath>$(CelesteRootPath)/MonoMod.Patcher.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+    </ItemGroup>
 
-  <ItemGroup Condition="'$(CoreOnlyMod)' == 'false'">
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-
-  <!--common assembly references-->
-  <ItemGroup Condition="'$(CommonCelesteReferences)' == 'true'">
-    <Reference Include="Celeste" Condition="'$(CoreOnlyMod)' == 'false'">
-      <HintPath>$(CelesteAssemblyPath)/Celeste.exe</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Celeste" Condition="'$(CoreOnlyMod)' == 'true'">
-      <HintPath>$(CelesteAssemblyPath)/Celeste.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="FNA">
-      <HintPath>$(CelesteAssemblyPath)/FNA.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="MMHOOK_Celeste">
-      <HintPath>$(CelesteAssemblyPath)/MMHOOK_Celeste.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="YamlDotNet">
-      <HintPath>$(CelesteAssemblyPath)/YamlDotNet.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="MonoMod.Utils">
-      <HintPath>$(CelesteAssemblyPath)/MonoMod.Utils.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Mono.Cecil">
-      <HintPath>$(CelesteAssemblyPath)/Mono.Cecil.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="MonoMod.RuntimeDetour">
-      <HintPath>$(CelesteAssemblyPath)/MonoMod.RuntimeDetour.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
 </Project>

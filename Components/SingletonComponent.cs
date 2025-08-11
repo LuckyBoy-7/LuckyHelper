@@ -11,7 +11,14 @@ public class SingletonComponent(bool active = true, bool visible = true) : Compo
     public static void Load()
     {
         On.Celeste.LevelExit.ctor += LevelExitOnctor;
-        Everest.Events.AssetReload.OnBeforeReload += OnBeforeReload;
+        // https://github.com/krafs/Publicizer/issues/110, 找了一伯天的 bug 
+        Everest.Events.AssetReload.OnBeforeReload += OnBeforeReload; 
+    }
+
+    [Unload]
+    public static void Unload()
+    {
+        On.Celeste.LevelExit.ctor -= LevelExitOnctor;
     }
 
     private static void OnBeforeReload(bool silent)
@@ -19,27 +26,18 @@ public class SingletonComponent(bool active = true, bool visible = true) : Compo
         RestoreSingletonCompoennt();
     }
 
-    private static void RestoreSingletonCompoennt()
-    {
-        if (Engine.Scene is Level level)
-            level.Tracker.GetComponents<SingletonComponent>().ForEach(component => ((SingletonComponent)component).Restore());
-    }
-
 
     private static void CelesteOnReloadAssets(On.Celeste.Celeste.orig_ReloadAssets orig, bool levels, bool graphics, bool hires, AreaKey? area)
     {
-        if (Engine.Scene is Level level)
-            level.Tracker.GetComponents<SingletonComponent>().ForEach(component => ((SingletonComponent)component).Restore());
+        RestoreSingletonCompoennt();
 
         orig(levels, graphics, hires, area);
     }
 
-
-    [Unload]
-    public static void Unload()
+    private static void RestoreSingletonCompoennt()
     {
-        On.Celeste.LevelExit.ctor -= LevelExitOnctor;
-        Everest.Events.AssetReload.OnBeforeReload -= OnBeforeReload;
+        if (Engine.Scene is Level level)
+            level.Tracker.GetComponents<SingletonComponent>().ForEach(component => ((SingletonComponent)component).Restore());
     }
 
     private static void LevelExitOnctor(On.Celeste.LevelExit.orig_ctor orig, Celeste.LevelExit self, Celeste.LevelExit.Mode mode, Session session, HiresSnow snow)

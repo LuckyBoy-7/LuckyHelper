@@ -3,5 +3,5 @@ bin/
 obj/
 .luarc.json
 Folder.DotSettings.user
-ModFolder/LuckyHelper.*
+ModFolder/Code/*
 LuckyHelper.sln.DotSettings.user

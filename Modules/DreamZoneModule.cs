@@ -2,6 +2,7 @@ using System.Reflection;
 using LuckyHelper.Entities;
 using LuckyHelper.Extensions;
 using LuckyHelper.Module;
+using MonoMod.Cil;
 
 namespace LuckyHelper.Modules;
 
