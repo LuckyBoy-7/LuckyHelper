@@ -112,6 +112,8 @@ entities.LuckyHelper/SpeedRedirect.attributes.description.boxWidth=The width of 
 entities.LuckyHelper/CrystalHeartDialogController.placements.name.normal=Crystal Heart Dialog Controller
 entities.LuckyHelper/CrystalHeartDialogController.attributes.description.dialogs=comma-seperated dialog_keys to set different crystal heart gem texts in one room(be placed with heart gem) 
 
+# Follower Container
+entities.LuckyHelper/FollowerContainer.placements.name.normal=Follower Container
 
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger

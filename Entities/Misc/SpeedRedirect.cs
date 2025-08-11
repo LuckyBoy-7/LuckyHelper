@@ -1,7 +1,6 @@
 using Celeste.Mod.Entities;
 using LuckyHelper.Components;
 using LuckyHelper.Extensions;
-using LuckyHelper.Modules;
 using LuckyHelper.Utils;
 using MonoMod.Utils;
 

@@ -1,8 +1,3 @@
-using Celeste.Mod.Entities;
-using LuckyHelper.Extensions;
-using LuckyHelper.Module;
-using LuckyHelper.Utils;
-
 namespace LuckyHelper.Triggers;
 
 

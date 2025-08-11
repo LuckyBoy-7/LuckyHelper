@@ -1,4 +1,3 @@
-using System.Xml;
 using Celeste.Mod.Entities;
 using Celeste.Mod.Registry.DecalRegistryHandlers;
 using LuckyHelper.Modules;

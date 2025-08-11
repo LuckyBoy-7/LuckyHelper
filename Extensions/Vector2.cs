@@ -1,6 +1,6 @@
 namespace LuckyHelper.Extensions;
 
-public static class Vector2Extensions
+internal static partial class Vector2Extensions
 {
     public static Vector2 WithX(this Vector2 vec, float x)
     {

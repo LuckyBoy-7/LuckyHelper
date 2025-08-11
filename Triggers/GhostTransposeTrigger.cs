@@ -1,5 +1,4 @@
 using Celeste.Mod.Entities;
-using LuckyHelper.Module;
 using LuckyHelper.Modules;
 
 namespace LuckyHelper.Triggers;

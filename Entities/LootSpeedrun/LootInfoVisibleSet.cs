@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Runtime.CompilerServices;
 using Celeste.Mod.Entities;
 using LuckyHelper.Extensions;
 

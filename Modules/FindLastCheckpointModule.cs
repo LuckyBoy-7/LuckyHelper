@@ -1,8 +1,6 @@
 using LuckyHelper.Extensions;
 using LuckyHelper.Module;
-using LuckyHelper.Triggers;
 using Checkpoint = On.Celeste.Checkpoint;
-using Player = On.Celeste.Player;
 
 namespace LuckyHelper.Modules;
 

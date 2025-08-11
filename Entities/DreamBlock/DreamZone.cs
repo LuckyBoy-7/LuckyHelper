@@ -1,7 +1,4 @@
 using Celeste.Mod.Entities;
-using LuckyHelper.Extensions;
-using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil.Cil;
 
 namespace LuckyHelper.Entities;
 

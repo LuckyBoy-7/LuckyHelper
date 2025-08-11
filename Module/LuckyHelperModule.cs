@@ -1,8 +1,4 @@
-using System.Collections;
 using LuckyHelper.Utils;
-using MonoMod.RuntimeDetour;
-using Platform = On.Celeste.Platform;
-using Player = On.Celeste.Player;
 
 namespace LuckyHelper.Module;
 

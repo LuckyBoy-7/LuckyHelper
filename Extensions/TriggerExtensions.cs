@@ -1,5 +1,3 @@
-using LuckyHelper.Utils;
-
 namespace LuckyHelper.Extensions;
 
 public static class TriggerExtensions

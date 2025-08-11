@@ -1,5 +1,3 @@
-using System.Text;
-using Microsoft.VisualBasic;
 using Microsoft.Xna.Framework.Input;
 
 namespace LuckyHelper.Module;

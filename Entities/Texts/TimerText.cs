@@ -1,9 +1,6 @@
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.InteropServices.JavaScript;
 using Celeste.Mod.Entities;
 using LuckyHelper.Extensions;
 using LuckyHelper.Module;
-using LuckyHelper.Modules;
 
 namespace LuckyHelper.Entities;
 

@@ -1,7 +1,6 @@
 using LuckyHelper.Entities;
 using LuckyHelper.Module;
 using LuckyHelper.Triggers;
-using MonoMod.Utils;
 using Level = On.Celeste.Level;
 using Player = On.Celeste.Player;
 

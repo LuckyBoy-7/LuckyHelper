@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace Lucky.Kits.Extensions
 {
     public static class ListExtensions

@@ -1,5 +1,3 @@
-using LuckyHelper.Extensions;
-
 namespace LuckyHelper.Entities;
 
 public class LuckyText : Entity

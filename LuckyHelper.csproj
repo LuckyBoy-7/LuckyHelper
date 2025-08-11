@@ -36,6 +36,10 @@
     <ItemGroup>
         <Publicize Include="Celeste"/>
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Entities\EeveeLike\" />
+      <Folder Include="Handlers\Impl\Compat\" />
+    </ItemGroup>
 <!--    <PropertyGroup>-->
     <!--        <PublicizeAll>true</PublicizeAll>-->
     <!--    </PropertyGroup>-->

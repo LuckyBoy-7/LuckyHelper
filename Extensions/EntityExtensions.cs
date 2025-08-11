@@ -42,4 +42,9 @@ public static class EntityExtensions
             res = "";
         return res;
     }
+
+    public static EntityID EntityID(this Entity entity)
+    {
+        return DontLoadEntityHook.CachedEntityToEntityID.GetValueOrDefault(entity, new EntityID("", -1));
+    }
 }

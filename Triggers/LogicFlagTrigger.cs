@@ -2,7 +2,6 @@ using System.Text;
 using Celeste.Mod.Entities;
 using Lucky.Kits.Extensions;
 using LuckyHelper.Extensions;
-using LuckyHelper.Module;
 using LuckyHelper.Utils;
 
 namespace LuckyHelper.Triggers;

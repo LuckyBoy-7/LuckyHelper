@@ -1,7 +1,5 @@
 using Celeste.Mod.Entities;
-using LuckyHelper.Extensions;
 using LuckyHelper.Module;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace LuckyHelper.Entities;
 

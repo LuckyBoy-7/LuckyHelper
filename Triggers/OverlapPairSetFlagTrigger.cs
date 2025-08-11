@@ -1,7 +1,6 @@
 using Celeste.Mod.Entities;
 using Lucky.Kits.Collections;
 using LuckyHelper.Extensions;
-using LuckyHelper.Utils;
 
 namespace LuckyHelper.Triggers;
 

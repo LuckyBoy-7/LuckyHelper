@@ -1,4 +1,3 @@
-using System.Collections;
 using Celeste.Mod.Entities;
 using LuckyHelper.Extensions;
 using Microsoft.Xna.Framework.Input;

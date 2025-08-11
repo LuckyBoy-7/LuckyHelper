@@ -1,7 +1,5 @@
 using Celeste.Mod.Entities;
 using Microsoft.Xna.Framework.Input;
-using On.Celeste.Mod;
-using Logger = Celeste.Mod.Logger;
 
 namespace LuckyHelper.Entities;
 

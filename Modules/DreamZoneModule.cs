@@ -2,8 +2,6 @@ using System.Reflection;
 using LuckyHelper.Entities;
 using LuckyHelper.Extensions;
 using LuckyHelper.Module;
-using LuckyHelper.Utils;
-using Mono.Cecil;
 
 namespace LuckyHelper.Modules;
 

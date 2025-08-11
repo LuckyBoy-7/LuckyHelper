@@ -1,6 +1,6 @@
 namespace LuckyHelper.Extensions;
 
-public static class DictionaryExtensions
+internal static partial class DictionaryExtensions
 {
     public static int GetInt<T>(this Dictionary<T, int> dict, T key)
     {

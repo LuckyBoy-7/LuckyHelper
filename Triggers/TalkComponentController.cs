@@ -1,8 +1,6 @@
 using Celeste.Mod.Entities;
 using LuckyHelper.Extensions;
 using LuckyHelper.Modules;
-using LuckyHelper.Utils;
-using Microsoft.Xna.Framework.Input;
 
 namespace LuckyHelper.Triggers;
 

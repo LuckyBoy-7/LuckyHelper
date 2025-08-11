@@ -1,9 +1,6 @@
 using System.Reflection;
 using LuckyHelper.Entities.Misc;
-using LuckyHelper.Extensions;
 using LuckyHelper.Module;
-using LuckyHelper.Triggers;
-using LuckyHelper.Utils;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 using Level = On.Celeste.Level;

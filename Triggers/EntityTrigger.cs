@@ -1,4 +1,3 @@
-using Celeste.Mod.Entities;
 using LuckyHelper.Modules;
 using LuckyHelper.Utils;
 

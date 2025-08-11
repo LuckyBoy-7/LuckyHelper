@@ -1,8 +1,5 @@
-using System.Reflection;
 using LuckyHelper.Module;
-using Microsoft.Xna.Framework.Input;
 using Player = On.Celeste.Player;
-using SwapBlock = On.Celeste.SwapBlock;
 
 namespace LuckyHelper.Modules;
 

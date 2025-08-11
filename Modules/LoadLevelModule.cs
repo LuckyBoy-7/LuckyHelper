@@ -1,12 +1,5 @@
-using System.Reflection;
-using LuckyHelper.Extensions;
 using LuckyHelper.Module;
 using LuckyHelper.Triggers;
-using LuckyHelper.Utils;
-using Microsoft.Xna.Framework.Input;
-using Mono.Cecil.Cil;
-using MonoMod.RuntimeDetour;
-using WindController = On.Celeste.WindController;
 
 namespace LuckyHelper.Modules;
 

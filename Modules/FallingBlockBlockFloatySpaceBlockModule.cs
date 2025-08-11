@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Reflection;
 using LuckyHelper.Module;
 using FallingBlock = On.Celeste.FallingBlock;
 
