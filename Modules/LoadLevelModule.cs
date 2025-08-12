@@ -13,11 +13,7 @@ public class LoadLevelModule
 
     private static void LevelOnLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Celeste.Level level, Player.IntroTypes playerintro, bool isfromloader)
     {
-        OverlapPairSetFlagTrigger.IdToTriggerSet.Clear();
-        TypeToObjectsModule.BriefTypeToEntities.Clear();
-        TypeToObjectsModule.BriefTypeToComponents.Clear();
-
-        LuckyHelperModule.Session.LuckyHelperAreaMetadata = LuckyHelperAreaMetadata.TryGetCameraMetadata(level.Session);
+        LuckyHelperModule.Session.LuckyHelperAreaMetadata = LuckyHelperAreaMetadata.TryGetMetadata(level.Session);
         orig(level, playerintro, isfromloader);
     }
 

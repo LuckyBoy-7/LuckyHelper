@@ -25,8 +25,8 @@ public abstract class EntityTrigger : Trigger
 
     public EntityTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
-        EntityTriggerMode = data.Enum<EntityTriggerMode>("entityTriggerMode");
-        briefTypes = ParseUtils.ParseTypesStringToBriefNames(data.Attr("types"));
+        EntityTriggerMode = data.Enum<EntityTriggerMode>("entityTriggerMode", EntityTriggerMode.OnEntityEnter);
+        briefTypes = ParseUtils.ParseTypesStringToBriefNames(data.Attr("types", "Player"));
         Depth = -1000000;
 
         if (briefTypes.Contains(nameof(Player)))

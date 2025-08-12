@@ -237,7 +237,6 @@ public class LogicFlagTrigger : FlagTrigger
         exp = exp.Replace("!!", ""); // 去除双重否定( 
         int n = exp.Length;
         int i = 0;
-        bool preIsNot = false;
         while (i < n)
         {
             char start = exp[i];

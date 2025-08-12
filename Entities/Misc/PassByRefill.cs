@@ -15,7 +15,7 @@ public class PassByRefill : Entity
         set => _dashes = value;
     }
 
-    private Sprite sprite;
+    // private Sprite sprite;
 
     public PassByRefill(Vector2 position, int dashes)
     {

@@ -27,8 +27,16 @@ local followerContainer = {
             ignoreAnchors = false,
             forceStandardBehavior = false,
             ignoreContainerBounds = false,
+            collectFlag = "FollowerContainerCollectFlag",
+            interval = 0,
+            loseFlag = "FollowerContainerLoseFlag",
         }
     },
+    fieldInformation = {
+        interval = {
+            fieldType = "integer"
+        }
+    }
 }
 
 local containers = {

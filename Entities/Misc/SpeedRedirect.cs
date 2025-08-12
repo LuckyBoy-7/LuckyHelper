@@ -39,7 +39,6 @@ public class SpeedRedirect : Entity
     private SpeedRedirectDirType speedRedirectDirType;
     private bool preCollideWithPlayer;
     private bool collideWithPlayer;
-    private bool setPlayerStateToNormalOnEnter = true;
     private float redirectDirX;
     private float redirectDirY;
     private float minCorrectionSpeed;

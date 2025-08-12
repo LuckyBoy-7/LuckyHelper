@@ -6,10 +6,11 @@
         <RootNamespace>LuckyHelper</RootNamespace>
         <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
+        <NoWarn>CL0001;CL0006</NoWarn> 
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.0">
+        <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

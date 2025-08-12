@@ -7,7 +7,7 @@ public class LuckyHelperYaml
 
 public class LuckyHelperAreaMetadata
 {
-    public static LuckyHelperAreaMetadata TryGetCameraMetadata(Session session)
+    public static LuckyHelperAreaMetadata TryGetMetadata(Session session)
     {
         if (!Everest.Content.TryGet($"Maps/{session.MapData.Filename}.meta", out ModAsset asset))
             return null;

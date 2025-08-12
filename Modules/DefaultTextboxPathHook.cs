@@ -42,17 +42,16 @@ public class DefaultTextboxPathHook
     {
         ILCursor cursor = new ILCursor(il);
 
-        string path = "textbox/default";
-        if (cursor.TryGotoNext(ins => ins.MatchLdstr(path)
+        if (cursor.TryGotoNext(ins => ins.MatchLdstr("textbox/default")
             ))
         {
-            cursor.Remove();
-            cursor.EmitDelegate(() =>
+            cursor.Index += 1;
+            cursor.EmitDelegate<Func<string, string>>((origPath) =>
             {
                 LuckyHelperSession session = LuckyHelperModule.Session;
                 if (session.LuckyHelperAreaMetadata != null)
                     return session.LuckyHelperAreaMetadata.DefaultTextboxPath;
-                return path;
+                return origPath;
             });
         }
     }
@@ -61,18 +60,16 @@ public class DefaultTextboxPathHook
     {
         ILCursor cursor = new ILCursor(il);
 
-        string path = "textbox/default_mini";
-
-        if (cursor.TryGotoNext(ins => ins.MatchLdstr(path)
+        if (cursor.TryGotoNext(ins => ins.MatchLdstr("textbox/default_mini")
             ))
         {
-            cursor.Remove();
-            cursor.EmitDelegate(() =>
+            cursor.Index += 1;
+            cursor.EmitDelegate<Func<string, string>>((origPath) =>
             {
                 LuckyHelperSession session = LuckyHelperModule.Session;
                 if (session.LuckyHelperAreaMetadata != null)
                     return session.LuckyHelperAreaMetadata.DefaultMiniTextboxPath;
-                return path;
+                return origPath;
             });
         }
     }

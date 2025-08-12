@@ -195,3 +195,6 @@ triggers.LuckyHelper/LogicFlagTrigger.attributes.description.entityTriggerMode=D
 triggers.LuckyHelper/LogicFlagTrigger.attributes.description.flag=Flag you want to set if conditionFlagExpression fits the condition
 triggers.LuckyHelper/LogicFlagTrigger.attributes.description.debug=You can see debug info with flag format, check it with mapping utils!(You can see how the expression is parsed if your Condition Flag Expression not works as you like)
 triggers.LuckyHelper/LogicFlagTrigger.attributes.description.conditionFlagExpression=Logic expression with flag format like (!flag1 && (flag2 || flag3)) means when flag1 doesn't exist and there's flag2 or flag3, it can output the flag you want.\n&& for both flags exist\n|| for either of flags exist\n! for invert flag or invert expression like !(flag1 && flag2)
+
+# DetachFollowerContainerTrigger
+triggers.LuckyHelper/DetachFollowerContainerTrigger.placements.name.normal=Detach Follower Container Trigger

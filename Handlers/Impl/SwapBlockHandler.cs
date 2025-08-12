@@ -5,7 +5,7 @@ namespace LuckyHelper.Handlers.Impl;
 
 public class SwapBlockHandler : EntityHandler, IMoveable, IAnchorProvider
 {
-	public const string HandledString = "EeveeHelper_SwapBlockHandled";
+	public const string HandledString = "LuckyHelper_SwapBlockHandled";
 
 	private SwapBlock swapBlock;
 	private bool first;

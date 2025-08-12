@@ -65,16 +65,14 @@ public class CustomWaterModule
 
         // Logger.Warn("Test", "2");
         ILLabel outLabel = null;
-        if (!cursor.TryGotoNext(
-                ins => ins.MatchBrfalse(out outLabel)
+        if (!cursor.TryGotoNext(ins => ins.MatchBrfalse(out outLabel)
             ))
             return;
         // Logger.Warn("Test", "3");
         cursor.Index = idx;
         cursor.EmitBrtrue(outLabel);
 
-        if (!cursor.TryGotoNext(
-                ins => ins.MatchCall("Microsoft.Xna.Framework.Color", "get_White")
+        if (!cursor.TryGotoNext(ins => ins.MatchCall("Microsoft.Xna.Framework.Color", "get_White")
             ))
             return;
         // Logger.Warn("Test", "4");
@@ -132,8 +130,7 @@ public class CustomWaterModule
     {
         cursor.Index = 0;
         // swim rise
-        if (!cursor.TryGotoNext(
-                ins => ins.MatchLdcR4(-60)
+        if (!cursor.TryGotoNext(ins => ins.MatchLdcR4(-60)
                 // ins => ins.MatchLdcR4(600)
             ))
             return;
@@ -141,8 +138,7 @@ public class CustomWaterModule
         if (isDebug)
             Logger.Log(LogLevel.Warn, "Test", "SwimRise OK");
         cursor.Index += 2;
-        cursor.EmitDelegate<Func<float>>(
-            () =>
+        cursor.EmitDelegate<Func<float>>(() =>
             {
                 if (customWater == null || !customWater.DisableSwimRise)
                     return 1;
@@ -156,8 +152,7 @@ public class CustomWaterModule
     {
         // max speed x
         cursor.Index = 0;
-        if (!cursor.TryGotoNext(
-                ins => ins.MatchStloc2()
+        if (!cursor.TryGotoNext(ins => ins.MatchStloc2()
             ))
             return;
 
@@ -166,8 +161,7 @@ public class CustomWaterModule
 
         cursor.Index += 1;
         cursor.EmitLdloc(2);
-        cursor.EmitDelegate<Func<float>>(
-            () =>
+        cursor.EmitDelegate<Func<float>>(() =>
             {
                 if (customWater == null)
                     return 1;
@@ -178,8 +172,7 @@ public class CustomWaterModule
         cursor.EmitStloc(2);
 
         // max speed y
-        if (!cursor.TryGotoNext(
-                ins => ins.MatchStloc3()
+        if (!cursor.TryGotoNext(ins => ins.MatchStloc3()
             ))
             return;
 
@@ -187,8 +180,7 @@ public class CustomWaterModule
             Logger.Log(LogLevel.Warn, "Test", "MaxSpeedY OK");
         cursor.Index += 1;
         cursor.EmitLdloc(3);
-        cursor.EmitDelegate<Func<float>>(
-            () =>
+        cursor.EmitDelegate<Func<float>>(() =>
             {
                 if (customWater == null)
                     return 1;
@@ -203,15 +195,13 @@ public class CustomWaterModule
     {
         cursor.Index = 0;
         // friction multiplier
-        if (!cursor.TryGotoNext(
-                ins => ins.MatchLdcR4(400)
+        if (!cursor.TryGotoNext(ins => ins.MatchLdcR4(400)
             ))
             return;
         if (isDebug)
             Logger.Log(LogLevel.Warn, "Test", "Acceleration OK");
         cursor.Index += 1;
-        cursor.EmitDelegate(
-            () =>
+        cursor.EmitDelegate(() =>
             {
                 if (customWater == null)
                     return 1;
@@ -220,12 +210,10 @@ public class CustomWaterModule
         );
         cursor.EmitMul();
 
-        cursor.TryGotoNext(
-            ins => ins.MatchLdcR4(600)
+        cursor.TryGotoNext(ins => ins.MatchLdcR4(600)
         );
         cursor.Index += 1;
-        cursor.EmitDelegate(
-            () =>
+        cursor.EmitDelegate(() =>
             {
                 if (customWater == null)
                     return 1;
@@ -233,12 +221,10 @@ public class CustomWaterModule
             }
         );
         cursor.EmitMul();
-        cursor.TryGotoNext(
-            ins => ins.MatchLdcR4(400)
+        cursor.TryGotoNext(ins => ins.MatchLdcR4(400)
         );
         cursor.Index += 1;
-        cursor.EmitDelegate(
-            () =>
+        cursor.EmitDelegate(() =>
             {
                 if (customWater == null)
                     return 1;
@@ -247,12 +233,10 @@ public class CustomWaterModule
         );
         cursor.EmitMul();
 
-        cursor.TryGotoNext(
-            ins => ins.MatchLdcR4(600)
+        cursor.TryGotoNext(ins => ins.MatchLdcR4(600)
         );
         cursor.Index += 1;
-        cursor.EmitDelegate(
-            () =>
+        cursor.EmitDelegate(() =>
             {
                 if (customWater == null)
                     return 1;
@@ -275,8 +259,7 @@ public class CustomWaterModule
             ))
             return;
         // int beforeIndex = cursor.Index;
-        if (!cursor.TryGotoNext(
-                ins => ins.MatchBrfalse(out outLabel)
+        if (!cursor.TryGotoNext(ins => ins.MatchBrfalse(out outLabel)
             ))
             return;
         cursor.Index += 1;
@@ -284,8 +267,7 @@ public class CustomWaterModule
             Logger.Log(LogLevel.Warn, "Test", "SwimJumpCheck OK");
         // player can jump
         ILLabel jumpLabel = cursor.DefineLabel();
-        cursor.EmitDelegate(
-            () =>
+        cursor.EmitDelegate(() =>
             {
                 if (customWater == null || !customWater.PlayerCanJump)
                     return true;
@@ -294,8 +276,7 @@ public class CustomWaterModule
         );
         cursor.EmitBrfalse(jumpLabel);
 
-        cursor.EmitDelegate(
-            () =>
+        cursor.EmitDelegate(() =>
             {
                 if (customWater == null || !customWater.DisableSurfaceJump)
                     return true;
@@ -324,8 +305,7 @@ public class CustomWaterModule
         // MethodInfo zero = typeof(Vector2).GetMethod("get_Zero");
         MethodInfo mul = typeof(Vector2).GetMethod("op_Multiply", new[] { typeof(Vector2), typeof(float) });
         // cursor.EmitCall(zero);
-        cursor.EmitDelegate(
-            () =>
+        cursor.EmitDelegate(() =>
             {
                 if (customWater == null || !customWater.PlayerLoseControl)
                     return 1f; // todo: 这里一定要写成浮点类而不是int
@@ -372,8 +352,7 @@ public class CustomWaterModule
         cursor.EmitLdcR4(600f);
         cursor.EmitCall(deltaTime);
         cursor.EmitMul();
-        cursor.EmitDelegate(
-            () => customWater == null ? 0f : customWater.PlayerGravity
+        cursor.EmitDelegate(() => customWater == null ? 0f : customWater.PlayerGravity
         );
         cursor.EmitMul();
         // Approach
@@ -417,10 +396,27 @@ public class CustomWaterModule
                 ins => ins.MatchLdloc(13)
             ))
             return;
-        ILLabel jumpLabel = cursor.DefineLabel();
+
+        int origIndex = cursor.Index;
+
+        cursor.Index = 0;
+        if (!cursor.TryGotoNext(
+                ins => ins.MatchLdarg0(),
+                ins => ins.MatchLdcI4(1),
+                ins => ins.MatchLdcI4(1),
+                ins => ins.MatchCallvirt(jumpMethod),
+                ins => ins.MatchLdloc(13)
+            ))
+            return;
 
         if (isDebug)
             Logger.Log(LogLevel.Warn, "test", "WaterSurfaceJump OK");
+
+        ILLabel jumpLabel = cursor.DefineLabel();
+        cursor.MarkLabel(jumpLabel);
+
+        cursor.Index = origIndex;
+
         cursor.EmitLdloc(13);
         cursor.EmitIsinst(typeof(CustomWater));
         // 如果是普通水就直接跳
@@ -432,15 +428,5 @@ public class CustomWaterModule
         var getRemoveSurfaceJumpFiled = typeof(CustomWater).GetField("DisableSurfaceJump");
         cursor.EmitLdfld(getRemoveSurfaceJumpFiled);
         cursor.EmitBrtrue(outLabel);
-
-        cursor.Index = 0;
-        cursor.TryGotoNext(
-            ins => ins.MatchLdarg0(),
-            ins => ins.MatchLdcI4(1),
-            ins => ins.MatchLdcI4(1),
-            ins => ins.MatchCallvirt(jumpMethod),
-            ins => ins.MatchLdloc(13)
-        );
-        cursor.MarkLabel(jumpLabel);
     }
 }

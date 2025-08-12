@@ -1,7 +1,9 @@
 .idea/
 bin/
 obj/
+.vs/
 .luarc.json
 Folder.DotSettings.user
 ModFolder/Code/*
 LuckyHelper.sln.DotSettings.user
+Backup/

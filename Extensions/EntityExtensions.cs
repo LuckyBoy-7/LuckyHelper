@@ -1,4 +1,4 @@
-using LuckyHelper.Utils;
+using LuckyHelper.Modules;
 
 namespace LuckyHelper.Extensions;
 
@@ -6,7 +6,7 @@ public static class EntityExtensions
 {
     public static Session Session(this Entity entity)
     {
-        return entity.SceneAs<Level>().Session;
+        return entity.SceneAs<Level>()?.Session;
     }
 
     public static Tracker Tracker(this Entity entity)
@@ -45,6 +45,6 @@ public static class EntityExtensions
 
     public static EntityID EntityID(this Entity entity)
     {
-        return DontLoadEntityHook.CachedEntityToEntityID.GetValueOrDefault(entity, new EntityID("", -1));
+        return TypeToObjectsModule.CachedEntityToEntityID.GetValueOrDefault(entity, new EntityID("", -1));
     }
 }

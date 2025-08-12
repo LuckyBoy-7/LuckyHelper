@@ -1,6 +1,7 @@
 using Celeste.Mod.Entities;
 using Lucky.Kits.Collections;
 using LuckyHelper.Extensions;
+using LuckyHelper.Modules;
 
 namespace LuckyHelper.Triggers;
 
@@ -11,7 +12,6 @@ public class OverlapPairSetFlagTrigger : Trigger
     private bool main;
     public string ID;
     private string flag;
-    public static DefaultDict<string, HashSet<OverlapPairSetFlagTrigger>> IdToTriggerSet = new(() => new());
     private Vector2 targetPos;
 
     public OverlapPairSetFlagTrigger(EntityData data, Vector2 offset) : base(data, offset)
@@ -29,15 +29,9 @@ public class OverlapPairSetFlagTrigger : Trigger
     public override void Added(Scene scene)
     {
         base.Added(scene);
-        IdToTriggerSet[ID].Add(this);
         Position = targetPos;
     }
 
-    public override void Removed(Scene scene)
-    {
-        base.Removed(scene);
-        IdToTriggerSet[ID].Remove(this);
-    }
 
     public override void Update()
     {
@@ -46,12 +40,13 @@ public class OverlapPairSetFlagTrigger : Trigger
             return;
 
         bool on = false;
-        foreach (OverlapPairSetFlagTrigger tri in IdToTriggerSet[ID])
+        foreach (OverlapPairSetFlagTrigger tri in TypeToObjectsModule.BriefTypeToEntities[nameof(OverlapPairSetFlagTrigger)]
+                     .Where(entity => ((OverlapPairSetFlagTrigger)entity).ID == ID))
         {
             if (tri != null && tri != this && CollideCheck(tri))
             {
                 on = true;
-                break; 
+                break;
             }
         }
 

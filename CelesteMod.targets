@@ -40,7 +40,7 @@
     <Copy SourceFiles="@(_ModAssetsFolderContents)"
           DestinationFolder="$(CelesteRootPath)/Mods/$(AssemblyName)_copy/%(RecursiveDir)"
           SkipUnchangedFiles="true"/>
-    <Message Text="$(AssemblyName) -> $(CelesteRootPath)/Mods/$(AssemblyName)_copy/$(AssemblyName).dll" Importance="high"/>
+    <Message Text="$(AssemblyName) -> $(CelesteRootPath)/Mods/$(AssemblyName)_copy/Code/$(AssemblyName).dll" Importance="high"/>
   </Target>
 
   <Target Name="CheckCelestePaths" BeforeTargets="PreBuildEvent">

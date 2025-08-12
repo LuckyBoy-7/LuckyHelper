@@ -29,6 +29,7 @@ public sealed class InheritedDynData : IDisposable, IEnumerable<KeyValuePair<str
 						types.Add(other);
 					}
 				}
+				// 先父类, 后子类
 				types.Sort((a, b) => !a.IsAssignableFrom(b) ? -1 : 0);
 				_Types = types.ToArray();
 				_TypeMap.Add(type, _Types);
