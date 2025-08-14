@@ -42,9 +42,10 @@ public static class EntityExtensions
             res = "";
         return res;
     }
-
-    public static EntityID EntityID(this Entity entity)
+    
+    public static void AddNoDuplicatedComponent<T>(this Entity entity, T component) where T: Component
     {
-        return TypeToObjectsModule.CachedEntityToEntityID.GetValueOrDefault(entity, new EntityID("", -1));
+        if (entity.Get<T>() == null)
+            entity.Add(component);
     }
 }

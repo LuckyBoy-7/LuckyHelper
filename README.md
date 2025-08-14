@@ -25,6 +25,7 @@
 * Set Condition Flag(Trigger): 在玩家做出某种行为时设置 flag -- by Shynnie
 * Invert Flag(Trigger): 反转某个 flag
 * Logic Flag(Trigger): 根据逻辑判断是否设置 flag, 比如如果条件 (flag1 && (flag2 || !flag3)) 成立, 则设置对应 flag
+* FollowerContainer(Entity): 类 Eevee 的跟随容器, 可以像草莓那样被收集  -- by Shynnie(抄了 [Eevee](https://github.com/CommunalHelper/EeveeHelper)代码, 原谅我😭)
 
 ### GhostTranspose -- by Molong
 
@@ -92,3 +93,4 @@ LuckyHelperAreaMetaData:
 * 茶杯
 * SunsetQuasar
 * shadowRo
+* Wartori

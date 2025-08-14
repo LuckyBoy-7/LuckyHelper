@@ -114,6 +114,18 @@ entities.LuckyHelper/CrystalHeartDialogController.attributes.description.dialogs
 
 # Follower Container
 entities.LuckyHelper/FollowerContainer.placements.name.normal=Follower Container
+entities.LuckyHelper/FollowerContainer.attributes.description.containMode=Determines how the container contains entities.\n - RoomStart: Whitelisted entities inside the container at the start of the room are the only entities that will be contained.\n - FlagChanged: Entities are re-contained whenever the flag is enabled. This means you can delay containment with a flag to contain something like the Player.\n - Always: Whitelisted entities inside the container are always affected, and entities outside the container are no longer affected.\n - DelayedRoomStart: Same as RoomStart, but will occur on the first update tick (e.g. after screen transition).
+entities.LuckyHelper/FollowerContainer.attributes.description.containFlag=The container will only be enabled when the flag is active. Empty for always enabled. (Prefix flag name with "!" to invert, e.g. !myFlag)
+entities.LuckyHelper/FollowerContainer.attributes.description.whitelist=Comma-separated list of entity class names to contain (e.g. Booster,CrystalStaticSpinner,etc). Contains most entities if empty.
+entities.LuckyHelper/FollowerContainer.attributes.description.blacklist=Comma-separated list of entity class names to ignore (e.g. Booster,CrystalStaticSpinner,etc). Includes Players, SolidTiles, BackgroundTiles, Decals and Triggers unless specifically whitelisted.
+entities.LuckyHelper/FollowerContainer.attributes.description.ignoreAnchors=Disables the movement of internal "anchor positions", which usually store the start position of the entity.
+entities.LuckyHelper/FollowerContainer.attributes.description.forceStandardBehavior=Disables new special-cased behaviour for entities. New special behaviour may be added at any time, so enable this option if you're taking advantage of any buggy/jank behaviour.
+entities.LuckyHelper/FollowerContainer.attributes.description.ignoreContainerBounds=Attempts to contain all valid entities in the room, regardless of the boundaries of the container itself.
+entities.LuckyHelper/FollowerContainer.attributes.description.canFollowFlag=Whether the container can follow player on touch when the flag is active. Empty for always followable.
+entities.LuckyHelper/FollowerContainer.attributes.description.collectFlag=Whether the container will be collected like strawberry when the flag is active.
+entities.LuckyHelper/FollowerContainer.attributes.description.loseFlag=Whether the container will stop following player when the flag is active.
+entities.LuckyHelper/FollowerContainer.attributes.description.followerSpeed=Container move speed, from 0 to 1.
+entities.LuckyHelper/FollowerContainer.attributes.description.interval=Container's distance to the front follower object like strawberry or key.
 
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger

@@ -100,7 +100,7 @@ public class CustomWater : Water
             if (RefillExtraJump)
             {
                 // 如果拓展异变已经加载
-                if (CustomWaterModule.ExtendedVariantModeLoaded)
+                if (ModCompatModule.ExtendedVariantLoaded)
                 {
                     CallRefillExtraJumpMethod();
                 }

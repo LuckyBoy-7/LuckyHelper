@@ -1,4 +1,5 @@
 using LuckyHelper.Components.EeveeLike;
+using LuckyHelper.Entities.EeveeLike;
 using LuckyHelper.Extensions;
 using LuckyHelper.Module;
 using LuckyHelper.Modules;
@@ -11,7 +12,7 @@ namespace LuckyHelper.Components;
 
 // 游戏内 global, 真全局目前想不到怎么实现, 感觉只能做成 sl 那种感觉
 [Tracked]
-public class PersistentSingletonComponent(bool active = true, bool visible = true) : Component(active, visible)
+public class PersistentSingletonComponent(bool addGlobalToo = false, bool active = true, bool visible = true) : Component(active, visible)
 {
     [Load]
     public static void Load()
@@ -30,27 +31,30 @@ public class PersistentSingletonComponent(bool active = true, bool visible = tru
 
     private static void LevelOnLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader)
     {
-        var singletons = TypeToObjectsModule.BriefTypeToComponents[nameof(PersistentSingletonComponent)].Select(com => ((PersistentSingletonComponent)com).EntityID).ToHashSet();
+        var singletons = TypeToObjectsModule.BriefTypeToComponents[nameof(PersistentSingletonComponent)]
+            .Select(com => ((PersistentSingletonComponent)com).EntityID)
+            .Where(entityID => entityID.ID != 0).ToHashSet();
 
         self.Session.DoNotLoad.AddRange(singletons);
         orig(self, playerIntro, isFromLoader);
-        self.Session.DoNotLoad.RemoveWhere(elem => singletons.Contains(elem)); 
+        self.Session.DoNotLoad.RemoveWhere(elem => singletons.Contains(elem));
     }
 
     private bool EntityOrigPersistent;
+    private bool EntityOrigGlobal;
     public EntityID EntityID;
 
     public override void Added(Entity entity)
     {
         base.Added(entity);
         EntityOrigPersistent = Entity.TagCheck(Tags.Persistent);
+        EntityOrigGlobal = Entity.TagCheck(Tags.Global);
         if (!EntityOrigPersistent)
             Entity.AddTag(Tags.Persistent);
+        if (addGlobalToo && !EntityOrigGlobal)
+            Entity.AddTag(Tags.Global);
 
-        EntityID = Entity.EntityID();
-        LogUtils.LogDebug("===============");
-        LogUtils.LogDebug(EntityID.ToString());
-        LogUtils.LogDebug("===============");
+        EntityID = Entity.SourceId;
     }
 
     public override void Removed(Entity entity)
@@ -64,21 +68,24 @@ public class PersistentSingletonComponent(bool active = true, bool visible = tru
     {
         base.Update();
         Entity.AddTag(Tags.Persistent);
+        if (addGlobalToo)
+            Entity.AddTag(Tags.Global);
     }
 
     private void TryRestore(Session session)
     {
-        //todo: f6 的情况
         if (session == null)
             return;
         if (!EntityOrigPersistent)
-        {
             Entity.RemoveTag(Tags.Persistent);
-        }
+
+        if (!EntityOrigGlobal)
+            Entity.RemoveTag(Tags.Global);
     }
 
     public void DontLoadAnyMore()
     {
-        Entity.Session().DoNotLoad.Add(EntityID);
+        if (EntityID.ID != 0)
+            Entity.Session().DoNotLoad.Add(EntityID);
     }
 }

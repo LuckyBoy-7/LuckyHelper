@@ -1,4 +1,5 @@
 ﻿using LuckyHelper.Components;
+using LuckyHelper.Components.EeveeLike;
 
 namespace LuckyHelper.Handlers;
 
@@ -16,4 +17,8 @@ public interface IEntityHandler
 	Rectangle GetBounds();
 
 	void Destroy();
+
+	int GetHashCoe();
+	void OnAddPersistentSingletonComponent();
+	void OnRemovePersistentSingletonComponent();
 }

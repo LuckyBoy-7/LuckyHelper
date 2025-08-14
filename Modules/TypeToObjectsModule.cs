@@ -13,8 +13,6 @@ public static class TypeToObjectsModule
 {
     public static DefaultDict<string, HashSet<Entity>> BriefTypeToEntities = new(() => new());
     public static DefaultDict<string, HashSet<Component>> BriefTypeToComponents = new(() => new());
-    public static Dictionary<Entity, EntityID> CachedEntityToEntityID = new();
-    public static bool LevelLoadingEntity;
 
     [Load]
     public static void Load()
@@ -24,8 +22,6 @@ public static class TypeToObjectsModule
         On.Monocle.Component.Added += ComponentOnAdded;
         On.Monocle.Component.Removed += ComponentOnRemoved;
         On.Celeste.LevelLoader.ctor += LevelLoaderOnctor;
-        On.Celeste.Level.LoadLevel += LevelOnLoadLevel;
-        On.Monocle.EntityList.Add_Entity += EntityListOnAdd_Entity;
     }
 
 
@@ -37,43 +33,15 @@ public static class TypeToObjectsModule
         On.Monocle.Component.Added -= ComponentOnAdded;
         On.Monocle.Component.Removed -= ComponentOnRemoved;
         On.Celeste.LevelLoader.ctor -= LevelLoaderOnctor;
-        On.Celeste.Level.LoadLevel -= LevelOnLoadLevel;
-        On.Monocle.EntityList.Add_Entity -= EntityListOnAdd_Entity;
-    }
-
-    private static void EntityListOnAdd_Entity(On.Monocle.EntityList.orig_Add_Entity orig, Monocle.EntityList self, Entity entity)
-    {
-        if (LevelLoadingEntity)
-            CachedEntityToEntityID[entity] = Level._currentEntityId;
-
-        orig(self, entity);
     }
 
 
-    private static void LevelOnLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader)
-    {
-        // 清理应该删除的实体信息, 正常被卸载的实体 scene 是 null
-        Dictionary<Entity, EntityID> tmp = new();
-
-        foreach ((Entity entity, EntityID id) in CachedEntityToEntityID)
-        {
-            if (entity.Scene != null && entity.Scene is Level)
-                tmp[entity] = id;
-        }
-
-        CachedEntityToEntityID = tmp;
-
-        LevelLoadingEntity = true;
-        orig(self, playerIntro, isFromLoader);
-        LevelLoadingEntity = false;
-    }
 
     private static void LevelLoaderOnctor(LevelLoader.orig_ctor orig, Celeste.LevelLoader self, Session session, Vector2? startPosition)
     {
         // LogUtils.LogDebug("go");
         BriefTypeToEntities.Clear();
         BriefTypeToComponents.Clear();
-        CachedEntityToEntityID.Clear();
         orig(self, session, startPosition);
     }
 

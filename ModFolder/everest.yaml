@@ -9,6 +9,5 @@
       Version: 0.39.2
     - Name: AdamsAddons
       Version: 1.13.3
-#    - Name: VivHelper
-#      Version: 1.0.0
-#      Version: 1.14.7
+    - Name: VivHelper
+      Version: 1.14.10

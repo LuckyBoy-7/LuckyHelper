@@ -20,6 +20,7 @@ local followerContainer = {
         data = {
             width = 8,
             height = 8,
+            blacklist = "",
             whitelist = "",
             containMode = "RoomStart",
             containFlag = "",
@@ -28,14 +29,28 @@ local followerContainer = {
             forceStandardBehavior = false,
             ignoreContainerBounds = false,
             collectFlag = "FollowerContainerCollectFlag",
-            interval = 0,
             loseFlag = "FollowerContainerLoseFlag",
+            interval = 0,
+            followerSpeed = 0.9,
+            canFollowFlag = "",
+            dontDestroyAfterDetached = true,
         }
     },
     fieldInformation = {
         interval = {
             fieldType = "integer"
         }
+    },
+    fieldOrder = {
+        "x", "y",
+        "width", "height",
+        "blacklist", "whitelist",
+        "containMode", "containFlag",
+        "fitContained", "ignoreAnchors",
+        "forceStandardBehavior", "ignoreContainerBounds",
+        
+        "collectFlag", "loseFlag",
+        "interval", "followerSpeed", "canFollowFlag",
     }
 }
 

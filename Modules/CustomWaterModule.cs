@@ -16,18 +16,10 @@ public class CustomWaterModule
                                     customWater.KillPlayerDelay - LuckyHelperModule.Session.KillPlayerElapse < customWater.PlayerFlashTimeBeforeKilled &&
                                     customWater.GetEntity<Player>() != null && customWater.GetEntity<Player>().flash;
 
-    private static EverestModuleMetadata ExtendedVariantMode = new()
-    {
-        Name = "ExtendedVariantMode",
-        Version = new Version("0.39.2")
-    };
-
-    public static bool ExtendedVariantModeLoaded = false;
 
     [Load]
     public static void Load()
     {
-        ExtendedVariantModeLoaded = Everest.Loader.DependencyLoaded(ExtendedVariantMode);
         // water surface jump
         On.Celeste.Player.Update += PlayerOnUpdate;
         IL.Celeste.Player.NormalUpdate += PlayerOnNormalUpdate;

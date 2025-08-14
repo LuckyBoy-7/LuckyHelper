@@ -1,7 +1,8 @@
-﻿using LuckyHelper.Handlers;
-using LuckyHelper.Utils;
+﻿using LuckyHelper.Entities.EeveeLike;
+using LuckyHelper.Extensions;
+using LuckyHelper.Handlers;
 
-namespace LuckyHelper.Components;
+namespace LuckyHelper.Components.EeveeLike;
 
 // https://github.com/CommunalHelper/EeveeHelper
 [Tracked(true)]
@@ -32,10 +33,11 @@ public class EntityContainer : Component
     public Action<IEntityHandler> OnDetach;
 
     public bool Attached;
-    public bool CollideWithContained;
 
     private List<IEntityHandler> containedSaved = new();
     private bool updatedOnce;
+
+    public FollowerContainerHelperEntity HelperEntity;
 
     public EntityContainer() : base(true, true)
     {
@@ -61,6 +63,17 @@ public class EntityContainer : Component
         IgnoreContainerBounds = data.Bool("ignoreContainerBounds");
     }
 
+    public override void EntityAdded(Scene scene)
+    {
+        base.EntityAdded(scene);
+        // 方便在 EntityContainer 位置突变的时候还能正常的带着 contained entity 走, 因为对于传送之类的东西, 一个个适配太麻烦了(
+        HelperEntity = new FollowerContainerHelperEntity(Entity.Position);
+        scene.Add(HelperEntity);
+        AddContained(new EntityHandler(HelperEntity));
+        HelperEntity.AddNoDuplicatedComponent(new PersistentSingletonComponent(true));
+        
+    }
+
     public override void EntityAwake()
     {
         base.EntityAwake();
@@ -79,7 +92,7 @@ public class EntityContainer : Component
     {
         base.Update();
         Cleanup();
-
+        
         var newAttached = string.IsNullOrEmpty(ContainFlag) || SceneAs<Level>().Session.GetFlag(ContainFlag) != NotFlag;
 
         if (!updatedOnce)
@@ -192,6 +205,8 @@ public class EntityContainer : Component
 
     protected virtual void RemoveContained(IEntityHandler handler)
     {
+        if (handler.Entity is FollowerContainerHelperEntity)
+            return;
         Contained.Remove(handler);
         var handlers = HandlersFor[handler.Entity];
         handlers.Remove(handler);
@@ -278,10 +293,10 @@ public class EntityContainer : Component
                         {
                             anyInside = true;
 
-                            // if ((Mode != ContainMode.Always || !Contained.Contains(handler)) && WhitelistCheckCount(entity, counts[entity.GetType()] + 1))
-                            if ((Mode != ContainMode.Always 
-                                 || HandlersFor.GetValueOrDefault(handler.Entity, new List<IEntityHandler>()).All(h => h.GetType() != handler.GetType())) 
-                                && WhitelistCheckCount(entity, counts[entity.GetType()] + 1))
+                            if (
+                                WhitelistCheckCount(entity, counts[entity.GetType()] + 1) &&
+                                (Mode != ContainMode.Always || HandlersFor.GetValueOrDefault(handler.Entity, new List<IEntityHandler>())
+                                    .All(h => h.GetHashCoe() != handler.GetHashCoe())))
                             {
                                 AddContained(handler);
                                 OnAttach?.Invoke(handler);
@@ -360,9 +375,7 @@ public class EntityContainer : Component
             var parentCollidable = Entity.Collidable;
             entity.Collidable = true;
             Entity.Collidable = true;
-            CollideWithContained = true;
             var result = Entity.CollideCheck(entity);
-            CollideWithContained = false;
             entity.Collidable = collidable;
             Entity.Collidable = parentCollidable;
             return result;

@@ -1,5 +1,6 @@
 ﻿using LuckyHelper.Components;
 using Celeste.Mod.Helpers;
+using LuckyHelper.Components.EeveeLike;
 
 namespace LuckyHelper.Handlers;
 
@@ -139,5 +140,19 @@ public class EntityHandler : IEntityHandler
         }
 
         Entity.RemoveSelf();
+    }
+
+    public virtual int GetHashCoe()
+    {
+        return 114514;
+    }
+
+    public virtual void OnAddPersistentSingletonComponent()
+    {
+        
+    }
+
+    public virtual void OnRemovePersistentSingletonComponent()
+    {
     }
 }

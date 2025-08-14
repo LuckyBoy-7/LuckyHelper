@@ -12,6 +12,11 @@ internal class AxisMoverHandler : EntityHandler, IMoveable
 		entityData = new DynamicData(entity);
 		axesHandler = singleAxisHandler;
 	}
+	
+	public override int GetHashCoe()
+	{
+		return HashCode.Combine(axesHandler);
+	}
 
 	public bool Move(Vector2 move, Vector2? liftSpeed)
 	{

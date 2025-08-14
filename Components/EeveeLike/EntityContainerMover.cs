@@ -1,9 +1,11 @@
-﻿using LuckyHelper.Handlers;
+﻿using System.Security.Cryptography.X509Certificates;
+using LuckyHelper.Handlers;
 using Celeste.Mod.Helpers;
+using LuckyHelper.Entities.EeveeLike;
 using LuckyHelper.Utils;
 using MonoMod.Utils;
 
-namespace LuckyHelper.Components;
+namespace LuckyHelper.Components.EeveeLike;
 
 public class EntityContainerMover : EntityContainer
 {
@@ -30,6 +32,7 @@ public class EntityContainerMover : EntityContainer
     public Action OnPreMove;
     public Action OnPostMove;
 
+
     public EntityContainerMover() : base()
     {
     }
@@ -47,6 +50,7 @@ public class EntityContainerMover : EntityContainer
     public override void Added(Entity entity)
     {
         base.Added(entity);
+        
         entity.Add(new TransitionListener
         {
             OnOutBegin = () =>

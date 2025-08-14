@@ -1,23 +1,42 @@
 ﻿using Celeste.Mod.Entities;
 using System.Collections;
-using System.Transactions;
+using System.Reflection;
+using LuckyHelper.Components;
+using LuckyHelper.Components.EeveeLike;
 using LuckyHelper.Extensions;
 using LuckyHelper.Module;
+using LuckyHelper.Modules;
 using LuckyHelper.Utils;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
+using DashBlock = On.Celeste.DashBlock;
+using Entity = On.Monocle.Entity;
 
 
-namespace LuckyHelper.Components.EeveeLike;
+namespace LuckyHelper.Entities.EeveeLike;
 
 [Tracked]
 [CustomEntity("LuckyHelper/FollowerContainer")]
 public class FollowerContainer : Actor, IContainer
 {
+    public static ILHook VivLeaderHook;
+
     [Load]
     public static void Load()
     {
         On.Celeste.Leader.Update += LeaderOnUpdate;
-        IL.Celeste.Leader.Update += LeaderOnUpdate;
+
+        if (ModCompatModule.VivHelperLoaded)
+        {
+            Type vivLeaderModule = Everest.Modules.First(mod => mod.GetType().ToString() == "VivHelper.VivHelperModule").GetType();
+            VivLeaderHook = new ILHook(vivLeaderModule.GetMethod("newLeaderUpdate", BindingFlags.Static | BindingFlags.NonPublic), LeaderOnUpdate);
+        }
+        else
+        {
+            IL.Celeste.Leader.Update += LeaderOnUpdate;
+        }
+
+        On.Celeste.Player.Die += PlayerOnDie;
     }
 
 
@@ -26,6 +45,26 @@ public class FollowerContainer : Actor, IContainer
     {
         On.Celeste.Leader.Update -= LeaderOnUpdate;
         IL.Celeste.Leader.Update -= LeaderOnUpdate;
+
+        VivLeaderHook?.Dispose();
+        VivLeaderHook = null;
+
+        On.Celeste.Player.Die -= PlayerOnDie;
+    }
+
+    private static PlayerDeadBody PlayerOnDie(On.Celeste.Player.orig_Die orig, Player self, Vector2 direction, bool evenIfInvincible, bool registerDeathInStats)
+    {
+        // 因为 retry 的时候不会调用 update, 所以这里手动解决所有的 persistent singleton component
+                // foreach (FollowerContainer entity in new List<Entity>(self.Tracker().GetEntities<FollowerContainer>()))
+        // {
+            // entity.RemoveSelf();
+        // }
+        foreach (PersistentSingletonComponent com in new List<Component>(self.Tracker().GetComponents<PersistentSingletonComponent>()))
+        {
+            com.RemoveSelf();
+        }
+
+        return orig(self, direction, evenIfInvincible, registerDeathInStats);
     }
 
 
@@ -33,15 +72,15 @@ public class FollowerContainer : Actor, IContainer
     {
         ILCursor cursor = new ILCursor(il);
 
+        int keyLocIndex = ModCompatModule.VivHelperLoaded ? 6 : 4;
 
-        if (cursor.TryGotoNext(ins => ins.MatchStloc(4)
-                // if (cursor.TryGotoNext(ins => ins.MatchStloc(1)
+        if (cursor.TryGotoNext(ins => ins.MatchStloc(keyLocIndex)
             ))
         {
             cursor.Index += 1;
             // 保存 index
             cursor.EmitLdloc(1);
-            cursor.EmitLdloc(4);
+            cursor.EmitLdloc(keyLocIndex);
             cursor.EmitDelegate<Func<int, Follower, int>>((index, follower) =>
             {
                 if (follower.Entity is FollowerContainer container)
@@ -53,6 +92,22 @@ public class FollowerContainer : Actor, IContainer
             });
             // 保存 index
             cursor.EmitStloc(1);
+        }
+
+        if (cursor.TryGotoNext(ins => ins.MatchLdcR8(0.009999999776482582)
+            ))
+        {
+            cursor.Index += 1;
+            cursor.EmitLdloc(keyLocIndex);
+            cursor.EmitDelegate<Func<double, Follower, double>>((k, follower) =>
+            {
+                if (follower.Entity is FollowerContainer container)
+                {
+                    return container.FollowerInvSpeed;
+                }
+
+                return k;
+            });
         }
     }
 
@@ -69,8 +124,10 @@ public class FollowerContainer : Actor, IContainer
 
         orig(self);
 
+        // 防止移动的时候把 player 挤死导致 lose follower 后 list 内容变化而报错
+        var followers = new List<Follower>(self.Followers);
         int i = 0;
-        foreach (Follower follower in self.Followers)
+        foreach (Follower follower in followers)
         {
             if (follower.Entity is FollowerContainer container)
             {
@@ -85,8 +142,6 @@ public class FollowerContainer : Actor, IContainer
     public EntityContainer Container => _Container;
     public EntityContainerMover _Container;
 
-    // private Dictionary<Entity, bool> wasPersistent = new();
-    private Vector2 _respawnPosition;
     public Follower Follower;
     public EntityID ID;
 
@@ -98,12 +153,19 @@ public class FollowerContainer : Actor, IContainer
     // movement
     public int Interval = 0;
     public string LoseFlag;
+    public float FollowerInvSpeed;
+    public string CanFollowFlag;
+    public bool DontDestroyAfterDetached;
+    private Player _player;
 
 
     public FollowerContainer(EntityData data, Vector2 offset, EntityID id) : base(data.Position + offset + new Vector2(data.Width / 2f, data.Height / 2f))
     {
         Interval = data.Int("interval");
         LoseFlag = data.Attr("loseFlag");
+        CanFollowFlag = data.Attr("canFollowFlag");
+        FollowerInvSpeed = 1 - Calc.Clamp(data.Float("followerSpeed"), 0, 1);
+        DontDestroyAfterDetached = data.Bool("dontDestroyAfterDetached");
         ID = id;
         Collider = new Hitbox(data.Width, data.Height);
         Collider.Position = new Vector2(-Width / 2f, -Height / 2f);
@@ -111,7 +173,6 @@ public class FollowerContainer : Actor, IContainer
 
         Depth = Depths.Top - 10;
         // Depth = 1000;
-        _respawnPosition = Position;
 
 
         Add(_Container = new EntityContainerMover(data)
@@ -120,10 +181,14 @@ public class FollowerContainer : Actor, IContainer
             OnFit = OnFit,
             OnAttach = handler =>
             {
-                if (handler.Entity.Get<PersistentSingletonComponent>() == null)
-                    handler.Entity.Add(new PersistentSingletonComponent());
+                handler.Entity.AddNoDuplicatedComponent(new PersistentSingletonComponent(true));
+                handler.OnAddPersistentSingletonComponent();
             },
-            OnDetach = handler => handler.Entity.Get<PersistentSingletonComponent>()?.RemoveSelf()
+            OnDetach = handler =>
+            {
+                handler.Entity.Get<PersistentSingletonComponent>()?.RemoveSelf();
+                handler.OnRemovePersistentSingletonComponent();
+            }
         });
 
         Add(Follower = new Follower(ID)); // 这里蔚蓝已经帮我们在 LoadLevel 的时候保证 FollowerContainer 不重复了
@@ -139,10 +204,16 @@ public class FollowerContainer : Actor, IContainer
         Add(new PersistentSingletonComponent());
     }
 
+    public override void Awake(Scene scene)
+    {
+        base.Awake(scene);
+        _player = scene.Tracker.GetEntity<Player>();
+    }
+
     private void OnPlayer(Player player)
     {
         // if (Follower.Leader == null && Container.Contained.Count > 0)
-        if (Follower.Leader == null)
+        if (Follower.Leader == null && (string.IsNullOrEmpty(CanFollowFlag) || this.Session().GetFlag(CanFollowFlag)) && !this.Session().GetFlag(LoseFlag))
         {
             Audio.Play("event:/game/general/strawberry_touch", Position);
             player.Leader.GainFollower(Follower);
@@ -161,9 +232,33 @@ public class FollowerContainer : Actor, IContainer
     public override void Update()
     {
         base.Update();
+
+        // LogUtils.LogDebug($"{Container.HelperEntity.Position} { Position}");
+        // 适配传送等情况
+        if (Vector2.Distance(Container.HelperEntity.Position, Position) > 0.1f)
+        {
+            Vector2 delta = Position - Container.HelperEntity.Position;
+            Position = Container.HelperEntity.Position;
+            _Container.DoMoveAction(() => Position += delta);
+        }
+
+        // 在跟随的时候 player 死亡正常卸载, 如果是 detach 或者普通情况, 那就一直 global, 反正 load 是让 session 管的
+        // 对于 player retry 不会调用 update, 这里用 hook 解决
+        if (_player != null && _player.Dead)
+        {
+            RemoveTag(Tags.Global);
+        }
+        else
+        {
+            AddTag(Tags.Global);
+        }
+
         if (Follower.Leader == null)
+        {
             return;
-        
+        }
+
+
         var session = this.Session();
         if (session.GetFlag(LoseFlag))
         {

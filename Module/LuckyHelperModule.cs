@@ -1,5 +1,6 @@
 using LuckyHelper.Handlers;
 using LuckyHelper.Handlers.Impl;
+using LuckyHelper.Modules;
 using LuckyHelper.Utils;
 
 namespace LuckyHelper.Module;
@@ -33,7 +34,7 @@ public class LuckyHelperModule : EverestModule
 
     public override void Load()
     {
-        // Logger.Log(LogLevel.Info, "Test", "alskdjf;alsdkjf");
+        ModCompatModule.Load(); 
         AttributeUtils.Invoke<LoadAttribute>();
         
         
@@ -58,6 +59,7 @@ public class LuckyHelperModule : EverestModule
 
     public override void Unload()
     {
+        ModCompatModule.Unload();
         AttributeUtils.Invoke<UnloadAttribute>();
     }
 }

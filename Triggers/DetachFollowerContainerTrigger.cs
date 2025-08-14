@@ -1,6 +1,7 @@
 using System.Collections;
 using Celeste.Mod.Entities;
 using LuckyHelper.Components.EeveeLike;
+using LuckyHelper.Entities.EeveeLike;
 using LuckyHelper.Extensions;
 
 namespace LuckyHelper.Triggers;
