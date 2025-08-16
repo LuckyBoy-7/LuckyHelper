@@ -22,9 +22,5 @@
         </Reference>
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="ModFolder\Code\" />
-    </ItemGroup>
-    
     <Import Project="CelesteMod.targets"/>
 </Project>

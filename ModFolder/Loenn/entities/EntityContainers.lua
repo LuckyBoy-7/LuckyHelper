@@ -50,7 +50,8 @@ local followerContainer = {
         "forceStandardBehavior", "ignoreContainerBounds",
         
         "collectFlag", "loseFlag",
-        "interval", "followerSpeed", "canFollowFlag",
+        "interval", "followerSpeed",
+        "canFollowFlag", "dontDestroyAfterDetached"
     }
 }
 

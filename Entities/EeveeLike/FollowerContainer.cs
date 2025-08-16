@@ -10,7 +10,6 @@ using LuckyHelper.Utils;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using DashBlock = On.Celeste.DashBlock;
-using Entity = On.Monocle.Entity;
 
 
 namespace LuckyHelper.Entities.EeveeLike;
@@ -55,14 +54,21 @@ public class FollowerContainer : Actor, IContainer
     private static PlayerDeadBody PlayerOnDie(On.Celeste.Player.orig_Die orig, Player self, Vector2 direction, bool evenIfInvincible, bool registerDeathInStats)
     {
         // 因为 retry 的时候不会调用 update, 所以这里手动解决所有的 persistent singleton component
-                // foreach (FollowerContainer entity in new List<Entity>(self.Tracker().GetEntities<FollowerContainer>()))
-        // {
-            // entity.RemoveSelf();
-        // }
-        foreach (PersistentSingletonComponent com in new List<Component>(self.Tracker().GetComponents<PersistentSingletonComponent>()))
+        foreach (FollowerContainer entity in new List<Entity>(self.Tracker().GetEntities<FollowerContainer>()))
         {
-            com.RemoveSelf();
+            if (entity.DontDestroyAfterDetached && entity.HasDetached)
+            {
+                // entity.Get<Coroutine>().RunToEnd();
+                entity.AddTag(Tags.Global);
+                continue;
+            }
+
+            entity.Get<PersistentSingletonComponent>()?.RemoveSelf();
         }
+        // foreach (PersistentSingletonComponent com in new List<Component>(self.Tracker().GetComponents<PersistentSingletonComponent>()))
+        // {
+        // com.RemoveSelf();
+        // }
 
         return orig(self, direction, evenIfInvincible, registerDeathInStats);
     }
@@ -156,6 +162,7 @@ public class FollowerContainer : Actor, IContainer
     public float FollowerInvSpeed;
     public string CanFollowFlag;
     public bool DontDestroyAfterDetached;
+    public bool HasDetached;
     private Player _player;
 
 
@@ -191,9 +198,14 @@ public class FollowerContainer : Actor, IContainer
             }
         });
 
-        Add(Follower = new Follower(ID)); // 这里蔚蓝已经帮我们在 LoadLevel 的时候保证 FollowerContainer 不重复了
+        Add(Follower = new Follower(ID, OnGainLeader)); // 这里蔚蓝已经帮我们在 LoadLevel 的时候保证 FollowerContainer 不重复了
         Add(new PlayerCollider(OnPlayer));
         _collectFlag = data.Attr("collectFlag");
+    }
+
+    private void OnGainLeader()
+    {
+        HasDetached = false;
     }
 
 
@@ -246,7 +258,14 @@ public class FollowerContainer : Actor, IContainer
         // 对于 player retry 不会调用 update, 这里用 hook 解决
         if (_player != null && _player.Dead)
         {
-            RemoveTag(Tags.Global);
+            if (!(DontDestroyAfterDetached && HasDetached))
+            {
+                RemoveTag(Tags.Global);
+            }
+            else
+            {
+                AddTag(Tags.Global);
+            }
         }
         else
         {

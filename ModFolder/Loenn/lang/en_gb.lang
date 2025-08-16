@@ -126,6 +126,7 @@ entities.LuckyHelper/FollowerContainer.attributes.description.collectFlag=Whethe
 entities.LuckyHelper/FollowerContainer.attributes.description.loseFlag=Whether the container will stop following player when the flag is active.
 entities.LuckyHelper/FollowerContainer.attributes.description.followerSpeed=Container move speed, from 0 to 1.
 entities.LuckyHelper/FollowerContainer.attributes.description.interval=Container's distance to the front follower object like strawberry or key.
+entities.LuckyHelper/FollowerContainer.attributes.description.dontDestroyAfterDetached=Container can be detached by DetachFollowerContainerTrigger, should it keep alive after player's death?
 
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger

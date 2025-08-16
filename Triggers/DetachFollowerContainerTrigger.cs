@@ -29,7 +29,7 @@ public class DetachFollowerContainerTrigger : EntityTrigger
         {
             if (player.Leader.Followers[i].Entity is FollowerContainer)
             {
-                Add(new Coroutine(DetatchFollower(player.Leader.Followers[i])));
+                player.Leader.Followers[i].Entity.Add(new Coroutine(DetatchFollower(player.Leader.Followers[i])));
             }
         }
     }
@@ -44,6 +44,7 @@ public class DetachFollowerContainerTrigger : EntityTrigger
 
         Leader leader = follower.Leader;
         FollowerContainer entity = follower.Entity as FollowerContainer;
+        entity.HasDetached = true;
         // 防止 container 过去的时候又被 player 吸住了
         entity.Collidable = false;
         float distance = (entity.Position - _targetPosition).Length();
