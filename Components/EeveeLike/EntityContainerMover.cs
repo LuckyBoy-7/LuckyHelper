@@ -302,7 +302,7 @@ public class EntityContainerMover : EntityContainer
         {
             if (entityType.IsAssignableFrom(type))
             {
-                Console.WriteLine($"Registering handler {handlerType.Name} [{type.Name} : {entityType.Name}]");
+                // Console.WriteLine($"Registering handler {handlerType.Name} [{type.Name} : {entityType.Name}]");
                 if (!EntityHandlers.ContainsKey(type))
                 {
                     EntityHandlers.Add(type, new List<Type>());

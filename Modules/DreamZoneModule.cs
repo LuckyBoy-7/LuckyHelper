@@ -54,9 +54,17 @@ public class DreamZoneModule
 
         // 开关zone
         bool on = self.StateMachine.State is Player.StDash or Player.StDreamDash || self.DashAttacking;
-        SetDreamZoneCollidable(self, on, zone => !zone.DisableInteraction // 可交互
-                                                 // 果冻开启状态, 或者关闭状态但是从外面开始冲
-                                                 && (zone.playerHasDreamDash || (!playerStartDashInDreamzones.Contains(zone) && !zone.DisableCollisionOnNotDreaming)));
+        SetDreamZoneCollidable(self, on, zone =>
+        {
+            // 老版本 bug, 就是在果冻未开启状态在里面冲刺时会卡一下, 真有人拿这个机制作图啊😭, https://youtu.be/hF_0hqVvn0w?si=yg7szk7W_-IiVx8q&t=219
+            if (zone.OldVersionThatHasCollisionWithDisabledDreamZone)
+                return true;
+            // 可交互
+            if (zone.DisableInteraction)
+                return false;
+            // 果冻开启状态, 或者关闭状态但是从外面开始冲
+            return zone.playerHasDreamDash || (!playerStartDashInDreamzones.Contains(zone) && !zone.DisableCollisionOnNotDreaming);
+        });
         // 如果
         orig(self);
         SetDreamZoneCollidable(self, false);

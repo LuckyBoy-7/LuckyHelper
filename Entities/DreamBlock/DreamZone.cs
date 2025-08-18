@@ -25,6 +25,8 @@ public class DreamZone : DreamBlock
     public bool DisableCollisionOnNotDreaming = false;
     public bool CancelDreamDashOnNotDreaming = false;
 
+    public bool OldVersionThatHasCollisionWithDisabledDreamZone;
+
     public DreamZone(EntityData data, Vector2 offset) : base(data, offset)
     {
         StopPlayerOnCollide = data.Bool("stopPlayerOnCollide");
@@ -52,6 +54,7 @@ public class DreamZone : DreamBlock
         // 打错字惹
         if (data.Has("disableCollisioinOnNotDreaming"))
             DisableCollisionOnNotDreaming = data.Bool("disableCollisioinOnNotDreaming");
+        OldVersionThatHasCollisionWithDisabledDreamZone = !data.Has("disableCollisionOnNotDreaming");
         CancelDreamDashOnNotDreaming = data.Bool("cancelDreamDashOnNotDreaming");
         
         Collidable = false;
