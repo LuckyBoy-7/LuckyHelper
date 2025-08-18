@@ -26,6 +26,8 @@ public class DreamZone : DreamBlock
     public bool CancelDreamDashOnNotDreaming = false;
 
     public bool OldVersionThatHasCollisionWithDisabledDreamZone;
+    public double StarNumberPerUnit;
+    public float StarAlpha;
 
     public DreamZone(EntityData data, Vector2 offset) : base(data, offset)
     {
@@ -54,9 +56,11 @@ public class DreamZone : DreamBlock
         // 打错字惹
         if (data.Has("disableCollisioinOnNotDreaming"))
             DisableCollisionOnNotDreaming = data.Bool("disableCollisioinOnNotDreaming");
-        OldVersionThatHasCollisionWithDisabledDreamZone = !data.Has("disableCollisionOnNotDreaming");
+        OldVersionThatHasCollisionWithDisabledDreamZone = !data.Has("disableCollisionOnNotDreaming") || data.Bool("useOldFeatureOnNotDreaming");
         CancelDreamDashOnNotDreaming = data.Bool("cancelDreamDashOnNotDreaming");
-        
+        StarNumberPerUnit = data.Float("starNumberPerUnit", 0.7f);
+        StarAlpha = data.Float("starAlpha", 1); 
+
         Collidable = false;
     }
 
@@ -139,7 +143,7 @@ public class DreamZone : DreamBlock
 
             if (vector.X >= X + 2f && vector.Y >= Y + 2f && vector.X < Right - 2f && vector.Y < Bottom - 2f)
             {
-                mtexture.DrawCentered(vector + shake, color);
+                mtexture.DrawCentered(vector + shake, color * StarAlpha);
             }
         }
 

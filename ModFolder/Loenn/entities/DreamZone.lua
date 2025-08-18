@@ -22,10 +22,13 @@ dreamBlock.placements = {
         outlineColor = "FFFFFF",
         backgroundAlpha = 1,
         outlineAlpha = 1,
+        starAlpha = 1,
         disableWobble = false,
         disableInteraction = false,
         disableCollisionOnNotDreaming = false,
-        cancelDreamDashOnNotDreaming = false
+        cancelDreamDashOnNotDreaming = false,
+        useOldFeatureOnNotDreaming = false,
+        starNumberPerUnit = 0.7
     }
 }
 

@@ -71,6 +71,15 @@ entities.LuckyHelper/DeathCountText.attributes.description.savedPath=The path wh
 
 # DreamZone
 entities.LuckyHelper/DreamZone.placements.name.normal=Dream Zone
+entities.LuckyHelper/DreamZone.attributes.description.stopPlayerOnCollide=When player's dream dashing and collides with the solid block, will it be stopped?
+entities.LuckyHelper/DreamZone.attributes.description.killPlayerOnCollide=When player's dream dashing and collides with the solid block, will player be killed?
+entities.LuckyHelper/DreamZone.attributes.description.starColors1=Big particle's color
+entities.LuckyHelper/DreamZone.attributes.description.starColors2=Medium particle's color
+entities.LuckyHelper/DreamZone.attributes.description.starColors3=Small particle's color
+entities.LuckyHelper/DreamZone.attributes.description.disableInteraction=Whether the dream zone be a decal or gp usage
+entities.LuckyHelper/DreamZone.attributes.description.disableCollisionOnNotDreaming=Due to my stupid code, you can have collision with dream zone on not dreaming with dash state, this is to fix this, \nor you can use the feature to do funny gp 
+entities.LuckyHelper/DreamZone.attributes.description.cancelDreamDashOnNotDreaming=If you dash into an active dream zone then disable it, will player's dream dash be canceled or not 
+entities.LuckyHelper/DreamZone.attributes.description.useOldFeatureOnNotDreaming=When dashing in inactive dream zone, can you have an immediate collision with dream zone?
 
 # DecalWithCombinedRegistry
 entities.LuckyHelper/DecalWithCombinedRegistry.placements.name.normal=Decal With Combined Registry

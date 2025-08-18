@@ -18,7 +18,9 @@ public class DreamZoneModule
         On.Celeste.Player.Update += PlayerOnUpdate;
         IL.Celeste.Player.DreamDashUpdate += PlayerOnDreamDashUpdate;
         On.Celeste.Player.DreamDashUpdate += PlayerOnDreamDashUpdate;
+        IL.Celeste.DreamBlock.Setup += DreamBlockOnSetup;
     }
+
 
     [Unload]
     public static void Unload()
@@ -27,6 +29,26 @@ public class DreamZoneModule
         On.Celeste.Player.Update -= PlayerOnUpdate;
         IL.Celeste.Player.DreamDashUpdate -= PlayerOnDreamDashUpdate;
         On.Celeste.Player.DreamDashUpdate -= PlayerOnDreamDashUpdate;
+        IL.Celeste.DreamBlock.Setup -= DreamBlockOnSetup;
+    }
+
+    private static void DreamBlockOnSetup(ILContext il)
+    {
+        ILCursor cursor = new ILCursor(il);
+        if (!cursor.TryGotoNext(ins => ins.MatchLdcR8(0.699999988079071)
+            ))
+            return;
+        cursor.Index += 1;
+        cursor.EmitLdarg0();
+        cursor.EmitDelegate<Func<double, DreamBlock, double>>((starNumberPerUnit, dreamBlock) =>
+        {
+            if (dreamBlock is DreamZone dreamZone)
+            {
+                return dreamZone.StarNumberPerUnit;
+            }
+
+            return starNumberPerUnit;
+        });
     }
 
     private static void PlayerOnDashBegin(On.Celeste.Player.orig_DashBegin orig, Player self)
@@ -56,12 +78,13 @@ public class DreamZoneModule
         bool on = self.StateMachine.State is Player.StDash or Player.StDreamDash || self.DashAttacking;
         SetDreamZoneCollidable(self, on, zone =>
         {
-            // 老版本 bug, 就是在果冻未开启状态在里面冲刺时会卡一下, 真有人拿这个机制作图啊😭, https://youtu.be/hF_0hqVvn0w?si=yg7szk7W_-IiVx8q&t=219
-            if (zone.OldVersionThatHasCollisionWithDisabledDreamZone)
-                return true;
             // 可交互
             if (zone.DisableInteraction)
                 return false;
+            // 老版本 bug, 就是在果冻未开启状态在里面冲刺时会卡一下, 真有人拿这个机制作图啊😭, https://youtu.be/hF_0hqVvn0w?si=yg7szk7W_-IiVx8q&t=219
+            if (zone.OldVersionThatHasCollisionWithDisabledDreamZone)
+                return true;
+
             // 果冻开启状态, 或者关闭状态但是从外面开始冲
             return zone.playerHasDreamDash || (!playerStartDashInDreamzones.Contains(zone) && !zone.DisableCollisionOnNotDreaming);
         });
