@@ -29,6 +29,8 @@ public class DreamZone : DreamBlock
     public double StarNumberPerUnit;
     public float StarAlpha;
     public bool DisableVerticalJump;
+    public bool DisableInsideDreamJump;
+    public bool GetVerticalCoyote;
 
     public DreamZone(EntityData data, Vector2 offset) : base(data, offset)
     {
@@ -62,9 +64,12 @@ public class DreamZone : DreamBlock
         StarNumberPerUnit = data.Float("starNumberPerUnit", 0.7f);
         StarAlpha = data.Float("starAlpha", 1);
         DisableVerticalJump = data.Bool("disableVerticalJump", false);
+        DisableInsideDreamJump = data.Bool("disableInsideDreamJump", false);
+        GetVerticalCoyote = data.Bool("getVerticalCoyote", false); 
 
         Collidable = false;
     }
+
 
     public override void Update()
     {

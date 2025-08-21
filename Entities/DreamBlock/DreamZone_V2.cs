@@ -22,13 +22,13 @@ public class DreamZone_V2 : DreamBlock
 
     public bool DisableWobble = true;
     public bool DisableInteraction = false;
-    public bool DisableCollisionOnNotDreaming = false;
     public bool CancelDreamDashOnNotDreaming = false;
 
-    public bool OldVersionThatHasCollisionWithDisabledDreamZone_V2;
     public double StarNumberPerUnit;
     public float StarAlpha;
     public bool DisableVerticalJump;
+    public bool DisableInsideDreamJump;
+    public bool GetVerticalCoyote;
 
     public DreamZone_V2(EntityData data, Vector2 offset) : base(data, offset)
     {
@@ -46,11 +46,12 @@ public class DreamZone_V2 : DreamBlock
 
         DisableWobble = data.Bool("disableWobble");
         DisableInteraction = data.Bool("disableInteraction");
-        DisableCollisionOnNotDreaming = data.Bool("disableCollisionOnNotDreaming");
         CancelDreamDashOnNotDreaming = data.Bool("cancelDreamDashOnNotDreaming");
         StarNumberPerUnit = data.Float("starNumberPerUnit", 0.7f);
         StarAlpha = data.Float("starAlpha", 1);
         DisableVerticalJump = data.Bool("disableVerticalJump", false);
+        DisableInsideDreamJump = data.Bool("disableInsideDreamJump", false); 
+        GetVerticalCoyote = data.Bool("getVerticalCoyote", false); 
 
         Collidable = false;
     }

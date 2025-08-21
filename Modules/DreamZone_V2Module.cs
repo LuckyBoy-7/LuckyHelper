@@ -17,6 +17,7 @@ public class DreamZone_V2Module
         On.Celeste.Player.DreamDashUpdate += PlayerOnDreamDashUpdate;
         IL.Celeste.DreamBlock.Setup += DreamBlockOnSetup;
         On.Celeste.Player.Update += PlayerOnUpdate;
+        On.Celeste.Player.DreamDashCheck += PlayerOnDreamDashCheck;
     }
 
 
@@ -26,6 +27,15 @@ public class DreamZone_V2Module
         On.Celeste.Player.DreamDashUpdate -= PlayerOnDreamDashUpdate;
         IL.Celeste.DreamBlock.Setup -= DreamBlockOnSetup;
         On.Celeste.Player.Update -= PlayerOnUpdate;
+        On.Celeste.Player.DreamDashCheck -= PlayerOnDreamDashCheck;
+    }
+
+    private static bool PlayerOnDreamDashCheck(On.Celeste.Player.orig_DreamDashCheck orig, Player self, Vector2 dir)
+    {
+        SetDreamZone_V2Collidable(self, true, zone => zone.playerHasDreamDash);
+        bool ans = orig(self, dir);
+        SetDreamZone_V2Collidable(self, false);
+        return ans;
     }
 
     private static void PlayerOnUpdate(On.Celeste.Player.orig_Update orig, Player self)

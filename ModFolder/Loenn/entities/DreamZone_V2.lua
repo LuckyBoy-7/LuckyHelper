@@ -27,6 +27,8 @@ dreamBlock.placements = {
         disableInteraction = false,
         cancelDreamDashOnNotDreaming = false,
         disableVerticalJump = true,
+        disableInsideDreamJump = false,
+        getVerticalCoyote = false,
         starNumberPerUnit = 0.7
     }
 }

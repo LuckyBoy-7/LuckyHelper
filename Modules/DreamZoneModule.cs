@@ -20,6 +20,7 @@ public class DreamZoneModule
         IL.Celeste.Player.DreamDashUpdate += PlayerOnDreamDashUpdate;
         On.Celeste.Player.DreamDashUpdate += PlayerOnDreamDashUpdate;
         IL.Celeste.DreamBlock.Setup += DreamBlockOnSetup;
+        IL.Celeste.Player.DreamDashEnd += PlayerOnDreamDashEnd;
     }
 
 
@@ -31,6 +32,43 @@ public class DreamZoneModule
         IL.Celeste.Player.DreamDashUpdate -= PlayerOnDreamDashUpdate;
         On.Celeste.Player.DreamDashUpdate -= PlayerOnDreamDashUpdate;
         IL.Celeste.DreamBlock.Setup -= DreamBlockOnSetup;
+        IL.Celeste.Player.DreamDashEnd -= PlayerOnDreamDashEnd;
+    }
+
+    private static void PlayerOnDreamDashEnd(ILContext il)
+    {
+        ILCursor cursor = new ILCursor(il);
+        if (!cursor.TryGotoNext(
+                ins => ins.MatchLdarg0(),
+                ins => ins.MatchLdflda(out _),
+                ins => ins.MatchLdfld(out _),
+                ins => ins.MatchLdcR4(0),
+                ins => ins.MatchBeq(out ILLabel il0070)
+            ))
+            return;
+
+        ILLabel outLabel = cursor.DefineLabel();
+
+        cursor.EmitLdarg0();
+        cursor.EmitDelegate<Func<Player, bool>>((player) =>
+        {
+            if (player.dreamBlock is DreamZone { GetVerticalCoyote: true })
+            {
+                return true;
+            }
+
+            if (player.dreamBlock is DreamZone_V2 { GetVerticalCoyote: true })
+            {
+                return true;
+            }
+
+            return false;
+        });
+        cursor.EmitBrtrue(outLabel);
+        // 为什么要 goto 两次才过去, 有点没搞懂
+        cursor.GotoNext(ins => ins.MatchLdarg0());
+        cursor.GotoNext(ins => ins.MatchLdarg0());
+        cursor.MarkLabel(outLabel);
     }
 
     private static void DreamBlockOnSetup(ILContext il)
@@ -196,17 +234,17 @@ public class DreamZoneModule
         cursor.EmitLdarg0();
         cursor.EmitDelegate<Func<Player, bool>>((player) =>
         {
-            if (dreamZone != null && (!dreamZone.DisableVerticalJump || player.DashDir.X != 0))
+            if (player.dreamBlock is DreamZone dreamZone && !dreamZone.DisableInsideDreamJump && (!dreamZone.DisableVerticalJump || player.DashDir.X != 0))
             {
                 return true;
             }
 
-            if (DreamZone_V2Module.DreamZone != null && (!DreamZone_V2Module.DreamZone.DisableVerticalJump || player.DashDir.X != 0))
+            if (player.dreamBlock is DreamZone_V2 dreamZoneV2 && !dreamZoneV2.DisableInsideDreamJump && (!dreamZoneV2.DisableVerticalJump || player.DashDir.X != 0))
             {
                 return true;
             }
 
-            return dreamZone != null;
+            return false;
         });
         cursor.EmitBrfalse(outLabel);
 
