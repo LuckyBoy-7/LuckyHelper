@@ -37,7 +37,7 @@ public class SetConditionFlagTriggerModule
         HashSet<Tuple<string, ulong>> toRemove = new();
         foreach (var tuple in flagsToRemove)
         {
-            if (tuple.Item2 == Engine.FrameCounter)
+            if (tuple.Item2 <= Engine.FrameCounter)
                 toRemove.Add(tuple);
         }
 
