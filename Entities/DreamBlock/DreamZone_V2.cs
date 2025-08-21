@@ -2,10 +2,10 @@ using Celeste.Mod.Entities;
 
 namespace LuckyHelper.Entities;
 
-[CustomEntity("LuckyHelper/DreamZone")]
+[CustomEntity("LuckyHelper/DreamZone_V2")]
 [TrackedAs(typeof(DreamBlock))]
 [Tracked]
-public class DreamZone : DreamBlock
+public class DreamZone_V2 : DreamBlock
 {
     public bool StopPlayerOnCollide = true;
     public bool KillPlayerOnCollide = true;
@@ -16,21 +16,21 @@ public class DreamZone : DreamBlock
     public Color OutlineColor = Color.Black;
     public float OutlineAlpha = 0.5f;
 
-    public string StarColors1 = "FFEF11,FF00D0,08a310";
-    public string StarColors2 = "5fcde4,7fb25e,E0564C";
-    public string StarColors3 = "5b6ee1,CC3B3B,7daa64";
+    public string BigStarColors = "FFEF11,FF00D0,08a310";
+    public string MediumStarColors = "5fcde4,7fb25e,E0564C";
+    public string SmallStarColors = "5b6ee1,CC3B3B,7daa64";
 
     public bool DisableWobble = true;
     public bool DisableInteraction = false;
     public bool DisableCollisionOnNotDreaming = false;
     public bool CancelDreamDashOnNotDreaming = false;
 
-    public bool OldVersionThatHasCollisionWithDisabledDreamZone;
+    public bool OldVersionThatHasCollisionWithDisabledDreamZone_V2;
     public double StarNumberPerUnit;
     public float StarAlpha;
     public bool DisableVerticalJump;
 
-    public DreamZone(EntityData data, Vector2 offset) : base(data, offset)
+    public DreamZone_V2(EntityData data, Vector2 offset) : base(data, offset)
     {
         StopPlayerOnCollide = data.Bool("stopPlayerOnCollide");
         KillPlayerOnCollide = data.Bool("killPlayerOnCollide");
@@ -40,24 +40,13 @@ public class DreamZone : DreamBlock
         OutlineColor = data.HexColor("outlineColor");
         OutlineAlpha = data.Float("outlineAlpha");
 
-        StarColors1 = data.Attr("starColors1");
-        StarColors2 = data.Attr("starColors2");
-        StarColors3 = data.Attr("starColors3");
-
-        if (data.Has("startColors1"))
-            StarColors1 = data.Attr("startColors1");
-        if (data.Has("startColors2"))
-            StarColors2 = data.Attr("startColors2");
-        if (data.Has("startColors3"))
-            StarColors3 = data.Attr("startColors3");
+        BigStarColors = data.Attr("bigStarColors");
+        MediumStarColors = data.Attr("mediumStarColors");
+        SmallStarColors = data.Attr("smallStarColors");
 
         DisableWobble = data.Bool("disableWobble");
         DisableInteraction = data.Bool("disableInteraction");
         DisableCollisionOnNotDreaming = data.Bool("disableCollisionOnNotDreaming");
-        // 打错字惹
-        if (data.Has("disableCollisioinOnNotDreaming"))
-            DisableCollisionOnNotDreaming = data.Bool("disableCollisioinOnNotDreaming");
-        OldVersionThatHasCollisionWithDisabledDreamZone = !data.Has("disableCollisionOnNotDreaming") || data.Bool("useOldFeatureOnNotDreaming");
         CancelDreamDashOnNotDreaming = data.Bool("cancelDreamDashOnNotDreaming");
         StarNumberPerUnit = data.Float("starNumberPerUnit", 0.7f);
         StarAlpha = data.Float("starAlpha", 1);
@@ -85,13 +74,13 @@ public class DreamZone : DreamBlock
             {
                 case 0:
 
-                    particles[i].Color = GetRandomColorByString(StarColors1);
+                    particles[i].Color = GetRandomColorByString(BigStarColors);
                     break;
                 case 1:
-                    particles[i].Color = GetRandomColorByString(StarColors2);
+                    particles[i].Color = GetRandomColorByString(MediumStarColors);
                     break;
                 case 2:
-                    particles[i].Color = GetRandomColorByString(StarColors3);
+                    particles[i].Color = GetRandomColorByString(SmallStarColors);
                     break;
             }
         }

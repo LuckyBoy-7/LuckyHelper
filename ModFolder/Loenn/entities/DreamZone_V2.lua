@@ -1,6 +1,6 @@
 local dreamBlock = {}
 
-dreamBlock.name = "LuckyHelper/DreamZone"
+dreamBlock.name = "LuckyHelper/DreamZone_V2"
 dreamBlock.fillColor = { 0.0, 0.0, 0.0 }
 dreamBlock.borderColor = { 1.0, 1.0, 1.0 }
 dreamBlock.nodeLineRenderType = "line"
@@ -15,22 +15,33 @@ dreamBlock.placements = {
         height = 8,
         stopPlayerOnCollide = true,
         killPlayerOnCollide = false,
-        starColors1 = "FFEF11,FF00D0,08a310",
-        starColors2 = "5fcde4,7fb25e,E0564C",
-        starColors3 = "5b6ee1,CC3B3B,7daa64",
+        bigStarColors = "FFEF11,FF00D0,08a310",
+        mediumStarColors = "5fcde4,7fb25e,E0564C",
+        smallStarColors = "5b6ee1,CC3B3B,7daa64",
         backgroundColor = "000000",
         outlineColor = "FFFFFF",
-        backgroundAlpha = 1,
-        outlineAlpha = 1,
-        starAlpha = 1,
+        backgroundAlpha = 0,
+        outlineAlpha = 0,
+        starAlpha = 0.9,
         disableWobble = false,
         disableInteraction = false,
-        disableCollisionOnNotDreaming = false,
         cancelDreamDashOnNotDreaming = false,
-        useOldFeatureOnNotDreaming = false,
-        disableVerticalJump = false,
+        disableVerticalJump = true,
         starNumberPerUnit = 0.7
     }
+}
+
+dreamBlock.fieldOrder = {
+    "x", "y",
+    "width", "height",
+    "backgroundAlpha", "backgroundColor",
+    "outlineAlpha", "outlineColor",
+    "starAlpha", "bigStarColors",
+    "mediumStarColors", "smallStarColors",
+    "starNumberPerUnit",
+    "", "",
+    "", "",
+    "", "",
 }
 
 dreamBlock.fieldInformation = {
@@ -40,37 +51,19 @@ dreamBlock.fieldInformation = {
     outlineColor = {
         fieldType = "color"
     },
-    startColors1 = {
+    bigStarColors = {
         fieldType = "list",
         elementOptions = {
             fieldType = "color",
         }
     },
-    startColors2 = {
+    mediumStarColors = {
         fieldType = "list",
         elementOptions = {
             fieldType = "color",
         }
     },
-    startColors3 = {
-        fieldType = "list",
-        elementOptions = {
-            fieldType = "color",
-        }
-    },
-    starColors1 = {
-        fieldType = "list",
-        elementOptions = {
-            fieldType = "color",
-        }
-    },
-    starColors2 = {
-        fieldType = "list",
-        elementOptions = {
-            fieldType = "color",
-        }
-    },
-    starColors3 = {
+    smallStarColors = {
         fieldType = "list",
         elementOptions = {
             fieldType = "color",

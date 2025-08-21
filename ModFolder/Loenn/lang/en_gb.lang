@@ -81,6 +81,18 @@ entities.LuckyHelper/DreamZone.attributes.description.disableCollisionOnNotDream
 entities.LuckyHelper/DreamZone.attributes.description.cancelDreamDashOnNotDreaming=If you dash into an active dream zone then disable it, will player's dream dash be canceled or not 
 entities.LuckyHelper/DreamZone.attributes.description.useOldFeatureOnNotDreaming=When dashing in inactive dream zone, can you have an immediate collision with dream zone?
 
+# DreamZone_V2
+entities.LuckyHelper/DreamZone_V2.placements.name.normal=Dream Zone V2
+entities.LuckyHelper/DreamZone_V2.attributes.description.stopPlayerOnCollide=When player's dream dashing and collides with the solid block, will it be stopped?
+entities.LuckyHelper/DreamZone_V2.attributes.description.killPlayerOnCollide=When player's dream dashing and collides with the solid block, will player be killed?
+entities.LuckyHelper/DreamZone_V2.attributes.description.bigStarColors=Big particle's color
+entities.LuckyHelper/DreamZone_V2.attributes.description.mediumStarColors2=Medium particle's color
+entities.LuckyHelper/DreamZone_V2.attributes.description.smallStarColors3=Small particle's color
+entities.LuckyHelper/DreamZone_V2.attributes.description.disableInteraction=Whether the dream zone be a decal or gp usage
+entities.LuckyHelper/DreamZone_V2.attributes.description.disableCollisionOnNotDreaming=Due to my stupid code, you can have collision with dream zone on not dreaming with dash state, this is to fix this, \nor you can use the feature to do funny gp 
+entities.LuckyHelper/DreamZone_V2.attributes.description.cancelDreamDashOnNotDreaming=If you dash into an active dream zone then disable it, will player's dream dash be canceled or not 
+entities.LuckyHelper/DreamZone_V2.attributes.description.useOldFeatureOnNotDreaming=When dashing in inactive dream zone, can you have an immediate collision with dream zone?
+
 # DecalWithCombinedRegistry
 entities.LuckyHelper/DecalWithCombinedRegistry.placements.name.normal=Decal With Combined Registry
 entities.LuckyHelper/DecalWithCombinedRegistry.attributes.description.decalRegistryPaths=Create a '{YourModName(in everest.yaml)}_CombinedDecalRegistry.xml' file in root path of your Mod(In LuckyHelper, it's named "LuckyHelper_CombinedDecalRegistry.xml") and do what 'DecalRegistry.xml' do, \nbut...the path works like an id which you can casually combine to this entity, and it's seperated by comma like 'path1, path2, ..., path_n', you can check this xml in LuckyHelper.zip for more detailed information!

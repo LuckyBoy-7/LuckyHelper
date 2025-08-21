@@ -2,6 +2,7 @@ using System.Reflection;
 using LuckyHelper.Entities;
 using LuckyHelper.Extensions;
 using LuckyHelper.Module;
+using LuckyHelper.Utils;
 using MonoMod.Cil;
 
 namespace LuckyHelper.Modules;
@@ -184,6 +185,7 @@ public class DreamZoneModule
 
         // if (Input.Jump.Pressed)
         ILLabel outLabel = cursor.DefineLabel();
+
         FieldInfo inputJump = typeof(Input).GetField("Jump", BindingFlags.Public | BindingFlags.Static);
         MethodInfo getPressed = typeof(VirtualButton).GetMethod("get_Pressed", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
         cursor.EmitLdsfld(inputJump);
@@ -191,8 +193,21 @@ public class DreamZoneModule
         cursor.EmitBrfalse(outLabel);
 
         // and touching with dream zone
-        cursor.EmitDelegate(() => dreamZone != null
-        );
+        cursor.EmitLdarg0();
+        cursor.EmitDelegate<Func<Player, bool>>((player) =>
+        {
+            if (dreamZone != null && (!dreamZone.DisableVerticalJump || player.DashDir.X != 0))
+            {
+                return true;
+            }
+
+            if (DreamZone_V2Module.DreamZone != null && (!DreamZone_V2Module.DreamZone.DisableVerticalJump || player.DashDir.X != 0))
+            {
+                return true;
+            }
+
+            return dreamZone != null;
+        });
         cursor.EmitBrfalse(outLabel);
 
         // this.dreamJump = true
