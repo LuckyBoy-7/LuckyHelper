@@ -59,13 +59,14 @@ public class DreamZone : DreamBlock
         // 打错字惹
         if (data.Has("disableCollisioinOnNotDreaming"))
             DisableCollisionOnNotDreaming = data.Bool("disableCollisioinOnNotDreaming");
-        OldVersionThatHasCollisionWithDisabledDreamZone = !data.Has("disableCollisionOnNotDreaming") || data.Bool("useOldFeatureOnNotDreaming");
+        OldVersionThatHasCollisionWithDisabledDreamZone =
+            (!data.Has("disableCollisioinOnNotDreaming") && !data.Has("disableCollisionOnNotDreaming")) || data.Bool("useOldFeatureOnNotDreaming");
         CancelDreamDashOnNotDreaming = data.Bool("cancelDreamDashOnNotDreaming");
         StarNumberPerUnit = data.Float("starNumberPerUnit", 0.7f);
         StarAlpha = data.Float("starAlpha", 1);
         DisableVerticalJump = data.Bool("disableVerticalJump", false);
         DisableInsideDreamJump = data.Bool("disableInsideDreamJump", false);
-        GetVerticalCoyote = data.Bool("getVerticalCoyote", false); 
+        GetVerticalCoyote = data.Bool("getVerticalCoyote", false);
 
         Collidable = false;
     }

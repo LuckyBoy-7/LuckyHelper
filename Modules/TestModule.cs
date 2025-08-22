@@ -47,6 +47,8 @@ public static class TestModule
         {
         }
 
+        LogUtils.LogDebug(self.CameraTarget.ToString());
+
         orig(self);
     }
 
