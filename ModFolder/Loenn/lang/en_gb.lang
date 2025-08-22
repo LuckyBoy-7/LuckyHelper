@@ -235,3 +235,7 @@ triggers.LuckyHelper/DetachFollowerContainerTrigger.placements.name.normal=Detac
 
 # ExCameraUseUnsafeZoom
 triggers.LuckyHelper/ExCameraUseUnsafeZoom.placements.name.normal=ExCamera Use Unsafe Zoom
+
+# AudioAdjustTrigger
+triggers.LuckyHelper/AudioAdjustTrigger.placements.name.normal=Audio Adjust Trigger
+triggers.LuckyHelper/AudioAdjustTrigger.attributes.description.targets=comma-seperated sequence of the event names you want to affect like `event:/char/madeline/idle_crackknuckles, event:/char/madeline/idle_sneeze, event:/char/madeline/idle_scratch`

@@ -44,4 +44,7 @@ public class LuckyHelperSession : EverestModuleSession
 
     public Dictionary<SetFlagConditionType, SetConditionFlagTriggerData> SetConditionFlagTriggerStateToDatas { get; set; } = new();
     public bool UseUnsafeZoom;
+    
+    public Dictionary<string, float> AudioNameToVolume = new();
+    
 }

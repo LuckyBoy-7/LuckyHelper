@@ -21,9 +21,14 @@ public static class TestModule
     private static void PlayerOnUpdate(On.Celeste.Player.orig_Update orig, Celeste.Player self)
     {
         // if (MInput.Keyboard.Check(Keys.Y))
-            // self.StateMachine.State = Player.StDummy;
+        // self.StateMachine.State = Player.StDummy;
         // else
-            // self.StateMachine.State = Player.StNormal;
+        // self.StateMachine.State = Player.StNormal;
+        if (MInput.Keyboard.Pressed(Keys.Enter))
+        {
+            // Audio.Play("event:/game/09_core/conveyor_activate", self.Position).getVolume()setVolume(1);
+        }
+
         if (MInput.Keyboard.Pressed(Keys.U))
         {
             // self.Add(new Coroutine(Test(self)));

@@ -8,24 +8,16 @@ namespace LuckyHelper.Triggers;
 
 [CustomEntity("LuckyHelper/LightSourceAdjustTrigger")]
 [Tracked]
-public class LightSourceAdjustTrigger : Trigger
+public class LightSourceAdjustTrigger : PositionTrigger
 {
     private bool affectRadius;
     private bool affectAlpha;
     private HashSet<string> targets = new();
-    private float offsetFrom = 0;
-    private float offsetTo = 2;
-
-
-    private PositionModes positionMode;
 
     public LightSourceAdjustTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
         targets = ParseUtils.ParseTypesStringToBriefNames(data.Attr("targets")); 
 
-        offsetFrom = data.Float("offsetFrom");
-        offsetTo = data.Float("offsetTo");
-        positionMode = data.Enum<PositionModes>("positionMode");
         affectRadius = data.Bool("affectRadius");
         affectAlpha = data.Bool("affectAlpha");
     }
@@ -106,10 +98,8 @@ public class LightSourceAdjustTrigger : Trigger
         }
     }
 
-    public override void OnStay(Player player)
+    public override void OnSetValue(float factor)
     {
-        base.OnStay(player);
-        float factor = MathHelper.Lerp(offsetFrom, offsetTo, GetPositionLerp(player, positionMode));
         var session = LuckyHelperModule.Session;
         foreach (string target in targets)
         {
