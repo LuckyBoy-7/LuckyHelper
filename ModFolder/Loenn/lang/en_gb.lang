@@ -232,3 +232,6 @@ triggers.LuckyHelper/LogicFlagTrigger.attributes.description.conditionFlagExpres
 
 # DetachFollowerContainerTrigger
 triggers.LuckyHelper/DetachFollowerContainerTrigger.placements.name.normal=Detach Follower Container Trigger
+
+# ExCameraUseUnsafeZoom
+triggers.LuckyHelper/ExCameraUseUnsafeZoom.placements.name.normal=ExCamera Use Unsafe Zoom

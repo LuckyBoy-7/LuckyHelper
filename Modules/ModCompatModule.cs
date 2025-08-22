@@ -20,12 +20,21 @@ public class ModCompatModule
         Version = new Version("1.14.10")
     };
 
-    public static bool VivHelperLoaded = false;
+    public static bool ExCameraDynamicsLoaded = false;
 
+    private static EverestModuleMetadata _exCameraDynamicsMetadata = new()
+    {
+        Name = "ExtendedCameraDynamics", 
+        Version = new Version("1.1.1")
+    };
+
+    public static bool VivHelperLoaded = false;
+    
     public static void Load()
     {
         ExtendedVariantLoaded = Everest.Loader.DependencyLoaded(_extendedVariantMetadata);
         VivHelperLoaded = Everest.Loader.DependencyLoaded(_vivHelperMetadata);
+        ExCameraDynamicsLoaded = Everest.Loader.DependencyLoaded(_exCameraDynamicsMetadata);
     }
 
     public static void Unload()
