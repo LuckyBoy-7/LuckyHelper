@@ -37,7 +37,6 @@ public class EntityContainer : Component
     private List<IEntityHandler> containedSaved = new();
     private bool updatedOnce;
 
-    public FollowerContainerHelperEntity HelperEntity;
 
     public EntityContainer() : base(true, true)
     {
@@ -62,17 +61,7 @@ public class EntityContainer : Component
         ForceStandardBehavior = data.Bool("forceStandardBehavior", true);
         IgnoreContainerBounds = data.Bool("ignoreContainerBounds");
     }
-
-    public override void EntityAdded(Scene scene)
-    {
-        base.EntityAdded(scene);
-        // 方便在 EntityContainer 位置突变的时候还能正常的带着 contained entity 走, 因为对于传送之类的东西, 一个个适配太麻烦了(
-        HelperEntity = new FollowerContainerHelperEntity(Entity.Position);
-        scene.Add(HelperEntity);
-        AddContained(new EntityHandler(HelperEntity));
-        HelperEntity.AddNoDuplicatedComponent(new PersistentSingletonComponent(true));
-        
-    }
+    
 
     public override void EntityAwake()
     {
@@ -188,7 +177,7 @@ public class EntityContainer : Component
         return list;
     }
 
-    protected virtual void AddContained(IEntityHandler handler)
+    public virtual void AddContained(IEntityHandler handler)
     {
         handler.OnAttach(this);
         // handler.Entity.AddOrAppendContainer(this.Entity as IContainer);

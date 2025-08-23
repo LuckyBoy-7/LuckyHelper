@@ -4,6 +4,7 @@ using System.Reflection;
 using LuckyHelper.Components;
 using LuckyHelper.Components.EeveeLike;
 using LuckyHelper.Extensions;
+using LuckyHelper.Handlers;
 using LuckyHelper.Module;
 using LuckyHelper.Modules;
 using LuckyHelper.Utils;
@@ -165,6 +166,8 @@ public class FollowerContainer : Actor, IContainer
     public bool HasDetached;
     private Player _player;
 
+    public FollowerContainerHelperEntity HelperEntity;
+
 
     public FollowerContainer(EntityData data, Vector2 offset, EntityID id) : base(data.Position + offset + new Vector2(data.Width / 2f, data.Height / 2f))
     {
@@ -198,6 +201,7 @@ public class FollowerContainer : Actor, IContainer
             }
         });
 
+
         Add(Follower = new Follower(ID, OnGainLeader)); // 这里蔚蓝已经帮我们在 LoadLevel 的时候保证 FollowerContainer 不重复了
         Add(new PlayerCollider(OnPlayer));
         _collectFlag = data.Attr("collectFlag");
@@ -212,6 +216,13 @@ public class FollowerContainer : Actor, IContainer
     public override void Added(Scene scene)
     {
         base.Added(scene);
+
+        // 方便在 EntityContainer 位置突变的时候还能正常的带着 contained entity 走, 因为对于传送之类的东西, 一个个适配太麻烦了(
+        HelperEntity = new FollowerContainerHelperEntity(Position);
+        scene.Add(HelperEntity);
+        Container.AddContained(new EntityHandler(HelperEntity));
+        HelperEntity.AddNoDuplicatedComponent(new PersistentSingletonComponent(true));
+
         // 如果放在 ctor 里此时还拿不到 EntityID, 因为得 new 完了 add 的时候才记录
         Add(new PersistentSingletonComponent());
     }
@@ -247,10 +258,10 @@ public class FollowerContainer : Actor, IContainer
 
         // LogUtils.LogDebug($"{Container.HelperEntity.Position} { Position}");
         // 适配传送等情况
-        if (Vector2.Distance(Container.HelperEntity.Position, Position) > 0.1f)
+        if (Vector2.Distance(HelperEntity.Position, Position) > 0.1f)
         {
-            Vector2 delta = Position - Container.HelperEntity.Position;
-            Position = Container.HelperEntity.Position;
+            Vector2 delta = Position - HelperEntity.Position;
+            Position = HelperEntity.Position;
             _Container.DoMoveAction(() => Position += delta);
         }
 

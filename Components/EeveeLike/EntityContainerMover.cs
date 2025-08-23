@@ -107,7 +107,7 @@ public class EntityContainerMover : EntityContainer
         base.Update();
     }
 
-    protected override void AddContained(IEntityHandler handler)
+    public override void AddContained(IEntityHandler handler)
     {
         base.AddContained(handler);
 

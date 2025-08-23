@@ -22,4 +22,10 @@ public static class ParseUtils
             return fullName.Substring(i + 1);
         return fullName;
     }
+
+    public static List<Color> ParseColorList(this EntityData data, string key)
+    {
+        string[] split = data.Attr(key).Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        return split.Select(Calc.HexToColor).ToList();
+    }
 }

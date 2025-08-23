@@ -149,6 +149,10 @@ entities.LuckyHelper/FollowerContainer.attributes.description.followerSpeed=Cont
 entities.LuckyHelper/FollowerContainer.attributes.description.interval=Container's distance to the front follower object like strawberry or key.
 entities.LuckyHelper/FollowerContainer.attributes.description.dontDestroyAfterDetached=Container can be detached by DetachFollowerContainerTrigger, should it keep alive after player's death?
 
+
+# Color Modifier
+entities.LuckyHelper/ColorModifier.placements.name.normal=Color Modifier
+
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger
 triggers.LuckyHelper/SetPassByRefillDashesTrigger.placements.name.normal=SetPassByRefillDashesTrigger

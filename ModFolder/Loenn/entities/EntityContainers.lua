@@ -55,8 +55,48 @@ local followerContainer = {
     }
 }
 
+local colorModifier = {
+    name = "LuckyHelper/ColorModifier",
+    fillColor = modifierFill,
+    borderColor = modifierBorder,
+
+    placements = {
+        name = "normal",
+        data = {
+            width = 8,
+            height = 8,
+            blacklist = "",
+            whitelist = "",
+            containMode = "RoomStart",
+            containFlag = "",
+            forceStandardBehavior = false,
+            ignoreContainerBounds = false,
+            colors = "FFEF11,FF00D0,08a310",
+        }
+    },
+    fieldInformation = {
+        colors = {
+            fieldType = "list",
+            elementOptions = {
+                fieldType = "color",
+            }
+        },
+    },
+    fieldOrder = {
+        "x", "y",
+        "width", "height",
+        "blacklist", "whitelist",
+        "containMode", "containFlag",
+        "fitContained", "ignoreAnchors",
+        "forceStandardBehavior", "ignoreContainerBounds",
+
+        "color", "",
+    }
+}
+
 local containers = {
-    followerContainer
+    followerContainer,
+    colorModifier,
 }
 
 local containModes = { "RoomStart", "FlagChanged", "Always", "DelayedRoomStart" }

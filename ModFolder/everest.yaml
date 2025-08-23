@@ -13,3 +13,5 @@
       Version: 1.14.10
     - Name: ExtendedCameraDynamics
       Version: 1.1.1
+    - Name: FrostHelper
+      Version: 1.70.4

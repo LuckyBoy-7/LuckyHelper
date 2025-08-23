@@ -2,6 +2,7 @@
 
 using System.Collections;
 using LuckyHelper.Components;
+using LuckyHelper.Entities;
 using LuckyHelper.Module;
 using LuckyHelper.Utils;
 using Microsoft.Xna.Framework.Graphics;
@@ -47,7 +48,7 @@ public static class TestModule
         {
         }
 
-        LogUtils.LogDebug(self.CameraTarget.ToString());
+        // LogUtils.LogDebug(self.CameraTarget.ToString());
 
         orig(self);
     }

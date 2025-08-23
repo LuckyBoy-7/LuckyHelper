@@ -30,11 +30,20 @@ public class ModCompatModule
 
     public static bool VivHelperLoaded = false;
     
+    private static EverestModuleMetadata _frostHelperMetadata = new()
+    {
+        Name = "FrostHelper", 
+        Version = new Version("1.70.4")
+    };
+
+    public static bool FrostHelperLoaded = false;
+    
     public static void Load()
     {
         ExtendedVariantLoaded = Everest.Loader.DependencyLoaded(_extendedVariantMetadata);
         VivHelperLoaded = Everest.Loader.DependencyLoaded(_vivHelperMetadata);
         ExCameraDynamicsLoaded = Everest.Loader.DependencyLoaded(_exCameraDynamicsMetadata);
+        FrostHelperLoaded = Everest.Loader.DependencyLoaded(_frostHelperMetadata);
     }
 
     public static void Unload()
