@@ -72,6 +72,9 @@ local colorModifier = {
             forceStandardBehavior = false,
             ignoreContainerBounds = false,
             colors = "FFEF11,FF00D0,08a310",
+            affectTexture = true,
+            affectLight = true,
+            affectGeometry = true,
         }
     },
     fieldInformation = {
@@ -90,7 +93,9 @@ local colorModifier = {
         "fitContained", "ignoreAnchors",
         "forceStandardBehavior", "ignoreContainerBounds",
 
-        "color", "",
+        "colors", "",
+        "affectTexture", "affectLight",
+        "affectGeometry", "",
     }
 }
 

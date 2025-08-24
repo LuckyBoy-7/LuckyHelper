@@ -17,8 +17,8 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
     public static Dictionary<Entity, ColorModifierComponent> EntityToModifier = new();
 
 
-    public static Color OverrideColor;
-    public static bool UseOverrideColor;
+    public static Color OverrideGeometryColor;
+    public static bool UseOverrideGeometryColor;
 
 
     public static BlendState CustomBlurredScreenToMask = new BlendState()
@@ -31,42 +31,54 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
         AlphaBlendFunction = BlendFunction.Add
     };
 
+    public bool AffectTexture;
+
+    public bool AffectLight;
+    // public bool AffectBloom;  // 大多数时候可以理解成一个东西
+
+    public bool AffectGeometry;
+
     public override void Update()
     {
         base.Update();
         foreach (var component in Entity.Components)
         {
-            if (component is GraphicsComponent graphics)
-            {
-                if (!graphicToOrigColor.ContainsKey(graphics))
-                    graphicToOrigColor[graphics] = graphics.Color;
-                graphics.Color = TargetColor;
-            }
+            if (AffectTexture)
+                if (component is GraphicsComponent graphics)
+                {
+                    if (!graphicToOrigColor.ContainsKey(graphics))
+                        graphicToOrigColor[graphics] = graphics.Color;
+                    graphics.Color = TargetColor;
+                }
 
-            else if (component is VertexLight light)
-            {
-                if (!vertexLightToOrigColor.ContainsKey(light))
-                    vertexLightToOrigColor[light] = light.Color;
-                light.Color = Color.Green;
-            }
+            if (AffectLight)
+                if (component is VertexLight light)
+                {
+                    if (!vertexLightToOrigColor.ContainsKey(light))
+                        vertexLightToOrigColor[light] = light.Color;
+                    light.Color = Color.Green;
+                }
         }
     }
 
     public override void Removed(Entity entity)
     {
         base.Removed(entity);
-        foreach (var component in Entity.Components)
+        foreach (var component in entity.Components)
         {
-            if (component is GraphicsComponent graphics)
-            {
-                if (graphicToOrigColor.TryGetValue(graphics, out var color))
-                    graphics.Color = color;
-            }
-            else if (component is VertexLight light)
-            {
-                if (vertexLightToOrigColor.TryGetValue(light, out var color))
-                    light.Color = color;
-            }
+            if (AffectTexture)
+                if (component is GraphicsComponent graphics)
+                {
+                    if (graphicToOrigColor.TryGetValue(graphics, out var color))
+                        graphics.Color = color;
+                }
+
+            if (AffectLight)
+                if (component is VertexLight light)
+                {
+                    if (vertexLightToOrigColor.TryGetValue(light, out var color))
+                        light.Color = color;
+                }
         }
 
         EntityToModifier.Remove(entity);
@@ -78,15 +90,19 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
         EntityToModifier[entity] = this;
     }
 
-    public void ApplayColorBegin()
+    public void TryApplyGeometryColorBegin()
     {
-        UseOverrideColor = true;
-        OverrideColor = TargetColor;
+        if (!AffectGeometry)
+            return;
+        UseOverrideGeometryColor = true;
+        OverrideGeometryColor = TargetColor;
     }
 
-    public void ApplayColorEnd()
+    public void TryApplyGeometryColorEnd()
     {
-        UseOverrideColor = false;
+        if (!AffectGeometry)
+            return;
+        UseOverrideGeometryColor = false;
     }
 
     private static void EntityListOnRenderExcept(ILContext il)
@@ -102,7 +118,7 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
             {
                 if (EntityToModifier.TryGetValue(entity, out var modifier))
                 {
-                    modifier.ApplayColorBegin();
+                    modifier.TryApplyGeometryColorBegin();
                 }
             });
             cursor.Index += 2;
@@ -111,7 +127,7 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
             {
                 if (EntityToModifier.TryGetValue(entity, out var modifier))
                 {
-                    modifier.ApplayColorEnd();
+                    modifier.TryApplyGeometryColorEnd();
                 }
             });
         }
@@ -121,7 +137,8 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
     private static void BloomRendererOnApply(ILContext il)
     {
         ILCursor cursor = new ILCursor(il);
-        if (cursor.TryGotoNext(ins => ins.MatchCall(typeof(Color).GetProperty("White").GetGetMethod())
+        var colorGetWhiteMethod = typeof(Color).GetProperty("White").GetGetMethod();
+        if (cursor.TryGotoNext(ins => ins.MatchCall(colorGetWhiteMethod)
             ))
 
         {
@@ -131,7 +148,7 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
             cursor.EmitLdloc(7);
             cursor.EmitDelegate<Func<Color, BloomPoint, Color>>((origColor, bloomPoint) =>
             {
-                if (EntityToModifier.TryGetValue(bloomPoint.Entity, out var modifier))
+                if (EntityToModifier.TryGetValue(bloomPoint.Entity, out var modifier) && modifier.AffectLight)
                 {
                     return modifier.TargetColor;
                 }
@@ -146,7 +163,7 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
             cursor.EmitDelegate<Func<BlendState, BlendState>>((origBlendState) => { return CustomBlurredScreenToMask; });
         }
 
-        if (cursor.TryGotoNext(ins => ins.MatchCall(typeof(Color).GetProperty("White").GetGetMethod())
+        if (cursor.TryGotoNext(ins => ins.MatchCall(colorGetWhiteMethod)
             ))
 
         {
@@ -160,11 +177,11 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
         }
     }
 
-    private static Color ApplyOverrideColor(Color color)
+    private static Color ApplyOverrideGeometryColor(Color color)
     {
-        if (!UseOverrideColor)
+        if (!UseOverrideGeometryColor)
             return color;
-        return color.Multiply(OverrideColor);
+        return color.Multiply(OverrideGeometryColor);
     }
 
 
@@ -200,14 +217,14 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
 
     private static void DrawOnPoint(On.Monocle.Draw.orig_Point orig, Vector2 at, Color color)
     {
-        orig(at, ApplyOverrideColor(color));
+        orig(at, ApplyOverrideGeometryColor(color));
     }
 
 
     private static void DrawOnLineAngle_Vector2_float_float_Color(On.Monocle.Draw.orig_LineAngle_Vector2_float_float_Color orig, Vector2 start, float angle, float length,
         Color color)
     {
-        orig(start, angle, length, ApplyOverrideColor(color));
+        orig(start, angle, length, ApplyOverrideGeometryColor(color));
     }
 
 
@@ -215,34 +232,34 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
         float height,
         Color color)
     {
-        orig(x, y, width, height, ApplyOverrideColor(color));
+        orig(x, y, width, height, ApplyOverrideGeometryColor(color));
     }
 
 
     private static void DrawOnRect_float_float_float_float_Color(On.Monocle.Draw.orig_Rect_float_float_float_float_Color orig, float x, float y, float width, float height,
         Color color)
     {
-        orig(x, y, width, height, ApplyOverrideColor(color));
+        orig(x, y, width, height, ApplyOverrideGeometryColor(color));
     }
 
     private static void DrawOnLineAngle_Vector2_float_float_Color_float(On.Monocle.Draw.orig_LineAngle_Vector2_float_float_Color_float orig, Vector2 start, float angle,
         float length,
         Color color, float thickness)
     {
-        orig(start, angle, length, ApplyOverrideColor(color), thickness);
+        orig(start, angle, length, ApplyOverrideGeometryColor(color), thickness);
     }
 
     private static void DrawOnLineAngle_float_float_float_float_Color(On.Monocle.Draw.orig_LineAngle_float_float_float_float_Color orig, float startX, float startY, float angle,
         float length,
         Color color)
     {
-        orig(startX, startY, angle, length, ApplyOverrideColor(color));
+        orig(startX, startY, angle, length, ApplyOverrideGeometryColor(color));
     }
 
     private static void DrawOnCircle_float_float_float_Color_float_int(On.Monocle.Draw.orig_Circle_float_float_float_Color_float_int orig, float x, float y, float radius,
         Color color,
         float thickness, int resolution)
     {
-        orig(x, y, radius, ApplyOverrideColor(color), thickness, resolution);
+        orig(x, y, radius, ApplyOverrideGeometryColor(color), thickness, resolution);
     }
 }

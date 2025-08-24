@@ -20,21 +20,7 @@ namespace LuckyHelper.Entities.EeveeLike;
 public class ColorModifier : Actor, IContainer
 {
     public EntityContainer Container { get; }
-
-
-    [Load]
-    public static void Load()
-    {
-    }
-
-
-    [Unload]
-    public static void Unload()
-    {
-        // On.SpriteBatch.
-    }
-
-    public List<Color> Colors;
+    // public List<Color> Colors;
 
 
     public ColorModifier(EntityData data, Vector2 offset) : base(data.Position + offset)
@@ -43,13 +29,19 @@ public class ColorModifier : Actor, IContainer
 
         Depth = Depths.Top - 10;
 
-        Colors = data.ParseColorList("colors");
+        // Colors = data.ParseColorList("colors");
  
 
         Add(Container = new EntityContainer(data)
         {
             DefaultIgnored = e => e is ColorModifier,
-            OnAttach = handler => { handler.Entity.AddNoDuplicatedComponent(new ColorModifierComponent() { Colors = new(Colors) }); },
+            OnAttach = handler => { handler.Entity.AddNoDuplicatedComponent(new ColorModifierComponent()
+            {
+                Colors = data.ParseColorList("colors"),
+                AffectTexture = data.Bool("affectTexture", true),
+                AffectLight = data.Bool("affectLight", true),
+                AffectGeometry = data.Bool("affectGeometry", true),
+            }); },
             OnDetach = handler => { handler.Entity.Get<ColorModifierComponent>()?.RemoveSelf(); }
         });
     }
