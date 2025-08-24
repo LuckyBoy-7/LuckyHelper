@@ -163,16 +163,37 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
             cursor.EmitDelegate<Func<BlendState, BlendState>>((origBlendState) => { return CustomBlurredScreenToMask; });
         }
 
-        if (cursor.TryGotoNext(ins => ins.MatchCall(colorGetWhiteMethod)
+        // if (cursor.TryGotoNext(ins => ins.MatchCall(colorGetWhiteMethod)
+        //     ))
+        //
+        // {
+        //     cursor.Index += 1;
+        //     if (ModCompatModule.FrostHelperLoaded)
+        //         cursor.Index += 1;
+        //     cursor.EmitDelegate<Func<Color, Color>>((origColor) =>
+        //     {
+        //         return Color.White; // 不管 frost 怎么做这里都输入白色, 反正原本也是当 mask 用, 这么写没问题
+        //     });
+        // }
+    }
+
+    private static void TileGridOnRenderAt(ILContext il)
+    {
+        ILCursor cursor = new ILCursor(il);
+        if (cursor.TryGotoNext(ins => ins.MatchLdloc(4)
             ))
 
         {
             cursor.Index += 1;
-            if (ModCompatModule.FrostHelperLoaded)
-                cursor.Index += 1;
-            cursor.EmitDelegate<Func<Color, Color>>((origColor) =>
+            cursor.EmitLdarg0();
+            cursor.EmitDelegate<Func<Color, TileGrid, Color>>((origColor, tileGrid) =>
             {
-                return Color.White; // 不管 frost 怎么做这里都输入白色, 反正原本也是当 mask 用, 这么写没问题
+                if (EntityToModifier.TryGetValue(tileGrid.Entity, out var modifier) && modifier.AffectTexture)
+                {
+                    return modifier.TargetColor;
+                }
+
+                return origColor;
             });
         }
     }
@@ -197,6 +218,7 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
         On.Monocle.Draw.Point += DrawOnPoint;
         IL.Monocle.EntityList.RenderExcept += EntityListOnRenderExcept;
         IL.Celeste.BloomRenderer.Apply += BloomRendererOnApply;
+        IL.Monocle.TileGrid.RenderAt += TileGridOnRenderAt;
     }
 
 
@@ -212,6 +234,7 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
         On.Monocle.Draw.Point -= DrawOnPoint;
         IL.Monocle.EntityList.RenderExcept -= EntityListOnRenderExcept;
         IL.Celeste.BloomRenderer.Apply -= BloomRendererOnApply;
+        IL.Monocle.TileGrid.RenderAt -= TileGridOnRenderAt;
     }
 
 
