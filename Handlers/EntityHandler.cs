@@ -149,10 +149,11 @@ public class EntityHandler : IEntityHandler
 
     public virtual void OnAddPersistentSingletonComponent()
     {
-        
     }
 
     public virtual void OnRemovePersistentSingletonComponent()
     {
     }
+
+    public virtual List<string> GetPossibleColorFields() => ["color", "Color"];
 }

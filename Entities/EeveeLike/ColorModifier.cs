@@ -1,19 +1,114 @@
 ﻿using Celeste.Mod.Entities;
-using System.Collections;
-using System.Reflection;
 using LuckyHelper.Components;
 using LuckyHelper.Components.EeveeLike;
 using LuckyHelper.Extensions;
-using LuckyHelper.Module;
-using LuckyHelper.Modules;
 using LuckyHelper.Utils;
-using Microsoft.Xna.Framework.Graphics;
-using MonoMod.Cil;
-using MonoMod.RuntimeDetour;
-using DashBlock = On.Celeste.DashBlock;
 
 
 namespace LuckyHelper.Entities.EeveeLike;
+
+public enum ColorSourceMode
+{
+    FirstColor,
+    CycleColor,
+    RandomColor,
+    Rainbow,
+}
+
+public enum ColorTransitionMode
+{
+    Lerp,
+    Blink,
+}
+
+public enum ColorBlendMode
+{
+    Multiply,
+    Replace
+}
+
+public class ColorController : Component
+{
+    public Color CurrentColor(Vector2 position)
+    {
+        switch (ColorSourceMode)
+        {
+            case ColorSourceMode.FirstColor:
+                return Colors[0];
+            case ColorSourceMode.CycleColor:
+            case ColorSourceMode.RandomColor:
+                return CurrentChangingColor;
+            case ColorSourceMode.Rainbow:
+                return GetHue(position);
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    public ColorSourceMode ColorSourceMode;
+    public ColorTransitionMode ColorTransitionMode;
+    public List<Color> Colors;
+
+
+    public ColorController(List<Color> colors) : base(true, false)
+    {
+        Colors = colors;
+        CurrentChangingColor = colors[0];
+    }
+
+    // From Color Sequence
+    public float ColorChangeSpeed = 1f;
+    public Color CurrentChangingColor;
+
+    public Color NextColor => Colors[NextColorIndex];
+
+    //
+    public int NextColorIndex = 0;
+
+    public float blinkTime => ColorChangeSpeed != 0 ? 100 / ColorChangeSpeed : float.MaxValue;
+    public float blinkElapse;
+
+
+    public override void Update()
+    {
+        base.Update();
+        if (ColorSourceMode is ColorSourceMode.CycleColor or ColorSourceMode.RandomColor)
+        {
+            if (ColorTransitionMode is ColorTransitionMode.Lerp)
+            {
+                CurrentChangingColor = CurrentChangingColor.Approach(NextColor, ColorChangeSpeed * Engine.DeltaTime);
+            }
+            else if (ColorTransitionMode is ColorTransitionMode.Blink)
+            {
+                blinkElapse += Engine.DeltaTime;
+                if (blinkElapse >= blinkTime)
+                {
+                    blinkElapse -= blinkTime;
+                    CurrentChangingColor = NextColor;
+                }
+            }
+
+            if (CurrentChangingColor == NextColor)
+            {
+                if (ColorSourceMode is ColorSourceMode.CycleColor)
+                {
+                    NextColorIndex = (NextColorIndex + 1) % Colors.Count;
+                }
+                else if (ColorSourceMode is ColorSourceMode.RandomColor)
+                {
+                    NextColorIndex = Calc.Random.Range(0, Colors.Count);
+                }
+            }
+        }
+    }
+
+    private Color GetHue(Vector2 position)
+    {
+        float num = 280f;
+        float num2 = (position.Length() + Engine.Scene.TimeActive * ColorChangeSpeed / 2) % num / num;
+        return Calc.HsvToColor(0.4f + Calc.YoYo(num2) * 0.4f, 0.4f, 0.9f);
+    }
+}
 
 [Tracked]
 [CustomEntity("LuckyHelper/ColorModifier")]
@@ -22,6 +117,7 @@ public class ColorModifier : Actor, IContainer
     public EntityContainer Container { get; }
     // public List<Color> Colors;
 
+    public ColorController ColorController;
 
     public ColorModifier(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
@@ -29,20 +125,32 @@ public class ColorModifier : Actor, IContainer
 
         Depth = Depths.Top - 10;
 
-        // Colors = data.ParseColorList("colors");
- 
+
+        Add(ColorController = new ColorController(data.ParseColorList("colors"))
+        {
+            ColorSourceMode = data.Enum<ColorSourceMode>("colorSourceMode"),
+            ColorTransitionMode = data.Enum<ColorTransitionMode>("colorTransitionMode"),
+            ColorChangeSpeed = data.Float("colorChangeSpeed"),
+        });
 
         Add(Container = new EntityContainer(data)
         {
             DefaultIgnored = e => e is ColorModifier,
-            OnAttach = handler => { handler.Entity.AddNoDuplicatedComponent(new ColorModifierComponent()
+            OnAttach = handler =>
             {
-                Colors = data.ParseColorList("colors"),
-                AffectTexture = data.Bool("affectTexture", true),
-                AffectLight = data.Bool("affectLight", true),
-                AffectGeometry = data.Bool("affectGeometry", true),
-            }); },
+                handler.Entity.AddNoDuplicatedComponent(new ColorModifierComponent()
+                {
+                    AffectTexture = data.Bool("affectTexture", true),
+                    AffectLight = data.Bool("affectLight", true),
+                    AffectGeometry = data.Bool("affectGeometry", true),
+                    AffectParticle = data.Bool("affectParticle", true),
+                    GetCurrentColor = () => ColorController.CurrentColor(Position),
+                    EntityHandler = handler,
+                    ColorBlendMode = data.Enum<ColorBlendMode>("colorBlendMode")
+                });
+            },
             OnDetach = handler => { handler.Entity.Get<ColorModifierComponent>()?.RemoveSelf(); }
         });
+        
     }
 }

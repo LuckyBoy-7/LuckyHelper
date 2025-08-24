@@ -34,14 +34,15 @@ public class LuckyHelperModule : EverestModule
 
     public override void Load()
     {
-        ModCompatModule.Load(); 
+        ModCompatModule.Load();
         AttributeUtils.Invoke<LoadAttribute>();
-        
-        
-		// eevee: https://github.com/CommunalHelper/EeveeHelper/blob/dev/Code/EeveeHelperModule.cs#L48
+
+
+        // eevee: https://github.com/CommunalHelper/EeveeHelper/blob/dev/Code/EeveeHelperModule.cs#L48
         EntityHandler.RegisterInherited<Water>((entity, container) => new WaterHandler(entity));
         EntityHandler.RegisterInherited<TrackSpinner>((entity, container) => new TrackSpinnerHandler(entity));
         EntityHandler.RegisterInherited<RotateSpinner>((entity, container) => new RotateSpinnerHandler(entity));
+        EntityHandler.RegisterInherited<DreamBlock>((entity, container) => new DreamBlockHandler(entity));
 
         EntityHandler.RegisterInherited<DashSwitch>((entity, container) => new AxisMoverHandler(entity, new Tuple<string, bool>("startY", true)));
 
@@ -55,6 +56,7 @@ public class LuckyHelperModule : EverestModule
             (entity, container) => SwapBlockHandler.InsideCheck(container, false, entity as SwapBlock));
         EntityHandler.RegisterInherited<Decal>((entity, container) => new DecalHandler(entity),
             (entity, container) => container.CheckDecal(entity as Decal));
+
     }
 
     public override void Unload()

@@ -1,25 +1,46 @@
+using System.Reflection;
+using LuckyHelper.Entities.EeveeLike;
 using LuckyHelper.Extensions;
+using LuckyHelper.Handlers;
 using LuckyHelper.Module;
 using LuckyHelper.Modules;
 using LuckyHelper.Utils;
 using Microsoft.Xna.Framework.Graphics;
+using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
+using MonoMod.Utils;
+using EntityList = On.Monocle.EntityList;
+using Particle = On.Monocle.Particle;
 
 namespace LuckyHelper.Components;
 
 public class ColorModifierComponent(bool active = true, bool visible = true) : Component(active, visible)
 {
-    public Color TargetColor => Colors[0];
-    public List<Color> Colors;
+    public Func<Color> GetCurrentColor;
+
+    // 管 Sprite.Color Image.Color 的
     private Dictionary<GraphicsComponent, Color> graphicToOrigColor = new();
+
+    // 管 VertexLight.Color 的
     private Dictionary<VertexLight, Color> vertexLightToOrigColor = new();
 
+    // 快速查询 entity 对应的 modifier
     public static Dictionary<Entity, ColorModifierComponent> EntityToModifier = new();
 
-
-    public static Color OverrideGeometryColor;
+    // 管 Draw.Rect Draw.Circle 之类的
+    public static Color OverrideGeometryParticleColor;
     public static bool UseOverrideGeometryColor;
 
+    // 在 render 前暂时修改 Color.White, 因为很多画贴图的函数都是用 Color 或者直接用 White 的, 所以其实能覆盖挺多情况的
+    public static DynamicData WhiteDyn = new DynamicData(Color.White);
+    public static Color OrigWhiteColor = Color.White;
+
+    // 管各种 entity.Color 字段的
+    public DynamicData EntityDyn;
+    public Dictionary<string, Color> EntityFieldToOrigColor = new();
+
+    public IEntityHandler EntityHandler;
 
     public static BlendState CustomBlurredScreenToMask = new BlendState()
     {
@@ -37,10 +58,15 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
     // public bool AffectBloom;  // 大多数时候可以理解成一个东西
 
     public bool AffectGeometry;
+    public bool AffectParticle;
+    public ColorBlendMode ColorBlendMode;
+    public static ColorBlendMode CommonColorBlendMode;
+
 
     public override void Update()
     {
         base.Update();
+
         foreach (var component in Entity.Components)
         {
             if (AffectTexture)
@@ -48,7 +74,7 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
                 {
                     if (!graphicToOrigColor.ContainsKey(graphics))
                         graphicToOrigColor[graphics] = graphics.Color;
-                    graphics.Color = TargetColor;
+                    graphics.Color = GetCurrentColor();
                 }
 
             if (AffectLight)
@@ -56,7 +82,7 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
                 {
                     if (!vertexLightToOrigColor.ContainsKey(light))
                         vertexLightToOrigColor[light] = light.Color;
-                    light.Color = Color.Green;
+                    light.Color = GetCurrentColor();
                 }
         }
     }
@@ -81,6 +107,18 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
                 }
         }
 
+        if (AffectTexture)
+        {
+            foreach (var field in EntityHandler.GetPossibleColorFields())
+            {
+                if (EntityDyn.TryGet(field, out var _))
+                {
+                    if (EntityFieldToOrigColor.TryGetValue(field, out var origColor))
+                        EntityDyn.Set(field, origColor);
+                }
+            }
+        }
+
         EntityToModifier.Remove(entity);
     }
 
@@ -88,21 +126,45 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
     {
         base.Added(entity);
         EntityToModifier[entity] = this;
+        EntityDyn = new(entity);
     }
 
-    public void TryApplyGeometryColorBegin()
+    public void BeforeRender()
     {
-        if (!AffectGeometry)
-            return;
-        UseOverrideGeometryColor = true;
-        OverrideGeometryColor = TargetColor;
+        CommonColorBlendMode = ColorBlendMode;
+        OverrideGeometryParticleColor = GetCurrentColor();
+        if (AffectGeometry)
+        {
+            UseOverrideGeometryColor = true;
+        }
+
+        if (AffectTexture)
+        {
+            WhiteDyn.Set("White", GetCurrentColor());
+
+            foreach (var field in EntityHandler.GetPossibleColorFields())
+            {
+                // 有这个字段并且还没存过初始值
+                // 这里要拿 obj 然后转 Color, 要是直接拿 out Color 的话 cast 会出错 
+                if (EntityDyn.TryGet(field, out var origColor))
+                {
+                    if (!EntityFieldToOrigColor.ContainsKey(field))
+                        EntityFieldToOrigColor[field] = (Color)origColor;
+                    EntityDyn.Set(field, EntityFieldToOrigColor[field].Multiply(GetCurrentColor()));
+                }
+            }
+        }
     }
 
-    public void TryApplyGeometryColorEnd()
+    public void AfterRender()
     {
-        if (!AffectGeometry)
-            return;
-        UseOverrideGeometryColor = false;
+        if (AffectGeometry)
+            UseOverrideGeometryColor = false;
+
+        if (AffectTexture)
+        {
+            WhiteDyn.Set("White", OrigWhiteColor);
+        }
     }
 
     private static void EntityListOnRenderExcept(ILContext il)
@@ -118,7 +180,7 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
             {
                 if (EntityToModifier.TryGetValue(entity, out var modifier))
                 {
-                    modifier.TryApplyGeometryColorBegin();
+                    modifier.BeforeRender();
                 }
             });
             cursor.Index += 2;
@@ -127,7 +189,7 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
             {
                 if (EntityToModifier.TryGetValue(entity, out var modifier))
                 {
-                    modifier.TryApplyGeometryColorEnd();
+                    modifier.AfterRender();
                 }
             });
         }
@@ -150,7 +212,7 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
             {
                 if (EntityToModifier.TryGetValue(bloomPoint.Entity, out var modifier) && modifier.AffectLight)
                 {
-                    return modifier.TargetColor;
+                    return modifier.GetCurrentColor();
                 }
 
                 return Color.White; // 不管 frost 怎么做这里都输入白色, 反正原本也是当 mask 用, 这么写没问题
@@ -162,19 +224,6 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
             cursor.Index += 1;
             cursor.EmitDelegate<Func<BlendState, BlendState>>((origBlendState) => { return CustomBlurredScreenToMask; });
         }
-
-        // if (cursor.TryGotoNext(ins => ins.MatchCall(colorGetWhiteMethod)
-        //     ))
-        //
-        // {
-        //     cursor.Index += 1;
-        //     if (ModCompatModule.FrostHelperLoaded)
-        //         cursor.Index += 1;
-        //     cursor.EmitDelegate<Func<Color, Color>>((origColor) =>
-        //     {
-        //         return Color.White; // 不管 frost 怎么做这里都输入白色, 反正原本也是当 mask 用, 这么写没问题
-        //     });
-        // }
     }
 
     private static void TileGridOnRenderAt(ILContext il)
@@ -190,19 +239,12 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
             {
                 if (EntityToModifier.TryGetValue(tileGrid.Entity, out var modifier) && modifier.AffectTexture)
                 {
-                    return modifier.TargetColor;
+                    return modifier.GetCurrentColor();
                 }
 
                 return origColor;
             });
         }
-    }
-
-    private static Color ApplyOverrideGeometryColor(Color color)
-    {
-        if (!UseOverrideGeometryColor)
-            return color;
-        return color.Multiply(OverrideGeometryColor);
     }
 
 
@@ -219,6 +261,14 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
         IL.Monocle.EntityList.RenderExcept += EntityListOnRenderExcept;
         IL.Celeste.BloomRenderer.Apply += BloomRendererOnApply;
         IL.Monocle.TileGrid.RenderAt += TileGridOnRenderAt;
+        On.Celeste.Level.LoadLevel += LevelOnLoadLevel;
+        On.Monocle.Entity.Added += EntityOnAdded;
+        On.Monocle.ParticleSystem.Emit_ParticleType_Vector2 += ParticleSystemOnEmit_ParticleType_Vector2;
+        On.Monocle.ParticleSystem.Emit_ParticleType_Vector2_Color += ParticleSystemOnEmit_ParticleType_Vector2_Color;
+        On.Monocle.ParticleSystem.Emit_ParticleType_Vector2_Color_float += ParticleSystemOnEmit_ParticleType_Vector2_Color_float;
+        On.Monocle.ParticleSystem.Emit_ParticleType_Vector2_float += ParticleSystemOnEmit_ParticleType_Vector2_float;
+        IL.Monocle.ParticleSystem.Render += ParticleSystemOnRender;
+        IL.Monocle.ParticleSystem.Render_float += ParticleSystemOnRender_float;
     }
 
 
@@ -235,8 +285,180 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
         IL.Monocle.EntityList.RenderExcept -= EntityListOnRenderExcept;
         IL.Celeste.BloomRenderer.Apply -= BloomRendererOnApply;
         IL.Monocle.TileGrid.RenderAt -= TileGridOnRenderAt;
+
+        // 清理 EntityToModifier
+        On.Celeste.Level.LoadLevel -= LevelOnLoadLevel;
+
+        // 为了给 particle 绑定 entity 信息的
+        On.Monocle.Entity.Added -= EntityOnAdded;
+        On.Monocle.ParticleSystem.Emit_ParticleType_Vector2 -= ParticleSystemOnEmit_ParticleType_Vector2;
+        On.Monocle.ParticleSystem.Emit_ParticleType_Vector2_Color -= ParticleSystemOnEmit_ParticleType_Vector2_Color;
+        On.Monocle.ParticleSystem.Emit_ParticleType_Vector2_Color_float -= ParticleSystemOnEmit_ParticleType_Vector2_Color_float;
+        On.Monocle.ParticleSystem.Emit_ParticleType_Vector2_float -= ParticleSystemOnEmit_ParticleType_Vector2_float;
+
+        // 管 particle 颜色的
+        IL.Monocle.ParticleSystem.Render -= ParticleSystemOnRender;
+        IL.Monocle.ParticleSystem.Render_float -= ParticleSystemOnRender_float;
     }
 
+
+    private static void LevelOnLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Celeste.Level self, Player.IntroTypes playerIntro, bool isFromLoader)
+    {
+        var tmp = new Dictionary<Entity, ColorModifierComponent>();
+        foreach ((Entity entity, ColorModifierComponent modifier) in EntityToModifier)
+        {
+            if (entity.Scene != null)
+            {
+                tmp[entity] = modifier;
+            }
+        }
+
+        EntityToModifier = tmp;
+        orig(self, playerIntro, isFromLoader);
+    }
+
+    #region Particle
+
+    private static void ParticleSystemOnRender(ILContext il)
+    {
+        HookParticleSystemRender(il);
+    }
+
+    private static void ParticleSystemOnRender_float(ILContext il)
+    {
+        HookParticleSystemRender(il);
+    }
+
+    private static void HookParticleSystemRender(ILContext il)
+    {
+        ILCursor cursor = new ILCursor(il);
+
+        if (cursor.TryGotoNext(ins => ins.MatchLdloca(2)
+            ))
+        {
+            // int i
+            cursor.EmitLdarg0();
+            cursor.EmitLdloc(1);
+
+            // 尝试修改颜色并返回是否修改成功
+            cursor.EmitDelegate<Func<ParticleSystem, int, bool>>((particleSystem, index) =>
+            {
+                // particleSystem.particles[index].Color = Color.Green;
+                // return;
+                if (new DynamicData(particleSystem).TryGet("LuckyHelper_Entities", out Entity[] lst))
+                {
+                    if (!particleSystem.particles[index].Active)
+                    {
+                        lst[index] = null;
+                        return false;
+                    }
+
+                    if (lst[index] != null && EntityToModifier.TryGetValue(lst[index], out ColorModifierComponent modifier) && modifier.AffectParticle)
+                    {
+                        float alpha = (particleSystem.particles[index].Color.A / 255f);
+                        particleSystem.particles[index].Color = ApplyOverrideParticleColor(particleSystem.particles[index].Color, alpha);
+                        return true;
+                    }
+                }
+
+                return false;
+            });
+            ILLabel renderLabel = cursor.DefineLabel();
+
+            // 如果没有修改颜色就跳过重新赋值的部分(性能优化?
+            cursor.EmitBrfalse(renderLabel);
+            cursor.EmitLdloc(0);
+            cursor.EmitLdloc(1);
+            cursor.EmitLdelemAny(typeof(Monocle.Particle));
+            cursor.EmitStloc2();
+
+            cursor.MarkLabel(renderLabel);
+        }
+    }
+
+    private static Color ApplyOverrideParticleColor(Color color, float alpha)
+    {
+        switch (CommonColorBlendMode)
+        {
+            case ColorBlendMode.Multiply:
+                return color.Multiply(OverrideGeometryParticleColor) * alpha;
+            case ColorBlendMode.Replace:
+                return OverrideGeometryParticleColor * alpha;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    private static void BindEntityToParticle(Monocle.ParticleSystem self)
+    {
+        int preSlot = (self.nextSlot - 1 + self.particles.Length) % self.particles.Length;
+        var dynamicData = new DynamicData(self);
+        dynamicData.TryGet("LuckyHelper_Entities", out Entity[] lst);
+        lst ??= new Entity[self.particles.Length];
+        lst[preSlot] = CurrentUpdatingEntity;
+        dynamicData.Set("LuckyHelper_Entities", lst);
+
+        CurrentUpdatingEntity = null;
+    }
+
+    private static void ParticleSystemOnEmit_ParticleType_Vector2_float(On.Monocle.ParticleSystem.orig_Emit_ParticleType_Vector2_float orig, Monocle.ParticleSystem self,
+        ParticleType type,
+        Vector2 position, float direction)
+    {
+        orig(self, type, position, direction);
+        BindEntityToParticle(self);
+    }
+
+
+    private static void ParticleSystemOnEmit_ParticleType_Vector2_Color_float(On.Monocle.ParticleSystem.orig_Emit_ParticleType_Vector2_Color_float orig,
+        Monocle.ParticleSystem self,
+        ParticleType type, Vector2 position, Color color, float direction)
+    {
+        orig(self, type, position, color, direction);
+        BindEntityToParticle(self);
+    }
+
+    private static void ParticleSystemOnEmit_ParticleType_Vector2_Color(On.Monocle.ParticleSystem.orig_Emit_ParticleType_Vector2_Color orig, Monocle.ParticleSystem self,
+        ParticleType type,
+        Vector2 position, Color color)
+    {
+        orig(self, type, position, color);
+        BindEntityToParticle(self);
+    }
+
+    private static void ParticleSystemOnEmit_ParticleType_Vector2(On.Monocle.ParticleSystem.orig_Emit_ParticleType_Vector2 orig, Monocle.ParticleSystem self, ParticleType type,
+        Vector2 position)
+    {
+        orig(self, type, position);
+        BindEntityToParticle(self);
+    }
+
+    private static void EntityOnAdded(On.Monocle.Entity.orig_Added orig, Entity self, Scene scene)
+    {
+        orig(self, scene);
+        self.PreUpdate += entity => CurrentUpdatingEntity = entity;
+    }
+
+    public static Entity CurrentUpdatingEntity;
+
+    #endregion
+
+    #region Geometry
+
+    private static Color ApplyOverrideGeometryColor(Color color)
+    {
+        if (!UseOverrideGeometryColor)
+            return color;
+        switch (CommonColorBlendMode)
+        {
+            case ColorBlendMode.Multiply:
+                return color.Multiply(OverrideGeometryParticleColor);
+            case ColorBlendMode.Replace:
+                return OverrideGeometryParticleColor;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
 
     private static void DrawOnPoint(On.Monocle.Draw.orig_Point orig, Vector2 at, Color color)
     {
@@ -285,4 +507,6 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
     {
         orig(x, y, radius, ApplyOverrideGeometryColor(color), thickness, resolution);
     }
+
+    #endregion
 }

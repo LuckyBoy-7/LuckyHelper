@@ -48,7 +48,7 @@ local followerContainer = {
         "containMode", "containFlag",
         "fitContained", "ignoreAnchors",
         "forceStandardBehavior", "ignoreContainerBounds",
-        
+
         "collectFlag", "loseFlag",
         "interval", "followerSpeed",
         "canFollowFlag", "dontDestroyAfterDetached"
@@ -71,10 +71,15 @@ local colorModifier = {
             containFlag = "",
             forceStandardBehavior = false,
             ignoreContainerBounds = false,
-            colors = "FFEF11,FF00D0,08a310",
+            colors = "FFEF11,FF33D0,08a310",
             affectTexture = true,
             affectLight = true,
             affectGeometry = true,
+            affectParticle = true,
+            colorSourceMode = "Rainbow",
+            colorTransitionMode = "Lerp",
+            colorBlendMode = "Multiply",
+            colorChangeSpeed = 100,
         }
     },
     fieldInformation = {
@@ -84,6 +89,29 @@ local colorModifier = {
                 fieldType = "color",
             }
         },
+        colorSourceMode = {
+            options = {
+                "FirstColor",
+                "CycleColor",
+                "RandomColor",
+                "Rainbow",
+            },
+            editable = false
+        },
+        colorTransitionMode = {
+            options = {
+                "Lerp",
+                "Blink",
+            },
+            editable = false
+        },
+        colorBlendMode = {
+            options = {
+                "Multiply",
+                "Replace",
+            },
+            editable = false
+        }
     },
     fieldOrder = {
         "x", "y",
@@ -93,9 +121,10 @@ local colorModifier = {
         "fitContained", "ignoreAnchors",
         "forceStandardBehavior", "ignoreContainerBounds",
 
-        "colors", "",
+        "colorBlendMode", "affectParticle",
         "affectTexture", "affectLight",
-        "affectGeometry", "",
+        "affectGeometry", "colorSourceMode",
+        "colorTransitionMode", "colors", "colorChangeSpeed"
     }
 }
 
