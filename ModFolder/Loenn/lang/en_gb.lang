@@ -152,6 +152,21 @@ entities.LuckyHelper/FollowerContainer.attributes.description.dontDestroyAfterDe
 
 # Color Modifier
 entities.LuckyHelper/ColorModifier.placements.name.normal=Color Modifier
+entities.LuckyHelper/ColorModifier.attributes.description.containMode=Determines how the container contains entities.\n - RoomStart: Whitelisted entities inside the container at the start of the room are the only entities that will be contained.\n - FlagChanged: Entities are re-contained whenever the flag is enabled. This means you can delay containment with a flag to contain something like the Player.\n - Always: Whitelisted entities inside the container are always affected, and entities outside the container are no longer affected.\n - DelayedRoomStart: Same as RoomStart, but will occur on the first update tick (e.g. after screen transition).
+entities.LuckyHelper/ColorModifier.attributes.description.containFlag=The container will only be enabled when the flag is active. Empty for always enabled. (Prefix flag name with "!" to invert, e.g. !myFlag)
+entities.LuckyHelper/ColorModifier.attributes.description.whitelist=Comma-separated list of entity class names to contain (e.g. Booster,CrystalStaticSpinner,etc). Contains most entities if empty.
+entities.LuckyHelper/ColorModifier.attributes.description.blacklist=Comma-separated list of entity class names to ignore (e.g. Booster,CrystalStaticSpinner,etc). Includes Players, SolidTiles, BackgroundTiles, Decals and Triggers unless specifically whitelisted.
+entities.LuckyHelper/ColorModifier.attributes.description.forceStandardBehavior=Disables new special-cased behaviour for entities. New special behaviour may be added at any time, so enable this option if you're taking advantage of any buggy/jank behaviour.
+entities.LuckyHelper/ColorModifier.attributes.description.ignoreContainerBounds=Attempts to contain all valid entities in the room, regardless of the boundaries of the container itself.
+entities.LuckyHelper/ColorModifier.attributes.description.colorBlendMode=Determines how the 'Colors' affects entity color \nMultiply: blend entity color with entity color * custom color \nReplace: replace entity color with custom color(only affect particle and geometry) 
+entities.LuckyHelper/ColorModifier.attributes.description.affectParticle=Will the modifier affect entity's particle color?
+entities.LuckyHelper/ColorModifier.attributes.description.affectTexture=Will the modifier affect entity's texture color?
+entities.LuckyHelper/ColorModifier.attributes.description.affectLight=Will the modifier affect entity's light and bloom color?
+entities.LuckyHelper/ColorModifier.attributes.description.affectGeometry=Will the modifier affect entity's geometry color like dotted line around puffer?
+entities.LuckyHelper/ColorModifier.attributes.description.colorSourceMode=Determines how we choose color from 'Colors' \nFirstColor: get the first color of 'Colors' \nCycleColor: get the first, second, ..., nth color of 'Colors' in order, then repeat \nRandomColor: like CycleColor Mode but choose randomly \nRainbow: like Spinner's rainbow option 
+entities.LuckyHelper/ColorModifier.attributes.description.colorTransitionMode=Determines how the color changes \nLerp: color will lerp from current color to the next with 'ColorChangeSpeed' \nBlink: color will change to the next color after a duration(something like 1 / 'ColorChangeSpeed')
+entities.LuckyHelper/ColorModifier.attributes.description.colors=A sequence of colors seperated by comma, determines the color pool, which will be chosen with different 'ColorSourceMode'
+entities.LuckyHelper/ColorModifier.attributes.description.colorChangeSpeed=Determines how fast the color changes
 
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger

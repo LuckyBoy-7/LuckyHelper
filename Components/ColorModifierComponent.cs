@@ -107,17 +107,6 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
                 }
         }
 
-        if (AffectTexture)
-        {
-            foreach (var field in EntityHandler.GetPossibleColorFields())
-            {
-                if (EntityDyn.TryGet(field, out var _))
-                {
-                    if (EntityFieldToOrigColor.TryGetValue(field, out var origColor))
-                        EntityDyn.Set(field, origColor);
-                }
-            }
-        }
 
         EntityToModifier.Remove(entity);
     }
@@ -164,6 +153,14 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
         if (AffectTexture)
         {
             WhiteDyn.Set("White", OrigWhiteColor);
+            foreach (var field in EntityHandler.GetPossibleColorFields())
+            {
+                if (EntityDyn.TryGet(field, out var _))
+                {
+                    if (EntityFieldToOrigColor.TryGetValue(field, out var origColor))
+                        EntityDyn.Set(field, origColor);
+                }
+            }
         }
     }
 
@@ -269,6 +266,7 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
         On.Monocle.ParticleSystem.Emit_ParticleType_Vector2_float += ParticleSystemOnEmit_ParticleType_Vector2_float;
         IL.Monocle.ParticleSystem.Render += ParticleSystemOnRender;
         IL.Monocle.ParticleSystem.Render_float += ParticleSystemOnRender_float;
+        On.Monocle.ParticleSystem.Update += ParticleSystemOnUpdate;
     }
 
 
@@ -299,6 +297,7 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
         // 管 particle 颜色的
         IL.Monocle.ParticleSystem.Render -= ParticleSystemOnRender;
         IL.Monocle.ParticleSystem.Render_float -= ParticleSystemOnRender_float;
+        On.Monocle.ParticleSystem.Update -= ParticleSystemOnUpdate;
     }
 
 
@@ -321,15 +320,30 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
 
     private static void ParticleSystemOnRender(ILContext il)
     {
-        HookParticleSystemRender(il);
+        HookParticleSystemRender(il, false);
     }
 
     private static void ParticleSystemOnRender_float(ILContext il)
     {
-        HookParticleSystemRender(il);
+        HookParticleSystemRender(il, true);
     }
 
-    private static void HookParticleSystemRender(ILContext il)
+    private static void ParticleSystemOnUpdate(On.Monocle.ParticleSystem.orig_Update orig, ParticleSystem self)
+    {
+        orig(self);
+        if (new DynamicData(self).TryGet("LuckyHelper_Entities", out Entity[] lst))
+        {
+            for (var i = 0; i < lst.Length; i++)
+            {
+                if (!self.particles[i].Active)
+                    lst[i] = null;
+            }
+        }
+    }
+
+    public static Color OrigParticleColor;
+
+    private static void HookParticleSystemRender(ILContext il, bool withAlpha)
     {
         ILCursor cursor = new ILCursor(il);
 
@@ -340,19 +354,12 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
             cursor.EmitLdarg0();
             cursor.EmitLdloc(1);
 
-            // 尝试修改颜色并返回是否修改成功
+            // 尝试修改颜色
             cursor.EmitDelegate<Func<ParticleSystem, int, bool>>((particleSystem, index) =>
             {
-                // particleSystem.particles[index].Color = Color.Green;
-                // return;
+                OrigParticleColor = particleSystem.particles[index].Color;
                 if (new DynamicData(particleSystem).TryGet("LuckyHelper_Entities", out Entity[] lst))
                 {
-                    if (!particleSystem.particles[index].Active)
-                    {
-                        lst[index] = null;
-                        return false;
-                    }
-
                     if (lst[index] != null && EntityToModifier.TryGetValue(lst[index], out ColorModifierComponent modifier) && modifier.AffectParticle)
                     {
                         float alpha = (particleSystem.particles[index].Color.A / 255f);
@@ -363,8 +370,8 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
 
                 return false;
             });
-            ILLabel renderLabel = cursor.DefineLabel();
 
+            var renderLabel = cursor.DefineLabel();
             // 如果没有修改颜色就跳过重新赋值的部分(性能优化?
             cursor.EmitBrfalse(renderLabel);
             cursor.EmitLdloc(0);
@@ -373,6 +380,20 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
             cursor.EmitStloc2();
 
             cursor.MarkLabel(renderLabel);
+
+            if (withAlpha)
+                cursor.GotoNext(ins => ins.MatchCall(typeof(Monocle.Particle).GetMethod("Render", new Type[1]
+                {
+                    typeof(float)
+                })));
+            else
+                cursor.GotoNext(ins => ins.MatchCall(typeof(Monocle.Particle).GetMethod("Render", new Type[0])));
+            cursor.Index += 1;
+            // int i
+            cursor.EmitLdarg0();
+            cursor.EmitLdloc(1);
+
+            cursor.EmitDelegate<Action<ParticleSystem, int>>((particleSystem, index) => { particleSystem.particles[index].Color = OrigParticleColor; });
         }
     }
 

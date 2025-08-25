@@ -66,28 +66,9 @@ public class DreamZone_V2 : DreamBlock
         }
     }
 
-    public override void Added(Scene scene)
-    {
-        base.Added(scene);
-        for (int i = 0; i < particles.Length; i++)
-        {
-            switch (particles[i].Layer)
-            {
-                case 0:
 
-                    particles[i].Color = GetRandomColorByString(BigStarColors);
-                    break;
-                case 1:
-                    particles[i].Color = GetRandomColorByString(MediumStarColors);
-                    break;
-                case 2:
-                    particles[i].Color = GetRandomColorByString(SmallStarColors);
-                    break;
-            }
-        }
-    }
 
-    private Color GetRandomColorByString(string str)
+    public Color GetRandomColorByString(string str)
     {
         List<string> res = new();
         string[] s = str.Split(',');

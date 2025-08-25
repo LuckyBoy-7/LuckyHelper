@@ -71,22 +71,80 @@ public class DreamZone_V2Module
     private static void DreamBlockOnSetup(ILContext il)
     {
         ILCursor cursor = new ILCursor(il);
-        if (!cursor.TryGotoNext(ins => ins.MatchLdcR8(0.699999988079071)
+        if (cursor.TryGotoNext(ins => ins.MatchLdcR8(0.699999988079071)
             ))
-            return;
-        cursor.Index += 1;
-        cursor.EmitLdarg0();
-        cursor.EmitDelegate<Func<double, DreamBlock, double>>((starNumberPerUnit, dreamBlock) =>
         {
-            if (dreamBlock is DreamZone_V2 dreamZone)
+            cursor.Index += 1;
+            cursor.EmitLdarg0();
+            cursor.EmitDelegate<Func<double, DreamBlock, double>>((starNumberPerUnit, dreamBlock) =>
             {
-                return dreamZone.StarNumberPerUnit;
+                if (dreamBlock is DreamZone_V2 dreamZone)
+                {
+                    return dreamZone.StarNumberPerUnit;
+                }
+
+                return starNumberPerUnit;
+            });
+        }
+
+        if (cursor.TryGotoNext(
+                ins => ins.MatchLdarg0(),
+                ins => ins.MatchLdfld(typeof(DreamBlock).GetField("particles")),
+                ins => ins.MatchLdloc0(),
+                ins => ins.MatchLdelema(out _),
+                ins => ins.MatchLdfld(out _),
+                ins => ins.MatchStloc1(),
+                ins => ins.MatchLdloc1()
+            ))
+        {
+            cursor.Index += 2;
+            ILLabel setParticleStart = cursor.DefineLabel();
+            ILLabel setParticleEnd = cursor.DefineLabel();
+            cursor.EmitLdarg0();
+            cursor.EmitDelegate<Func<DreamBlock, bool>>((dreamBlock) =>
+            {
+                if (dreamBlock is DreamZone_V2)
+                {
+                    return true;
+                }
+
+                return false;
+            });
+
+            cursor.EmitBrfalse(setParticleStart);
+            // custom set
+            cursor.EmitLdloc0();
+            cursor.EmitDelegate<Action<int, DreamBlock>>((index, dreamBlock) =>
+            {
+                if (dreamBlock is DreamZone_V2 dreamZone)
+                {
+                    switch (dreamZone.particles[index].Layer)
+                    {
+                        case 0:
+                            dreamZone.particles[index].Color = dreamZone.GetRandomColorByString(dreamZone.BigStarColors);
+                            break;
+                        case 1:
+                            dreamZone.particles[index].Color = dreamZone.GetRandomColorByString(dreamZone.MediumStarColors);
+                            break;
+                        case 2:
+                            dreamZone.particles[index].Color = dreamZone.GetRandomColorByString(dreamZone.SmallStarColors);
+                            break;
+                    }
+                }
+            });
+            cursor.EmitBr(setParticleEnd);
+            cursor.MarkLabel(setParticleStart);
+
+
+            if (cursor.TryGotoNext(
+                    ins => ins.MatchLdloc0(),
+                    ins => ins.MatchLdcI4(1)
+                ))
+            {
+                cursor.MarkLabel(setParticleEnd);
             }
-
-            return starNumberPerUnit;
-        });
+        }
     }
-
 
     private static void SetDreamZone_V2Collidable(Player self, bool on, Func<DreamZone_V2, bool> condition = null)
     {
