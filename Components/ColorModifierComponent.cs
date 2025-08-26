@@ -84,6 +84,12 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
         EntityToModifier.Remove(entity);
     }
 
+    public override void EntityRemoved(Scene scene)
+    {
+        base.EntityRemoved(scene);
+        EntityToModifier.Remove(Entity);
+    }
+
     public override void Added(Entity entity)
     {
         base.Added(entity);

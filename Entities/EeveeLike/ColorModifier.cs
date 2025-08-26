@@ -151,12 +151,5 @@ public class ColorModifier : Actor, IContainer
             },
             OnDetach = handler => { handler.Entity.Get<ColorModifierComponent>()?.RemoveSelf(); }
         });
-        
-    }
-
-    public override void Update()
-    {
-        base.Update();
-        LogUtils.LogDebug(ColorModifierComponent.EntityToModifier.Count.ToString());
     }
 }
