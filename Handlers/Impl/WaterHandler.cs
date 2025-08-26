@@ -35,30 +35,32 @@ class WaterHandler : EntityHandler, IMoveable, IModifyColor
     public void BeforeRender(ColorModifierComponent modifier)
     {
         SurfaceColors.Clear();
-        for (var i = 0; i < water.Surfaces.Count; i++)
-        {
-            Water.Surface surface = water.Surfaces[i];
-            List<Color> colors = new();
-            for (var index = 0; index < surface.mesh.Length; index++)
+        if (modifier.AffectGeometry)
+            for (var i = 0; i < water.Surfaces.Count; i++)
             {
-                var vertexPositionColor = surface.mesh[index];
-                colors.Add(vertexPositionColor.Color);
-                surface.mesh[index].Color = modifier.GetHandledColor(surface.mesh[index].Color);
-            }
+                Water.Surface surface = water.Surfaces[i];
+                List<Color> colors = new();
+                for (var index = 0; index < surface.mesh.Length; index++)
+                {
+                    var vertexPositionColor = surface.mesh[index];
+                    colors.Add(vertexPositionColor.Color);
+                    surface.mesh[index].Color = modifier.GetHandledColor(surface.mesh[index].Color);
+                }
 
-            SurfaceColors.Add(colors);
-        }
+                SurfaceColors.Add(colors);
+            }
     }
 
     public void AfterRender(ColorModifierComponent modifier)
     {
-        for (var i = 0; i < water.Surfaces.Count; i++)
-        {
-            Water.Surface surface = water.Surfaces[i];
-            for (var index = 0; index < surface.mesh.Length; index++)
+        if (modifier.AffectGeometry)
+            for (var i = 0; i < water.Surfaces.Count; i++)
             {
-                surface.mesh[index].Color = SurfaceColors[i][index];
+                Water.Surface surface = water.Surfaces[i];
+                for (var index = 0; index < surface.mesh.Length; index++)
+                {
+                    surface.mesh[index].Color = SurfaceColors[i][index];
+                }
             }
-        }
     }
 }

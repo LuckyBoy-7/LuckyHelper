@@ -77,9 +77,27 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
     public static ColorBlendMode CommonColorBlendMode;
 
 
-    public override void Update()
+    public override void Removed(Entity entity)
     {
-        base.Update();
+        base.Removed(entity);
+        EntityToModifier.Remove(entity);
+    }
+
+    public override void Added(Entity entity)
+    {
+        base.Added(entity);
+        EntityToModifier[entity] = this;
+        EntityDyn = new(entity);
+    }
+
+    public void BeforeRender(bool affectFields = true)
+    {
+        CommonColorBlendMode = ColorBlendMode;
+        OverrideGeometryParticleColor = GetCurrentColor();
+        if (AffectGeometry)
+        {
+            UseOverrideGeometryColor = true;
+        }
 
         foreach (var component in Entity.Components)
         {
@@ -98,47 +116,6 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
                         vertexLightToOrigColor[light] = light.Color;
                     light.Color = GetCurrentColor();
                 }
-        }
-    }
-
-    public override void Removed(Entity entity)
-    {
-        base.Removed(entity);
-        foreach (var component in entity.Components)
-        {
-            if (AffectTexture)
-                if (component is GraphicsComponent graphics)
-                {
-                    if (graphicToOrigColor.TryGetValue(graphics, out var color))
-                        graphics.Color = color;
-                }
-
-            if (AffectLight)
-                if (component is VertexLight light)
-                {
-                    if (vertexLightToOrigColor.TryGetValue(light, out var color))
-                        light.Color = color;
-                }
-        }
-
-
-        EntityToModifier.Remove(entity);
-    }
-
-    public override void Added(Entity entity)
-    {
-        base.Added(entity);
-        EntityToModifier[entity] = this;
-        EntityDyn = new(entity);
-    }
-
-    public void BeforeRender(bool affectFields = true)
-    {
-        CommonColorBlendMode = ColorBlendMode;
-        OverrideGeometryParticleColor = GetCurrentColor();
-        if (AffectGeometry)
-        {
-            UseOverrideGeometryColor = true;
         }
 
         if (AffectTexture)
@@ -166,6 +143,23 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
     {
         if (AffectGeometry)
             UseOverrideGeometryColor = false;
+
+        foreach (var component in Entity.Components)
+        {
+            if (AffectTexture)
+                if (component is GraphicsComponent graphics)
+                {
+                    if (graphicToOrigColor.TryGetValue(graphics, out var color))
+                        graphics.Color = color;
+                }
+
+            if (AffectLight)
+                if (component is VertexLight light)
+                {
+                    if (vertexLightToOrigColor.TryGetValue(light, out var color))
+                        light.Color = color;
+                }
+        }
 
         if (AffectTexture)
         {
@@ -199,9 +193,7 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
                     if (modifier.EntityHandler is IModifyColor iModifyColor)
                     {
                         modifier.BeforeRender(false);
-                        // 因为一般调属性就能改的都是 texture 或者 geometry, 但是单独拿来适配的一般都是 geometry 居多
-                        if (modifier.AffectGeometry)
-                            iModifyColor.BeforeRender(modifier);
+                        iModifyColor.BeforeRender(modifier);
                     }
                     else
                     {
@@ -218,8 +210,7 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
                     if (modifier.EntityHandler is IModifyColor iModifyColor)
                     {
                         modifier.AfterRender(false);
-                        if (modifier.AffectGeometry)
-                            iModifyColor.AfterRender(modifier);
+                        iModifyColor.AfterRender(modifier);
                     }
                     else
                     {
