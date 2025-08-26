@@ -144,7 +144,7 @@ public class ColorModifier : Actor, IContainer
                     AffectLight = data.Bool("affectLight", true),
                     AffectGeometry = data.Bool("affectGeometry", true),
                     AffectParticle = data.Bool("affectParticle", true),
-                    GetCurrentColor = () => ColorController.CurrentColor(Position),
+                    GetCurrentColor = (position) => ColorController.CurrentColor(position),
                     EntityHandler = handler,
                     ColorBlendMode = data.Enum<ColorBlendMode>("colorBlendMode")
                 });
@@ -152,5 +152,11 @@ public class ColorModifier : Actor, IContainer
             OnDetach = handler => { handler.Entity.Get<ColorModifierComponent>()?.RemoveSelf(); }
         });
         
+    }
+
+    public override void Update()
+    {
+        base.Update();
+        LogUtils.LogDebug(ColorModifierComponent.EntityToModifier.Count.ToString());
     }
 }

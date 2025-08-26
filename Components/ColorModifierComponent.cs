@@ -12,22 +12,23 @@ using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 using EntityList = On.Monocle.EntityList;
+using Level = On.Celeste.Level;
 using Particle = On.Monocle.Particle;
 
 namespace LuckyHelper.Components;
 
 public class ColorModifierComponent(bool active = true, bool visible = true) : Component(active, visible)
 {
-    public Func<Color> GetCurrentColor;
+    public Func<Vector2, Color> GetCurrentColor;
 
     public Color GetHandledColor(Color color)
     {
         switch (ColorBlendMode)
         {
             case ColorBlendMode.Multiply:
-                return color.Multiply(GetCurrentColor());
+                return color.Multiply(GetCurrentColor(Entity.Position));
             case ColorBlendMode.Replace:
-                return GetCurrentColor();
+                return GetCurrentColor(Entity.Position);
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -88,52 +89,64 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
         base.Added(entity);
         EntityToModifier[entity] = this;
         EntityDyn = new(entity);
+
+        foreach (var component in entity.Components)
+        {
+            if (component is GraphicsComponent graphics)
+            {
+                graphicToOrigColor[graphics] = Color.White;
+            }
+            else if (component is VertexLight light)
+            {
+                vertexLightToOrigColor[light] = Color.White;
+            }
+        }
     }
 
     public void BeforeRender(bool affectFields = true)
     {
         CommonColorBlendMode = ColorBlendMode;
-        OverrideGeometryParticleColor = GetCurrentColor();
+        OverrideGeometryParticleColor = GetCurrentColor(Entity.Position);
         if (AffectGeometry)
         {
             UseOverrideGeometryColor = true;
         }
 
-        foreach (var component in Entity.Components)
-        {
-            if (AffectTexture)
-                if (component is GraphicsComponent graphics)
-                {
-                    if (!graphicToOrigColor.ContainsKey(graphics))
-                        graphicToOrigColor[graphics] = graphics.Color;
-                    graphics.Color = GetCurrentColor();
-                }
+        if (AffectTexture)
+            foreach (GraphicsComponent graphics in graphicToOrigColor.Keys)
+            {
+                graphicToOrigColor[graphics] = graphics.Color;
+                graphics.Color = GetCurrentColor(Entity.Position);
+            }
 
-            if (AffectLight)
-                if (component is VertexLight light)
-                {
-                    if (!vertexLightToOrigColor.ContainsKey(light))
-                        vertexLightToOrigColor[light] = light.Color;
-                    light.Color = GetCurrentColor();
-                }
-        }
+        if (AffectLight)
+            foreach (VertexLight light in vertexLightToOrigColor.Keys)
+            {
+                vertexLightToOrigColor[light] = light.Color;
+                light.Color = GetCurrentColor(Entity.Position);
+            }
+
 
         if (AffectTexture)
         {
             if (!affectFields)
                 return;
             // 更多的是影响画默认贴图的
-            WhiteDyn.Set("White", GetCurrentColor());
+            WhiteDyn.Set("White", GetCurrentColor(Entity.Position));
 
             foreach (var field in EntityHandler.GetPossibleColorFields())
             {
                 // 有这个字段并且还没存过初始值
                 // 这里要拿 obj 然后转 Color, 要是直接拿 out Color 的话 cast 会出错 
-                if (EntityDyn.TryGet(field, out var origColor))
+                if (EntityDyn.TryGet(field, out var value))
                 {
-                    if (!EntityFieldToOrigColor.ContainsKey(field))
-                        EntityFieldToOrigColor[field] = (Color)origColor;
-                    EntityDyn.Set(field, EntityFieldToOrigColor[field].Multiply(GetCurrentColor()));
+                    // 有的字段叫 color 但不是 color 类型, 比如 spinner 的 color
+
+                    if (value is Color origColor)
+                    {
+                        EntityFieldToOrigColor[field] = origColor;
+                        EntityDyn.Set(field, EntityFieldToOrigColor[field].Multiply(GetCurrentColor(Entity.Position)));
+                    }
                 }
             }
         }
@@ -143,23 +156,17 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
     {
         if (AffectGeometry)
             UseOverrideGeometryColor = false;
+        if (AffectTexture)
+            foreach (GraphicsComponent graphics in graphicToOrigColor.Keys)
+            {
+                graphics.Color = graphicToOrigColor[graphics];
+            }
 
-        foreach (var component in Entity.Components)
-        {
-            if (AffectTexture)
-                if (component is GraphicsComponent graphics)
-                {
-                    if (graphicToOrigColor.TryGetValue(graphics, out var color))
-                        graphics.Color = color;
-                }
-
-            if (AffectLight)
-                if (component is VertexLight light)
-                {
-                    if (vertexLightToOrigColor.TryGetValue(light, out var color))
-                        light.Color = color;
-                }
-        }
+        if (AffectLight)
+            foreach (VertexLight light in vertexLightToOrigColor.Keys)
+            {
+                light.Color = vertexLightToOrigColor[light];
+            }
 
         if (AffectTexture)
         {
@@ -168,10 +175,13 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
             WhiteDyn.Set("White", OrigWhiteColor);
             foreach (var field in EntityHandler.GetPossibleColorFields())
             {
-                if (EntityDyn.TryGet(field, out var _))
+                if (EntityDyn.TryGet(field, out var value))
                 {
-                    if (EntityFieldToOrigColor.TryGetValue(field, out var origColor))
-                        EntityDyn.Set(field, origColor);
+                    // 有的字段叫 color 但不是 color 类型, 比如 spinner 的 color
+                    if (value is Color _)
+                    {
+                        EntityDyn.Set(field, EntityFieldToOrigColor[field]);
+                    }
                 }
             }
         }
@@ -238,7 +248,7 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
             {
                 if (EntityToModifier.TryGetValue(bloomPoint.Entity, out var modifier) && modifier.AffectLight)
                 {
-                    return modifier.GetCurrentColor();
+                    return modifier.GetCurrentColor(modifier.Entity.Position);
                 }
 
                 return Color.White; // 不管 frost 怎么做这里都输入白色, 反正原本也是当 mask 用, 这么写没问题
@@ -263,9 +273,10 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
             cursor.EmitLdarg0();
             cursor.EmitDelegate<Func<Color, TileGrid, Color>>((origColor, tileGrid) =>
             {
+                // 找了半天 bug 发现好像所有蔚蓝房间共用一个 TileGrid
                 if (EntityToModifier.TryGetValue(tileGrid.Entity, out var modifier) && modifier.AffectTexture)
                 {
-                    return modifier.GetCurrentColor();
+                    return modifier.GetCurrentColor(modifier.Entity.Position);
                 }
 
                 return origColor;
