@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using System.Reflection;
 using LuckyHelper.Entities.EeveeLike;
 using LuckyHelper.Extensions;
@@ -18,6 +19,19 @@ namespace LuckyHelper.Components;
 public class ColorModifierComponent(bool active = true, bool visible = true) : Component(active, visible)
 {
     public Func<Color> GetCurrentColor;
+
+    public Color GetHandledColor(Color color)
+    {
+        switch (ColorBlendMode)
+        {
+            case ColorBlendMode.Multiply:
+                return color.Multiply(GetCurrentColor());
+            case ColorBlendMode.Replace:
+                return GetCurrentColor();
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
 
     // 管 Sprite.Color Image.Color 的
     private Dictionary<GraphicsComponent, Color> graphicToOrigColor = new();
@@ -118,7 +132,7 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
         EntityDyn = new(entity);
     }
 
-    public void BeforeRender()
+    public void BeforeRender(bool affectFields = true)
     {
         CommonColorBlendMode = ColorBlendMode;
         OverrideGeometryParticleColor = GetCurrentColor();
@@ -129,6 +143,9 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
 
         if (AffectTexture)
         {
+            if (!affectFields)
+                return;
+            // 更多的是影响画默认贴图的
             WhiteDyn.Set("White", GetCurrentColor());
 
             foreach (var field in EntityHandler.GetPossibleColorFields())
@@ -145,13 +162,15 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
         }
     }
 
-    public void AfterRender()
+    public void AfterRender(bool affectFields = true)
     {
         if (AffectGeometry)
             UseOverrideGeometryColor = false;
 
         if (AffectTexture)
         {
+            if (!affectFields)
+                return;
             WhiteDyn.Set("White", OrigWhiteColor);
             foreach (var field in EntityHandler.GetPossibleColorFields())
             {
@@ -177,7 +196,17 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
             {
                 if (EntityToModifier.TryGetValue(entity, out var modifier))
                 {
-                    modifier.BeforeRender();
+                    if (modifier.EntityHandler is IModifyColor iModifyColor)
+                    {
+                        modifier.BeforeRender(false);
+                        // 因为一般调属性就能改的都是 texture 或者 geometry, 但是单独拿来适配的一般都是 geometry 居多
+                        if (modifier.AffectGeometry)
+                            iModifyColor.BeforeRender(modifier);
+                    }
+                    else
+                    {
+                        modifier.BeforeRender(true);
+                    }
                 }
             });
             cursor.Index += 2;
@@ -186,7 +215,16 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
             {
                 if (EntityToModifier.TryGetValue(entity, out var modifier))
                 {
-                    modifier.AfterRender();
+                    if (modifier.EntityHandler is IModifyColor iModifyColor)
+                    {
+                        modifier.AfterRender(false);
+                        if (modifier.AffectGeometry)
+                            iModifyColor.AfterRender(modifier);
+                    }
+                    else
+                    {
+                        modifier.AfterRender(true);
+                    }
                 }
             });
         }
