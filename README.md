@@ -27,6 +27,9 @@
 * Logic Flag(Trigger): 根据逻辑判断是否设置 flag, 比如如果条件 (flag1 && (flag2 || !flag3)) 成立, 则设置对应 flag
 * FollowerContainer(Entity): 类 Eevee 的跟随容器, 可以像草莓那样被收集  -- by Shynnie(抄了 [Eevee](https://github.com/CommunalHelper/EeveeHelper)代码, 原谅我😭)
 * DetachFollowerContainer(Trigger): 可以解绑 FollowerContainer  -- by Shynnie
+* ExCameraUseUnsafeZoom(Trigger): 调整了拓展镜头函数里的某个分支, 使其在 level zoom 的时候正常工作(等人家修好了就删)
+* AudioAdjust(Trigger): 调整特定音频的音量(其他属性等有需求了再说) -- by NaCline
+* ColorModifier(Entity): 改实体颜色的
 
 ### GhostTranspose -- by Molong
 
