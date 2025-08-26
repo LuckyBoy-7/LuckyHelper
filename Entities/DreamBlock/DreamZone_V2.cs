@@ -1,4 +1,5 @@
 using Celeste.Mod.Entities;
+using LuckyHelper.Extensions;
 
 namespace LuckyHelper.Entities;
 
@@ -10,11 +11,18 @@ public class DreamZone_V2 : DreamBlock
     public bool StopPlayerOnCollide = true;
     public bool KillPlayerOnCollide = true;
 
-    public Color BackgroundColor = Color.Green;
-    public float BackgroundAlpha = 1f;
+    public Color ActiveBackgroundColor = Color.Green;
+    public Color DisabledBackgroundColor = Color.Green;
 
-    public Color OutlineColor = Color.Black;
-    public float OutlineAlpha = 0.5f;
+    public Color ActiveLineColor = Color.Black;
+    public Color DisabledLineColor = Color.Black;
+
+    public float ActiveBackgroundAlpha = 1f;
+    public float DisabledBackgroundAlpha = 1f;
+
+
+    public float ActiveLineAlpha = 0.5f;
+    public float DisabledLineAlpha = 0.5f;
 
     public string BigStarColors = "FFEF11,FF00D0,08a310";
     public string MediumStarColors = "5fcde4,7fb25e,E0564C";
@@ -25,7 +33,8 @@ public class DreamZone_V2 : DreamBlock
     public bool CancelDreamDashOnNotDreaming = false;
 
     public double StarNumberPerUnit;
-    public float StarAlpha;
+    public float ActiveStarAlpha;
+    public float DisabledStarAlpha;
     public bool DisableVerticalJump;
     public bool DisableInsideDreamJump;
     public bool GetVerticalCoyote;
@@ -35,10 +44,19 @@ public class DreamZone_V2 : DreamBlock
         StopPlayerOnCollide = data.Bool("stopPlayerOnCollide");
         KillPlayerOnCollide = data.Bool("killPlayerOnCollide");
 
-        BackgroundColor = data.HexColor("backgroundColor");
-        BackgroundAlpha = data.Float("backgroundAlpha");
-        OutlineColor = data.HexColor("outlineColor");
-        OutlineAlpha = data.Float("outlineAlpha");
+        ActiveBackgroundColor = data.FitColor(Color.Black, "activeBackgroundColor", "backgroundColor");
+        DisabledBackgroundColor = data.FitColor(Calc.HexToColor("1f2e2d"), "disabledBackgroundColor");
+
+        ActiveLineColor = data.FitColor(Color.White, "activeLineColor", "outlineColor");
+        DisabledLineColor = data.FitColor(Calc.HexToColor("6a8480"), "disabledLineColor");
+
+        ActiveBackgroundAlpha = data.FitFloat(0, "activeBackgroundAlpha", "backgroundAlpha");
+        DisabledBackgroundAlpha = data.FitFloat(0, "disabledBackgroundAlpha", "backgroundAlpha");
+
+
+        ActiveLineAlpha = data.FitFloat(0, "activeLineAlpha", "outlineAlpha");
+        DisabledLineAlpha = data.FitFloat(0, "disabledLineAlpha", "outlineAlpha");
+
 
         BigStarColors = data.Attr("bigStarColors");
         MediumStarColors = data.Attr("mediumStarColors");
@@ -48,10 +66,19 @@ public class DreamZone_V2 : DreamBlock
         DisableInteraction = data.Bool("disableInteraction");
         CancelDreamDashOnNotDreaming = data.Bool("cancelDreamDashOnNotDreaming");
         StarNumberPerUnit = data.Float("starNumberPerUnit", 0.7f);
-        StarAlpha = data.Float("starAlpha", 1);
+        if (data.Has("starAlpha")) // 老版
+        {
+            DisabledStarAlpha = ActiveStarAlpha = data.Float("starAlpha");
+        }
+        else
+        {
+            ActiveStarAlpha = data.Float("activeStarAlpha");
+            DisabledStarAlpha = data.Float("disabledStarAlpha");
+        }
+
         DisableVerticalJump = data.Bool("disableVerticalJump", false);
-        DisableInsideDreamJump = data.Bool("disableInsideDreamJump", false); 
-        GetVerticalCoyote = data.Bool("getVerticalCoyote", false); 
+        DisableInsideDreamJump = data.Bool("disableInsideDreamJump", false);
+        GetVerticalCoyote = data.Bool("getVerticalCoyote", false);
 
         Collidable = false;
     }
@@ -65,7 +92,6 @@ public class DreamZone_V2 : DreamBlock
             occlude = null;
         }
     }
-
 
 
     public Color GetRandomColorByString(string str)
@@ -92,12 +118,17 @@ public class DreamZone_V2 : DreamBlock
         // background
         Color activeBackColorBackup = activeBackColor;
         Color activeLineColorBackup = activeLineColor;
-        activeBackColor = BackgroundColor;
-        activeLineColor = OutlineColor;
-        if (BackgroundAlpha == 1 && !DisableWobble)
-            Draw.Rect(shake.X + X, shake.Y + Y, Width, Height, (playerHasDreamDash ? activeBackColor : disabledBackColor) * BackgroundAlpha);
+        Color disabledBackColorBackup = disabledBackColor;
+        Color disabledLineColorBackup = disabledLineColor;
+        activeBackColor = ActiveBackgroundColor;
+        activeLineColor = ActiveLineColor;
+        disabledBackColor = DisabledBackgroundColor;
+        disabledLineColor = DisabledLineColor;
+        if ((ActiveBackgroundAlpha == 1 || DisabledBackgroundAlpha == 1) && !DisableWobble)
+            Draw.Rect(shake.X + X, shake.Y + Y, Width, Height, (playerHasDreamDash ? activeBackColor * ActiveBackgroundAlpha : disabledBackColor * DisabledBackgroundAlpha));
         else
-            Draw.Rect(shake.X + X + 1, shake.Y + 1 + Y, Width - 2, Height - 2, (playerHasDreamDash ? activeBackColor : disabledBackColor) * BackgroundAlpha);
+            Draw.Rect(shake.X + X + 1, shake.Y + 1 + Y, Width - 2, Height - 2,
+                (playerHasDreamDash ? activeBackColor * ActiveBackgroundAlpha : disabledBackColor * DisabledBackgroundAlpha));
 
 
         Vector2 position = SceneAs<Level>().Camera.Position;
@@ -126,7 +157,7 @@ public class DreamZone_V2 : DreamBlock
 
             if (vector.X >= X + 2f && vector.Y >= Y + 2f && vector.X < Right - 2f && vector.Y < Bottom - 2f)
             {
-                mtexture.DrawCentered(vector + shake, color * StarAlpha);
+                mtexture.DrawCentered(vector + shake, color * (playerHasDreamDash ? ActiveStarAlpha : DisabledStarAlpha));
             }
         }
 
@@ -148,12 +179,14 @@ public class DreamZone_V2 : DreamBlock
         CustomWobbleLine(shake + new Vector2(X + Width, Y + Height), shake + new Vector2(X, Y + Height), 1.5f);
         CustomWobbleLine(shake + new Vector2(X, Y + Height), shake + new Vector2(X, Y), 2.5f);
 
-        Draw.Rect(shake + new Vector2(X, Y), 2f, 2f, (playerHasDreamDash ? activeLineColor : disabledLineColor) * OutlineAlpha);
-        Draw.Rect(shake + new Vector2(X + Width - 2f, Y), 2f, 2f, (playerHasDreamDash ? activeLineColor : disabledLineColor) * OutlineAlpha);
-        Draw.Rect(shake + new Vector2(X, Y + Height - 2f), 2f, 2f, (playerHasDreamDash ? activeLineColor : disabledLineColor) * OutlineAlpha);
-        Draw.Rect(shake + new Vector2(X + Width - 2f, Y + Height - 2f), 2f, 2f, (playerHasDreamDash ? activeLineColor : disabledLineColor) * OutlineAlpha);
+        Draw.Rect(shake + new Vector2(X, Y), 2f, 2f, (playerHasDreamDash ? activeLineColor * ActiveLineAlpha : disabledLineColor * DisabledLineAlpha));
+        Draw.Rect(shake + new Vector2(X + Width - 2f, Y), 2f, 2f, (playerHasDreamDash ? activeLineColor * ActiveLineAlpha : disabledLineColor * DisabledLineAlpha));
+        Draw.Rect(shake + new Vector2(X, Y + Height - 2f), 2f, 2f, (playerHasDreamDash ? activeLineColor * ActiveLineAlpha : disabledLineColor * DisabledLineAlpha));
+        Draw.Rect(shake + new Vector2(X + Width - 2f, Y + Height - 2f), 2f, 2f, (playerHasDreamDash ? activeLineColor * ActiveLineAlpha : disabledLineColor * DisabledLineAlpha));
         activeBackColor = activeBackColorBackup;
         activeLineColor = activeLineColorBackup;
+        disabledBackColor = disabledBackColorBackup;
+        disabledLineColor = disabledLineColorBackup;
     }
 
     public void CustomWobbleLine(Vector2 from, Vector2 to, float offset)
@@ -161,8 +194,8 @@ public class DreamZone_V2 : DreamBlock
         float length = (to - from).Length();
         Vector2 dir = Vector2.Normalize(to - from);
         Vector2 perpendicular = new Vector2(dir.Y, -dir.X);
-        Color outlineColor = (playerHasDreamDash ? activeLineColor : disabledLineColor) * OutlineAlpha;
-        Color backgroundColor = (playerHasDreamDash ? activeBackColor : disabledBackColor) * BackgroundAlpha;
+        Color outlineColor = (playerHasDreamDash ? activeLineColor * ActiveLineAlpha : disabledLineColor * DisabledLineAlpha);
+        Color backgroundColor = (playerHasDreamDash ? activeBackColor * ActiveBackgroundAlpha : disabledBackColor * DisabledBackgroundAlpha);
         if (whiteFill > 0.0)
         {
             outlineColor = Color.Lerp(outlineColor, Color.White, whiteFill);
@@ -187,7 +220,7 @@ public class DreamZone_V2 : DreamBlock
         float preAmplitude = 0.0f;
         int gap = 16;
 
-        if (BackgroundAlpha == 1)
+        if (ActiveBackgroundAlpha == 1 || DisabledBackgroundAlpha == 1)
         {
             for (int index = 2; index < length - 2.0; index += gap)
             {

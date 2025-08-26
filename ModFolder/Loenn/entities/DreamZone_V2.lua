@@ -18,11 +18,17 @@ dreamBlock.placements = {
         bigStarColors = "FFEF11,FF00D0,08a310",
         mediumStarColors = "5fcde4,7fb25e,E0564C",
         smallStarColors = "5b6ee1,CC3B3B,7daa64",
-        backgroundColor = "000000",
-        outlineColor = "FFFFFF",
-        backgroundAlpha = 0,
-        outlineAlpha = 0,
-        starAlpha = 0.9,
+        activeBackgroundColor = "000000",
+        disabledBackgroundColor = "1f2e2d",
+        activeLineColor = "000000",
+        disabledLineColor = "6a8480",
+        
+        activeBackgroundAlpha = 0,
+        disabledBackgroundAlpha = 0,
+        activeLineAlpha = 0,
+        disabledLineAlpha = 0,
+        activeStarAlpha = 0.9,
+        disabledStarAlpha = 0.9,
         disableWobble = false,
         disableInteraction = false,
         cancelDreamDashOnNotDreaming = false,
@@ -36,21 +42,30 @@ dreamBlock.placements = {
 dreamBlock.fieldOrder = {
     "x", "y",
     "width", "height",
-    "backgroundAlpha", "backgroundColor",
-    "outlineAlpha", "outlineColor",
-    "starAlpha", "bigStarColors",
-    "mediumStarColors", "smallStarColors",
-    "starNumberPerUnit",
+    "activeBackgroundAlpha", "activeBackgroundColor",
+    "disabledBackgroundAlpha", "disabledBackgroundColor",
+    "activeLineAlpha", "activeLineColor",
+    "disabledLineAlpha", "disabledLineColor",
+    
+    "activeStarAlpha", "smallStarColors",
+    "disabledStarAlpha", "mediumStarColors",
+    "starNumberPerUnit", "bigStarColors",
     "", "",
     "", "",
     "", "",
 }
 
 dreamBlock.fieldInformation = {
-    backgroundColor = {
+    activeBackgroundColor = {
         fieldType = "color"
     },
-    outlineColor = {
+    disabledBackgroundColor = {
+        fieldType = "color"
+    },
+    activeLineColor = {
+        fieldType = "color"
+    },
+    disabledLineColor = {
         fieldType = "color"
     },
     bigStarColors = {
