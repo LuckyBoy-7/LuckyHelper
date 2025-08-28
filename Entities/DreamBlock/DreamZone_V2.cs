@@ -1,5 +1,8 @@
 using Celeste.Mod.Entities;
 using LuckyHelper.Extensions;
+using LuckyHelper.Module;
+using LuckyHelper.Modules;
+using MonoMod.Cil;
 
 namespace LuckyHelper.Entities;
 
@@ -38,6 +41,9 @@ public class DreamZone_V2 : DreamBlock
     public bool DisableVerticalJump;
     public bool DisableInsideDreamJump;
     public bool GetVerticalCoyote;
+    public bool ConserveSpeed;
+    public int DashesToRefill;
+
 
     public DreamZone_V2(EntityData data, Vector2 offset) : base(data, offset)
     {
@@ -79,6 +85,8 @@ public class DreamZone_V2 : DreamBlock
         DisableVerticalJump = data.Bool("disableVerticalJump", false);
         DisableInsideDreamJump = data.Bool("disableInsideDreamJump", false);
         GetVerticalCoyote = data.Bool("getVerticalCoyote", false);
+        ConserveSpeed = data.Bool("conserveSpeed", false);
+        DashesToRefill = data.Int("dashesToRefill", 1);
 
         Collidable = false;
     }
@@ -276,6 +284,67 @@ public class DreamZone_V2 : DreamBlock
             // Draw.Line(start - perpendicular * 2f, end - perpendicular * 2f, backgroundColor);
             Draw.Line(startPos, endPos, outlineColor);
             preAmplitude = curAmplitude;
+        }
+    }
+
+    [Load]
+    public static void Load()
+    {
+        IL.Celeste.Player.DreamDashBegin += PlayerOnDreamDashBegin;
+        IL.Celeste.Player.DreamDashEnd += PlayerOnDreamDashEnd;
+    }
+
+
+    [Unload]
+    public static void Unload()
+    {
+        IL.Celeste.Player.DreamDashBegin -= PlayerOnDreamDashBegin;
+        IL.Celeste.Player.DreamDashEnd -= PlayerOnDreamDashEnd;
+    }
+
+    private static void PlayerOnDreamDashEnd(ILContext il)
+    {
+        ILCursor cursor = new ILCursor(il);
+
+        if (cursor.TryGotoNext(ins => ins.MatchCallvirt(typeof(Player).GetMethod("RefillDash"))
+            ))
+        {
+            cursor.Index += 1;
+            cursor.EmitLdarg0();
+            cursor.EmitDelegate<Action<Player>>(player =>
+            {
+                if (DreamZone_V2Module.DreamZone is { } dreamZone)
+                {
+                    if (player.Dashes < dreamZone.DashesToRefill)
+                    {
+                        player.Dashes = dreamZone.DashesToRefill;
+                    }
+                }
+            });
+        }
+    }
+
+    private static void PlayerOnDreamDashBegin(ILContext il)
+    {
+        ILCursor cursor = new ILCursor(il);
+
+        if (cursor.TryGotoNext(ins => ins.MatchLdcR4(240)
+            ))
+        {
+            cursor.Index += 1;
+            cursor.EmitLdarg0();
+            cursor.EmitDelegate<Func<float, Player, float>>((origSpeed, player) =>
+            {
+                if (DreamZone_V2Module.DreamZone is { } dreamZone)
+                {
+                    if (dreamZone.ConserveSpeed)
+                    {
+                        return player.Speed.Length();
+                    }
+                }
+
+                return origSpeed;
+            });
         }
     }
 }

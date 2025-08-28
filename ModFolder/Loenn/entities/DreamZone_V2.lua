@@ -35,7 +35,9 @@ dreamBlock.placements = {
         disableVerticalJump = true,
         disableInsideDreamJump = false,
         getVerticalCoyote = false,
-        starNumberPerUnit = 0.7
+        starNumberPerUnit = 0.7,
+        conserveSpeed = false,
+        dashesToRefill = 1,
     }
 }
 
@@ -50,7 +52,7 @@ dreamBlock.fieldOrder = {
     "activeStarAlpha", "smallStarColors",
     "disabledStarAlpha", "mediumStarColors",
     "starNumberPerUnit", "bigStarColors",
-    "", "",
+    "dashesToRefill", "",
     "", "",
     "", "",
 }
@@ -67,6 +69,9 @@ dreamBlock.fieldInformation = {
     },
     disabledLineColor = {
         fieldType = "color"
+    },
+    dashesToRefill = {
+        fieldType = "integer"
     },
     bigStarColors = {
         fieldType = "list",
