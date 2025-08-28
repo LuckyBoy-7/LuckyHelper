@@ -13,6 +13,7 @@ public enum ColorSourceMode
     CycleColor,
     RandomColor,
     Rainbow,
+    ByFlags,
 }
 
 public enum ColorTransitionMode
@@ -37,6 +38,7 @@ public class ColorController : Component
                 return Colors[0];
             case ColorSourceMode.CycleColor:
             case ColorSourceMode.RandomColor:
+            case ColorSourceMode.ByFlags:
                 return CurrentChangingColor;
             case ColorSourceMode.Rainbow:
                 return GetHue(position);
@@ -48,6 +50,8 @@ public class ColorController : Component
     public ColorSourceMode ColorSourceMode;
     public ColorTransitionMode ColorTransitionMode;
     public List<Color> Colors;
+    public List<string> Flags;
+    public Entity Parent;
 
 
     public ColorController(List<Color> colors) : base(true, false)
@@ -72,7 +76,7 @@ public class ColorController : Component
     public override void Update()
     {
         base.Update();
-        if (ColorSourceMode is ColorSourceMode.CycleColor or ColorSourceMode.RandomColor)
+        if (ColorSourceMode is ColorSourceMode.CycleColor or ColorSourceMode.RandomColor or ColorSourceMode.ByFlags)
         {
             if (ColorTransitionMode is ColorTransitionMode.Lerp)
             {
@@ -85,6 +89,19 @@ public class ColorController : Component
                 {
                     blinkElapse -= blinkTime;
                     CurrentChangingColor = NextColor;
+                }
+            }
+
+            if (ColorSourceMode is ColorSourceMode.ByFlags)
+            {
+                for (var i = 0; i < Flags.Count; i++)
+                {
+                    var flag = Flags[i];
+                    if (Parent.Session().GetFlag(flag))
+                    {
+                        NextColorIndex = Math.Min(i, Colors.Count - 1);
+                        return;
+                    }
                 }
             }
 
@@ -126,11 +143,13 @@ public class ColorModifier : Actor, IContainer
         Depth = Depths.Top - 10;
 
 
-        Add(ColorController = new ColorController(data.ParseColorList("colors"))
+        Add(ColorController = new ColorController(data.ParseToColorList("colors"))
         {
             ColorSourceMode = data.Enum<ColorSourceMode>("colorSourceMode"),
             ColorTransitionMode = data.Enum<ColorTransitionMode>("colorTransitionMode"),
             ColorChangeSpeed = data.Float("colorChangeSpeed"),
+            Flags = data.ParseToStringList("flags"),
+            Parent = this
         });
 
         Add(Container = new EntityContainer(data)

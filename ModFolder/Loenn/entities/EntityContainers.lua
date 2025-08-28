@@ -79,6 +79,7 @@ local colorModifier = {
             colorSourceMode = "Rainbow",
             colorTransitionMode = "Lerp",
             colorBlendMode = "Multiply",
+            flags = "color1,color2,color3",
             colorChangeSpeed = 100,
         }
     },
@@ -89,12 +90,19 @@ local colorModifier = {
                 fieldType = "color",
             }
         },
+        flags = {
+            fieldType = "list",
+            elementOptions = {
+                fieldType = "string",
+            }
+        },
         colorSourceMode = {
             options = {
                 "FirstColor",
                 "CycleColor",
                 "RandomColor",
                 "Rainbow",
+                "ByFlags",
             },
             editable = false
         },
@@ -124,7 +132,7 @@ local colorModifier = {
         "colorBlendMode", "affectParticle",
         "affectTexture", "affectLight",
         "affectGeometry", "colorSourceMode",
-        "colorTransitionMode", "colors", "colorChangeSpeed"
+        "colorTransitionMode", "colors", "flags", "colorChangeSpeed"
     }
 }
 

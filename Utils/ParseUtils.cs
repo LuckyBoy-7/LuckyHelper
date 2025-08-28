@@ -23,9 +23,13 @@ public static class ParseUtils
         return fullName;
     }
 
-    public static List<Color> ParseColorList(this EntityData data, string key)
+    private static List<T> ParseToList<T>(EntityData data, string key, Func<string, T> converter)
     {
         string[] split = data.Attr(key).Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-        return split.Select(Calc.HexToColor).ToList();
+        return split.Select(converter).ToList();
     }
+
+    public static List<Color> ParseToColorList(this EntityData data, string key) => ParseToList(data, key, Calc.HexToColor);
+
+    public static List<string> ParseToStringList(this EntityData data, string key) => ParseToList(data, key, s => s);
 }
