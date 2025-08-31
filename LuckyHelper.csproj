@@ -17,6 +17,9 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Reference Include="EeveeHelper">
+          <HintPath>ModFolder\lib-stripped\EeveeHelper-nstrip.dll</HintPath>
+        </Reference>
         <Reference Include="ExtendedVariantMode">
             <HintPath>ModFolder\lib-stripped\ExtendedVariantMode-nstrip.dll</HintPath>
         </Reference>

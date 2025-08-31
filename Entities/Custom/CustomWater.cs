@@ -1,8 +1,14 @@
+using Celeste.Mod.EeveeHelper;
+using Celeste.Mod.EeveeHelper.Components;
+using Celeste.Mod.EeveeHelper.Handlers;
 using Celeste.Mod.Entities;
+using Celeste.Mod.Helpers;
 using ExtendedVariants.Module;
 using ExtendedVariants.Variants;
+using LuckyHelper.Handlers.Impl;
 using LuckyHelper.Module;
 using LuckyHelper.Modules;
+using LuckyHelper.Utils;
 using Microsoft.Xna.Framework.Graphics;
 using MonoMod.Utils;
 
@@ -32,6 +38,22 @@ public class CustomWater : Water
     public bool RefillExtraJump;
     public bool DisableRay = false;
 
+    [Load]
+    public static void Load()
+    {
+        // Everest.Events.Everest.OnLoadMod += EverestOnOnLoadMod;
+        if (ModCompatModule.EeveeHelperLoaded)
+            AddCustomWaterHandler();
+    }
+
+    private static void AddCustomWaterHandler()
+    {
+        Type waterHandlerType = Type.GetType("Celeste.Mod.EeveeHelper.Handlers.Impl.WaterHandler, EeveeHelper");;
+
+        var ctor = waterHandlerType.GetConstructor(new[] { typeof(Entity) });
+
+        EntityHandler.Register(typeof(CustomWater), (entity, container) => (IEntityHandler)ctor.Invoke([entity]));
+    }
 
     // todo: gravity
 
