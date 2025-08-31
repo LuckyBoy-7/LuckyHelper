@@ -1,7 +1,6 @@
 namespace LuckyHelper.Triggers;
 
 
-
 public abstract class FlagTrigger : EntityTrigger
 {
     protected string flag;
