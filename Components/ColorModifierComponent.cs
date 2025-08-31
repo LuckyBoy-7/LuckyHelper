@@ -242,13 +242,14 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
     {
         ILCursor cursor = new ILCursor(il);
         var colorGetWhiteMethod = typeof(Color).GetProperty("White").GetGetMethod();
-        if (cursor.TryGotoNext(ins => ins.MatchCall(colorGetWhiteMethod)
+        if (cursor.TryGotoNext(ins => ins.MatchLdloc(7),
+                ins=>ins.MatchLdfld(typeof(BloomPoint).GetField("Alpha")),
+                ins=>ins.MatchCall(typeof(Color).GetMethod("op_Multiply"))
             ))
-
         {
-            cursor.Index += 1;
-            if (ModCompatModule.FrostHelperLoaded)
-                cursor.Index += 1;
+            // cursor.Index += 1;
+            // if (ModCompatModule.FrostHelperLoaded)
+                // cursor.Index += 1;
             cursor.EmitLdloc(7);
             cursor.EmitDelegate<Func<Color, BloomPoint, Color>>((origColor, bloomPoint) =>
             {
