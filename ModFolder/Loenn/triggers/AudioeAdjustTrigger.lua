@@ -13,10 +13,8 @@ trigger.placements = {
 }
 
 trigger.fieldInformation = {
-    positionMode =
-    {
-        options =
-        {
+    positionMode = {
+        options = {
             "NoEffect",
             "LeftToRight",
             "RightToLeft",
@@ -26,9 +24,13 @@ trigger.fieldInformation = {
             "VerticalCenter"
         },
         editable = false
+    },
+    targets = {
+        fieldType = "list",
+        elementOptions = {
+            fieldType = "string",
+        }
     }
 }
-
-
 
 return trigger

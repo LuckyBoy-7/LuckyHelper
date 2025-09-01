@@ -1,12 +1,16 @@
+using LuckyHelper.Utils;
+
 namespace LuckyHelper.Triggers;
 
 
 public abstract class FlagTrigger : EntityTrigger
 {
     protected string flag;
+    protected List<string> Flags;
     protected FlagTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
         flag = data.Attr("flag");
+        Flags = data.ParseToStringList("flags");
     }
 
     public override void OnTriggered()

@@ -67,17 +67,16 @@ public class TriggerTrigger : Trigger
             {
                 if (tt.ActivationType == ActivationTypes.OnJump)
                 {
-                    if (!tt.CanAlwaysActivate)
-                        tt.Add(new Coroutine(ActivateForOneFrame(tt)));
+                    if (tt.CoverRoom || tt.PlayerIsInside)
+                    {
+                        bool tmp = tt.CanAlwaysActivate;
+                        tt.CanAlwaysActivate = true;
+                        tt.TryActivate(player);
+                        tt.TryDeactivate(player, true);
+                        tt.CanAlwaysActivate = tmp;
+                    }
                 }
             }
-        }
-
-        public IEnumerator ActivateForOneFrame(TriggerTrigger tt)
-        {
-            tt.CanAlwaysActivate = true;
-            yield return null;
-            tt.CanAlwaysActivate = false;
         }
     }
 
@@ -109,6 +108,9 @@ public class TriggerTrigger : Trigger
 
     public TriggerTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
+        // Depth = Depths.Top;
+        // Depth = -1000100;
+        // Depth = -1000;
         Depth = Depths.Top;
         nodes = data.NodesOffset(offset);
         oneUse = data.Bool("oneUse", false);

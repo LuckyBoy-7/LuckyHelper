@@ -25,4 +25,5 @@ internal static class EntityDataExtensions
 
     public static float FitFloat(this EntityData data, float defaultValue, params string[] keys) => Fit(data, data.Float, defaultValue, keys);
     public static Color FitColor(this EntityData data, Color defaultValue, params string[] keys) => Fit(data, data.HexColor, defaultValue, keys);
+    public static bool FitBool(this EntityData data, bool defaultValue, params string[] keys) => Fit(data, data.Bool, defaultValue, keys);
 }

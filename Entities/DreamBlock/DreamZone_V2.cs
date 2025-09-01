@@ -6,6 +6,13 @@ using MonoMod.Cil;
 
 namespace LuckyHelper.Entities;
 
+public enum RefillDashMode
+{
+    ForceSet,
+    TrySet,
+    Add
+}
+
 [CustomEntity("LuckyHelper/DreamZone_V2")]
 [TrackedAs(typeof(DreamBlock))]
 [Tracked]
@@ -38,11 +45,13 @@ public class DreamZone_V2 : DreamBlock
     public double StarNumberPerUnit;
     public float ActiveStarAlpha;
     public float DisabledStarAlpha;
-    public bool DisableVerticalJump;
+    public bool DisableInsideVerticalJump;
     public bool DisableInsideDreamJump;
-    public bool GetVerticalCoyote;
+    public bool GetVerticalOutsideJump;
     public bool ConserveSpeed;
     public int DashesToRefill;
+    public bool UseEntrySpeedAngle;
+    public RefillDashMode RefillDashMode;
 
 
     public DreamZone_V2(EntityData data, Vector2 offset) : base(data, offset)
@@ -82,11 +91,13 @@ public class DreamZone_V2 : DreamBlock
             DisabledStarAlpha = data.Float("disabledStarAlpha");
         }
 
-        DisableVerticalJump = data.Bool("disableVerticalJump", false);
+        DisableInsideVerticalJump = data.FitBool(false, "disableInsideVerticalJump", "disableVerticalJump");
         DisableInsideDreamJump = data.Bool("disableInsideDreamJump", false);
-        GetVerticalCoyote = data.Bool("getVerticalCoyote", false);
+        GetVerticalOutsideJump = data.FitBool(false, "getVerticalOutsideJump", "getVerticalCoyote");
         ConserveSpeed = data.Bool("conserveSpeed", false);
         DashesToRefill = data.Int("dashesToRefill", 1);
+        UseEntrySpeedAngle = data.Bool("useEntrySpeedAngle", false);
+        RefillDashMode = data.Enum("refillDashMode", RefillDashMode.TrySet);
 
         Collidable = false;
     }
@@ -292,6 +303,7 @@ public class DreamZone_V2 : DreamBlock
     {
         IL.Celeste.Player.DreamDashBegin += PlayerOnDreamDashBegin;
         IL.Celeste.Player.DreamDashEnd += PlayerOnDreamDashEnd;
+        On.Celeste.Player.DreamDashBegin += PlayerOnDreamDashBegin;
     }
 
 
@@ -300,27 +312,56 @@ public class DreamZone_V2 : DreamBlock
     {
         IL.Celeste.Player.DreamDashBegin -= PlayerOnDreamDashBegin;
         IL.Celeste.Player.DreamDashEnd -= PlayerOnDreamDashEnd;
+        On.Celeste.Player.DreamDashBegin -= PlayerOnDreamDashBegin;
+    }
+
+    private static void PlayerOnDreamDashBegin(On.Celeste.Player.orig_DreamDashBegin orig, Player self)
+    {
+        Vector2 enterSpeedDir = self.Speed.SafeNormalize();
+        orig(self);
+        Vector2 dir = (DreamZone_V2Module.DreamZone is { UseEntrySpeedAngle: true } ? enterSpeedDir : self.DashDir);
+        self.Speed = dir * self.Speed.Length();
     }
 
     private static void PlayerOnDreamDashEnd(ILContext il)
     {
         ILCursor cursor = new ILCursor(il);
 
-        if (cursor.TryGotoNext(ins => ins.MatchCallvirt(typeof(Player).GetMethod("RefillDash"))
-            ))
+        var origRefillDashMethod = typeof(Player).GetMethod("RefillDash");
+        var origRefillStaminaMethod = typeof(Player).GetMethod("RefillStamina");
+        if (cursor.TryGotoNext(ins => ins.MatchCallvirt(origRefillDashMethod)))
         {
-            cursor.Index += 1;
-            cursor.EmitLdarg0();
-            cursor.EmitDelegate<Action<Player>>(player =>
+            ILLabel skipOrigRefillDashLabel = cursor.DefineLabel();
+            cursor.EmitDelegate<Func<Player, bool>>(player =>
             {
                 if (DreamZone_V2Module.DreamZone is { } dreamZone)
                 {
-                    if (player.Dashes < dreamZone.DashesToRefill)
+                    if (dreamZone.RefillDashMode == RefillDashMode.TrySet)
+                    {
+                        player.RefillDash();
+                        if (player.Dashes < dreamZone.DashesToRefill)
+                        {
+                            player.Dashes = dreamZone.DashesToRefill;
+                        }
+                    }
+                    else if (dreamZone.RefillDashMode == RefillDashMode.ForceSet)
                     {
                         player.Dashes = dreamZone.DashesToRefill;
                     }
+                    else if (dreamZone.RefillDashMode == RefillDashMode.Add)
+                    {
+                        player.Dashes += dreamZone.DashesToRefill;
+                    }
+
+                    return true;
                 }
+
+                return false;
             });
+            cursor.EmitBrtrue(skipOrigRefillDashLabel);
+            cursor.EmitLdarg0();
+            cursor.GotoNext(ins => ins.MatchLdarg0(), ins => ins.MatchCallvirt(origRefillStaminaMethod));
+            cursor.MarkLabel(skipOrigRefillDashLabel);
         }
     }
 

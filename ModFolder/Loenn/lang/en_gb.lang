@@ -92,6 +92,7 @@ entities.LuckyHelper/DreamZone_V2.attributes.description.disableInteraction=Whet
 entities.LuckyHelper/DreamZone_V2.attributes.description.disableCollisionOnNotDreaming=Due to my stupid code, you can have collision with dream zone on not dreaming with dash state, this is to fix this, \nor you can use the feature to do funny gp 
 entities.LuckyHelper/DreamZone_V2.attributes.description.cancelDreamDashOnNotDreaming=If you dash into an active dream zone then disable it, will player's dream dash be canceled or not 
 entities.LuckyHelper/DreamZone_V2.attributes.description.useOldFeatureOnNotDreaming=When dashing in inactive dream zone, can you have an immediate collision with dream zone?
+entities.LuckyHelper/DreamZone_V2.attributes.description.refillDashMode=Determines how you set player's dash after exit dream zone\nForceSet: Set player's dash to 'DashesToRefill'\nTrySet: Refill player's dash first like normal dream block, then try to set 'DashesToRefill' dashes if it's higher\nAdd: Add 'DashesToRefill' dashes to Player
 
 # DecalWithCombinedRegistry
 entities.LuckyHelper/DecalWithCombinedRegistry.placements.name.normal=Decal With Combined Registry
@@ -270,3 +271,14 @@ triggers.LuckyHelper/TriggerTrigger.attributes.description.coverRoom=If true, th
 triggers.LuckyHelper/TriggerTrigger.attributes.description.randomize=If true, the trigger will randomly activate only one of the chosen triggers instead of all of them.
 triggers.LuckyHelper/TriggerTrigger.attributes.description.matchPosition=If enabled, the selected triggers will be moved and resized to match this trigger. Allows triggers that change based on position, such as Light Fade, to work.
 triggers.LuckyHelper/TriggerTrigger.attributes.description.invertCondition=Whether the condition should not be met in order to activate.
+
+# OrderedFlagTrigger
+triggers.LuckyHelper/OrderedFlagTrigger.placements.name.normal=Ordered Flag Trigger
+triggers.LuckyHelper/OrderedFlagTrigger.placements.description.normal=Set flags with order
+triggers.LuckyHelper/OrderedFlagTrigger.attributes.description.types=Comma-separated list of entity class names to interact (e.g. Player, Strawberry, Booster, etc)
+triggers.LuckyHelper/OrderedFlagTrigger.attributes.description.entityTriggerMode=Determines when the trigger will do a triggered action\nOnEntityEnter: On entities in the types list enter the trigger\nOnEntityStay: On entities in the types list stay in the trigger\nOnEntityLeave: On entities in the types list leave the trigger\nAlways: Do it in every frame. Works like a controller
+triggers.LuckyHelper/OrderedFlagTrigger.attributes.description.flags=Flags you want to set orderly
+triggers.LuckyHelper/OrderedFlagTrigger.attributes.description.beforeSetFlagAction=Determines how you threat previous flags before set a new flag\nNone: do nothing\nClearOtherFlags: clear other flags\nClearPreviousFlag: clear the last flag you set
+triggers.LuckyHelper/OrderedFlagTrigger.attributes.description.onFlagReachEndAction=Determines how flag cursor go after it reaches the end\nOver: trigger will be removed, works like onlyOnce\nCycle: flag cursor will start at the first flag then move ahead again\nPingPong: flag cursor will move to the end, move to the start, move to the end ...\nRandom: flag cursor will randomly choose a position then move ahead
+triggers.LuckyHelper/OrderedFlagTrigger.attributes.description.startAtExistingFlag=Flag cursor will find the first existing flag to start, instead of starting at first  
+triggers.LuckyHelper/OrderedFlagTrigger.attributes.description.updateCursorByCurrentFlags=Flag cursor will update by current flag that set by other triggers\ntake default situation for example\nyou trigger flag1, then flag2, but you use mapping utils or some flag triggers to turn flag2 off, flag1 on\nnow if you enter this trigger, you will get flag3 instead of flag2 because the 'flag cursor' didn't update\nso if you want cursor update by the current flag states, check this option

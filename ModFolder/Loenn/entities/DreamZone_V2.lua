@@ -22,7 +22,7 @@ dreamBlock.placements = {
         disabledBackgroundColor = "1f2e2d",
         activeLineColor = "000000",
         disabledLineColor = "6a8480",
-        
+
         activeBackgroundAlpha = 0,
         disabledBackgroundAlpha = 0,
         activeLineAlpha = 0,
@@ -32,12 +32,14 @@ dreamBlock.placements = {
         disableWobble = false,
         disableInteraction = false,
         cancelDreamDashOnNotDreaming = false,
-        disableVerticalJump = true,
+        disableInsideVerticalJump = true,
         disableInsideDreamJump = false,
-        getVerticalCoyote = false,
+        getVerticalOutsideJump = false,
         starNumberPerUnit = 0.7,
         conserveSpeed = false,
         dashesToRefill = 1,
+        useEntrySpeedAngle = false,
+        refillDashMode = "TrySet",
     }
 }
 
@@ -48,7 +50,7 @@ dreamBlock.fieldOrder = {
     "disabledBackgroundAlpha", "disabledBackgroundColor",
     "activeLineAlpha", "activeLineColor",
     "disabledLineAlpha", "disabledLineColor",
-    
+
     "activeStarAlpha", "smallStarColors",
     "disabledStarAlpha", "mediumStarColors",
     "starNumberPerUnit", "bigStarColors",
@@ -91,6 +93,14 @@ dreamBlock.fieldInformation = {
             fieldType = "color",
         }
     },
+    refillDashMode = {
+        options = {
+            "ForceSet",
+            "TrySet",
+            "Add",
+        },
+        editable = false
+    }
 }
 
 function dreamBlock.depth(room, entity)

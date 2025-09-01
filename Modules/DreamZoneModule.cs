@@ -37,6 +37,11 @@ public class DreamZoneModule
 
     private static void PlayerOnDreamDashEnd(ILContext il)
     {
+        HookVerticalOutJump(il);
+    }
+
+    private static void HookVerticalOutJump(ILContext il)
+    {
         ILCursor cursor = new ILCursor(il);
         if (!cursor.TryGotoNext(
                 ins => ins.MatchLdarg0(),
@@ -57,7 +62,7 @@ public class DreamZoneModule
                 return true;
             }
 
-            if (player.dreamBlock is DreamZone_V2 { GetVerticalCoyote: true })
+            if (player.dreamBlock is DreamZone_V2 { GetVerticalOutsideJump: true })
             {
                 return true;
             }
@@ -213,58 +218,60 @@ public class DreamZoneModule
         FieldInfo dreamDashCanEndTimerField = typeof(Player).GetField(
             "dreamDashCanEndTimer", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public
         );
-        if (!cursor.TryGotoNext(
+        if (cursor.TryGotoNext(
                 ins => ins.MatchLdarg0(),
                 ins => ins.MatchLdfld(dreamDashCanEndTimerField),
                 ins => ins.MatchLdcR4(0),
                 ins => ins.MatchBleUn(out ILLabel il0043)
             ))
-            return;
-
-        // if (Input.Jump.Pressed)
-        ILLabel outLabel = cursor.DefineLabel();
-
-        FieldInfo inputJump = typeof(Input).GetField("Jump", BindingFlags.Public | BindingFlags.Static);
-        MethodInfo getPressed = typeof(VirtualButton).GetMethod("get_Pressed", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-        cursor.EmitLdsfld(inputJump);
-        cursor.EmitCallvirt(getPressed);
-        cursor.EmitBrfalse(outLabel);
-
-        // and touching with dream zone
-        cursor.EmitLdarg0();
-        cursor.EmitDelegate<Func<Player, bool>>((player) =>
         {
-            if (player.dreamBlock is DreamZone dreamZone && !dreamZone.DisableInsideDreamJump && (!dreamZone.DisableVerticalJump || player.DashDir.X != 0))
+            // if (Input.Jump.Pressed)
+            ILLabel outLabel = cursor.DefineLabel();
+
+            FieldInfo inputJump = typeof(Input).GetField("Jump", BindingFlags.Public | BindingFlags.Static);
+            MethodInfo getPressed = typeof(VirtualButton).GetMethod("get_Pressed", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            cursor.EmitLdsfld(inputJump);
+            cursor.EmitCallvirt(getPressed);
+            cursor.EmitBrfalse(outLabel);
+
+            // and touching with dream zone
+            cursor.EmitLdarg0();
+            cursor.EmitDelegate<Func<Player, bool>>((player) =>
             {
-                return true;
-            }
+                if (player.dreamBlock is DreamZone dreamZone && !dreamZone.DisableInsideDreamJump && (!dreamZone.DisableVerticalJump || player.DashDir.X != 0))
+                {
+                    return true;
+                }
 
-            if (player.dreamBlock is DreamZone_V2 dreamZoneV2 && !dreamZoneV2.DisableInsideDreamJump && (!dreamZoneV2.DisableVerticalJump || player.DashDir.X != 0))
-            {
-                return true;
-            }
+                if (player.dreamBlock is DreamZone_V2 dreamZoneV2 && !dreamZoneV2.DisableInsideDreamJump && (!dreamZoneV2.DisableInsideVerticalJump || player.DashDir.X != 0))
+                {
+                    return true;
+                }
 
-            return false;
-        });
-        cursor.EmitBrfalse(outLabel);
+                return false;
+            });
+            cursor.EmitBrfalse(outLabel);
 
-        // this.dreamJump = true
-        FieldInfo playerDreamJump = typeof(Player).GetField("dreamJump", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-        cursor.EmitLdarg0(); // this.
-        cursor.EmitLdcI4(1);
-        cursor.EmitStfld(playerDreamJump);
+            // this.dreamJump = true
+            FieldInfo playerDreamJump = typeof(Player).GetField("dreamJump", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            cursor.EmitLdarg0(); // this.
+            cursor.EmitLdcI4(1);
+            cursor.EmitStfld(playerDreamJump);
 
-        // this.Jump(true, true)
-        MethodInfo jumpMethod = typeof(Player).GetMethod("Jump", new[] { typeof(bool), typeof(bool) });
-        cursor.EmitLdarg0();
-        cursor.EmitLdcI4(1);
-        cursor.EmitLdcI4(1);
-        cursor.EmitCallvirt(jumpMethod);
+            // this.Jump(true, true)
+            MethodInfo jumpMethod = typeof(Player).GetMethod("Jump", new[] { typeof(bool), typeof(bool) });
+            cursor.EmitLdarg0();
+            cursor.EmitLdcI4(1);
+            cursor.EmitLdcI4(1);
+            cursor.EmitCallvirt(jumpMethod);
 
-        // return 0
-        cursor.EmitLdcI4(0);
-        cursor.EmitRet();
+            // return 0
+            cursor.EmitLdcI4(0);
+            cursor.EmitRet();
 
-        cursor.MarkLabel(outLabel);
+            cursor.MarkLabel(outLabel);
+        }
+
+        HookVerticalOutJump(il);
     }
 }
