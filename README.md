@@ -30,6 +30,7 @@
 * ExCameraUseUnsafeZoom(Trigger): 调整了拓展镜头函数里的某个分支, 使其在 level zoom 的时候正常工作(等人家修好了就删)
 * AudioAdjust(Trigger): 调整特定音频的音量(其他属性等有需求了再说) -- by NaCline
 * ColorModifier(Entity): 改实体颜色的
+* OrderedFlag(Trigger): 按顺序触发 flag -- by Shynnie
 
 ### GhostTranspose -- by Molong
 
