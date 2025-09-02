@@ -46,5 +46,7 @@ public class LuckyHelperSession : EverestModuleSession
     public bool UseUnsafeZoom;
     
     public Dictionary<string, float> AudioNameToVolume = new();
+    public Dictionary<string, float> AudioNameToPitch = new();
+    public Dictionary<string, string> AudioNameToReplacedName = new();
     
 }

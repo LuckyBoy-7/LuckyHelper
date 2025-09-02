@@ -9,7 +9,7 @@
 * Timer Text(Entity): 计时器 -- by Molong
 * Custom Gondola(Entity): 自定义缆车 -- by Breaker-K, 底龙
 * Arbitrary Shape Conquest Area(Entity): 灵感来源于战地占点 -- by 键盘英雄(由于好像没人用过, 所以可能会有很多 bug)
-* Dream Zone(Entity): 梦境区域, 可看作没有碰撞的果冻 -- by 底龙
+* Dream Zone(Entity): 梦境区域, 可看作没有碰撞的果冻 -- by 底龙, Shynnie, AD
 * Enable Player Falling Through JumpThru(Settings): 下蹲穿单向板
 * Light Source Adjust(Trigger): 调整光源亮度和透明度(本来应该给别人提 pr 的, 但是人家好像好久没更了就还是选择了抄())  -- by Myn
 * Freeze Trigger(Trigger): 给冻结帧的 Trigger -- by Myn
@@ -28,7 +28,7 @@
 * FollowerContainer(Entity): 类 Eevee 的跟随容器, 可以像草莓那样被收集  -- by Shynnie(抄了 [Eevee](https://github.com/CommunalHelper/EeveeHelper)代码, 原谅我😭)
 * DetachFollowerContainer(Trigger): 可以解绑 FollowerContainer  -- by Shynnie
 * ExCameraUseUnsafeZoom(Trigger): 调整了拓展镜头函数里的某个分支, 使其在 level zoom 的时候正常工作(等人家修好了就删)
-* AudioAdjust(Trigger): 调整特定音频的音量(其他属性等有需求了再说) -- by NaCline
+* AudioAdjust(Trigger): 调整特定音频的音量(其他属性等有需求了再说) -- by NaCline, 底龙
 * ColorModifier(Entity): 改实体颜色的
 * OrderedFlag(Trigger): 按顺序触发 flag -- by Shynnie
 

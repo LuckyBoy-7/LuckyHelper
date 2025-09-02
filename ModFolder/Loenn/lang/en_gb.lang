@@ -258,7 +258,8 @@ triggers.LuckyHelper/ExCameraUseUnsafeZoom.placements.name.normal=ExCamera Use U
 
 # AudioAdjustTrigger
 triggers.LuckyHelper/AudioAdjustTrigger.placements.name.normal=Audio Adjust Trigger
-triggers.LuckyHelper/AudioAdjustTrigger.attributes.description.targets=comma-seperated sequence of the event names you want to affect like `event:/char/madeline/idle_crackknuckles, event:/char/madeline/idle_sneeze, event:/char/madeline/idle_scratch`
+triggers.LuckyHelper/AudioAdjustTrigger.attributes.description.targets=comma-seperated sequence of the event names you want to affect like `event:/char/madeline/idle_crackknuckles, event:/char/madeline/idle_sneeze, event:/char/madeline/idle_scratch`\nif you fill 'all' in it, it will try to affect all the audio
+triggers.LuckyHelper/AudioAdjustTrigger.attributes.description.replacedTargets=comma-seperated sequence of the event names you want to replace, which needs to correspond one-by-one to the targets 
 
 # TriggerTrigger
 triggers.LuckyHelper/TriggerTrigger.placements.name.onjump= Trigger Trigger (On Jump)

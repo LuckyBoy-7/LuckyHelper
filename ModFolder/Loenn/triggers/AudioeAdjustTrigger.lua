@@ -8,8 +8,19 @@ trigger.placements = {
         offsetTo = 1,
         positionMode = "LeftToRight",
         targets = "",
+        replacedTargets = "",
         affectVolume = true,
+        affectPitch = false,
+        replaceAudio = false,
     }
+}
+
+trigger.fieldOrder = {
+    "x", "y",
+    "width", "height",
+    "offsetFrom", "offsetTo",
+    "targets", "replacedTargets",
+    "", "",
 }
 
 trigger.fieldInformation = {
@@ -26,6 +37,12 @@ trigger.fieldInformation = {
         editable = false
     },
     targets = {
+        fieldType = "list",
+        elementOptions = {
+            fieldType = "string",
+        }
+    },
+    replacedTargets = {
         fieldType = "list",
         elementOptions = {
             fieldType = "string",
