@@ -57,15 +57,6 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
 
     public IEntityHandler EntityHandler;
 
-    public static BlendState CustomBlurredScreenToMask = new BlendState()
-    {
-        ColorSourceBlend = Blend.DestinationColor, // src * dest
-        ColorDestinationBlend = Blend.Zero, // + 0
-        ColorBlendFunction = BlendFunction.Add, // multiply
-        AlphaSourceBlend = Blend.Zero,
-        AlphaDestinationBlend = Blend.One,
-        AlphaBlendFunction = BlendFunction.Add
-    };
 
     public bool AffectTexture;
 
@@ -243,13 +234,10 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
         ILCursor cursor = new ILCursor(il);
         var colorGetWhiteMethod = typeof(Color).GetProperty("White").GetGetMethod();
         if (cursor.TryGotoNext(ins => ins.MatchLdloc(7),
-                ins=>ins.MatchLdfld(typeof(BloomPoint).GetField("Alpha")),
-                ins=>ins.MatchCall(typeof(Color).GetMethod("op_Multiply"))
+                ins => ins.MatchLdfld(typeof(BloomPoint).GetField("Alpha")),
+                ins => ins.MatchCall(typeof(Color).GetMethod("op_Multiply"))
             ))
         {
-            // cursor.Index += 1;
-            // if (ModCompatModule.FrostHelperLoaded)
-                // cursor.Index += 1;
             cursor.EmitLdloc(7);
             cursor.EmitDelegate<Func<Color, BloomPoint, Color>>((origColor, bloomPoint) =>
             {
@@ -258,14 +246,43 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
                     return modifier.GetCurrentColor(modifier.Entity.Position);
                 }
 
-                return Color.White; // 不管 frost 怎么做这里都输入白色, 反正原本也是当 mask 用, 这么写没问题
+                return origColor;
             });
         }
 
-        if (cursor.TryGotoNext(ins => ins.MatchLdsfld(typeof(BloomRenderer).GetField("BlurredScreenToMask"))))
+        if (cursor.TryGotoNext(
+                ins => ins.MatchCall(out _),
+                ins => ins.MatchLdcI4(0), // enum
+                ins => ins.MatchLdsfld(typeof(BloomRenderer).GetField("BlurredScreenToMask"))))
         {
-            cursor.Index += 1;
-            cursor.EmitDelegate<Func<BlendState, BlendState>>((origBlendState) => { return CustomBlurredScreenToMask; });
+            ILLabel customBlendLabel = cursor.DefineLabel();
+            cursor.EmitBr(customBlendLabel);
+
+
+            cursor.GotoNext(ins => ins.MatchCall(typeof(Engine).GetProperty("Instance").GetGetMethod()));
+            int customBlendStartIndex = cursor.Index;
+
+            cursor.EmitDelegate<Action>(() =>
+            {
+                // 目前 texture2D 是高斯模糊过的 GP 层, 存在 tempB, tempA 是一个个蒙版渐变圆
+                // 我们先用自定义的混合 将 texture2D "正确"的 apply 到 tempA 上 画到 tempC 缓冲中然后交换这俩缓冲, 就好像直接画在 tempA 上一样
+
+                Engine.Instance.GraphicsDevice.SetRenderTarget(LuckyHelperBuffers.TempC);
+                Engine.Instance.GraphicsDevice.Clear(Color.Transparent);
+
+                Engine.Graphics.GraphicsDevice.Textures[0] = GameplayBuffers.TempB;
+                Engine.Graphics.GraphicsDevice.Textures[1] = GameplayBuffers.TempA;
+                Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, SamplerState.PointWrap, DepthStencilState.None, RasterizerState.CullNone,
+                    LuckyHelperEffects.CustomBloomBlendEffect, Matrix.Identity);
+                Draw.SpriteBatch.Draw(GameplayBuffers.TempB, Vector2.Zero, Color.White);
+                Draw.SpriteBatch.End();
+                (GameplayBuffers.TempA, LuckyHelperBuffers.TempC) = (LuckyHelperBuffers.TempC, GameplayBuffers.TempA);
+            });
+            cursor.EmitDelegate<Func<VirtualRenderTarget>>(() => GameplayBuffers.TempA);
+            cursor.EmitStloc0();
+
+            cursor.Index = customBlendStartIndex;
+            cursor.MarkLabel(customBlendLabel);
         }
     }
 

@@ -56,7 +56,12 @@ public class LuckyHelperModule : EverestModule
             (entity, container) => SwapBlockHandler.InsideCheck(container, false, entity as SwapBlock));
         EntityHandler.RegisterInherited<Decal>((entity, container) => new DecalHandler(entity),
             (entity, container) => container.CheckDecal(entity as Decal));
+    }
 
+    public override void LoadContent(bool firstLoad)
+    {
+        base.LoadContent(firstLoad);
+        LuckyHelperEffects.LoadContent();
     }
 
     public override void Unload()

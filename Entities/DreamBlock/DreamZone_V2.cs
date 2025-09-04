@@ -317,10 +317,16 @@ public class DreamZone_V2 : DreamBlock
 
     private static void PlayerOnDreamDashBegin(On.Celeste.Player.orig_DreamDashBegin orig, Player self)
     {
-        Vector2 enterSpeedDir = self.Speed.SafeNormalize();
-        orig(self);
-        Vector2 dir = (DreamZone_V2Module.DreamZone is { UseEntrySpeedAngle: true } ? enterSpeedDir : self.DashDir);
-        self.Speed = dir * self.Speed.Length();
+        if (DreamZone_V2Module.DreamZone is { UseEntrySpeedAngle: true })
+        {
+            Vector2 enterSpeedDir = self.Speed.SafeNormalize();
+            orig(self);
+            self.Speed = enterSpeedDir * self.Speed.Length();
+        }
+        else
+        {
+            orig(self);
+        }
     }
 
     private static void PlayerOnDreamDashEnd(ILContext il)

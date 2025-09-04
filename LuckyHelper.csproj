@@ -25,5 +25,9 @@
         </Reference>
     </ItemGroup>
 
+    <ItemGroup>
+      <None Include="ModFolder\Effects\LuckyHelper\Source\CustomBloomBlend.hlsl" />
+    </ItemGroup>
+
     <Import Project="CelesteMod.targets"/>
 </Project>
