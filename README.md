@@ -99,3 +99,5 @@ LuckyHelperAreaMetaData:
 * SunsetQuasar
 * shadowRo
 * Wartori
+* Nacline
+* Deep Blue Berry(深蓝草莓)
