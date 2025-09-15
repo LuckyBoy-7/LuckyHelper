@@ -55,6 +55,77 @@ local followerContainer = {
     }
 }
 
+local toggleOrbitContainer = {
+    name = "LuckyHelper/ToggleOrbitContainer",
+    fillColor = containerFill,
+    borderColor = containerBorder,
+    nodeLimits = { 1, -1 },
+
+    placements = {
+        name = "normal",
+        data = {
+            width = 8,
+            height = 8,
+            blacklist = "",
+            whitelist = "",
+            containMode = "RoomStart",
+            containFlag = "",
+            fitContained = false,
+            ignoreAnchors = false,
+            forceStandardBehavior = false,
+            ignoreContainerBounds = false,
+
+
+            startAngle = 30,
+            endAngle = 200,
+            moveToEndFlag = "LuckyHelper_MoveToEndFlag",
+            connectionType = "Clockwise",
+            circleSegments = 1000,
+            lineNodeSpritePath = "LuckyHelper/toggle_orbit_container/line_node",
+            lineNodeNumber = 5,
+            speed = 80,
+            windForceXMultiplier = 0.2,
+            windForceYMultiplier = 0.2,
+            depth = 1,
+            drawNodes = true,
+            debug = true,
+        }
+    },
+    fieldInformation = {
+        circleSegments = {
+            fieldType = "integer"
+        },
+        lineNodeNumber = {
+            fieldType = "integer"
+        },
+        depth = {
+            fieldType = "integer"
+        },
+        connectionType = {
+            options = {
+                "AntiClockwise",
+                "Clockwise"
+            },
+            editable = false
+        }
+    },
+    fieldOrder = {
+        "x", "y",
+        "width", "height",
+        "blacklist", "whitelist",
+        "containMode", "containFlag",
+        "fitContained", "ignoreAnchors",
+        "forceStandardBehavior", "ignoreContainerBounds",
+
+        "startAngle", "endAngle",
+        "connectionType", "circleSegments",
+        "lineNodeSpritePath", "lineNodeNumber",
+        "windForceXMultiplier", "windForceYMultiplier",
+        "speed", "moveToEndFlag",
+        "depth", "debug",
+    }
+}
+
 local colorModifier = {
     name = "LuckyHelper/ColorModifier",
     fillColor = modifierFill,
@@ -138,6 +209,7 @@ local colorModifier = {
 
 local containers = {
     followerContainer,
+    toggleOrbitContainer,
     colorModifier,
 }
 

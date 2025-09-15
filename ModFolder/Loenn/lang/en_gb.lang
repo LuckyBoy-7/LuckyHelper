@@ -169,6 +169,31 @@ entities.LuckyHelper/ColorModifier.attributes.description.colorTransitionMode=De
 entities.LuckyHelper/ColorModifier.attributes.description.colors=A sequence of colors seperated by comma, determines the color pool, which will be chosen with different 'ColorSourceMode'
 entities.LuckyHelper/ColorModifier.attributes.description.colorChangeSpeed=Determines how fast the color changes
 
+
+# Toggle Orbit Container
+entities.LuckyHelper/ToggleOrbitContainer.placements.name.normal=Toggle Orbit Container
+entities.LuckyHelper/ToggleOrbitContainer.attributes.description.containMode=Determines how the container contains entities.\n - RoomStart: Whitelisted entities inside the container at the start of the room are the only entities that will be contained.\n - FlagChanged: Entities are re-contained whenever the flag is enabled. This means you can delay containment with a flag to contain something like the Player.\n - Always: Whitelisted entities inside the container are always affected, and entities outside the container are no longer affected.\n - DelayedRoomStart: Same as RoomStart, but will occur on the first update tick (e.g. after screen transition).
+entities.LuckyHelper/ToggleOrbitContainer.attributes.description.containFlag=The container will only be enabled when the flag is active. Empty for always enabled. (Prefix flag name with "!" to invert, e.g. !myFlag)
+entities.LuckyHelper/ToggleOrbitContainer.attributes.description.whitelist=Comma-separated list of entity class names to contain (e.g. Booster,CrystalStaticSpinner,etc). Contains most entities if empty.
+entities.LuckyHelper/ToggleOrbitContainer.attributes.description.blacklist=Comma-separated list of entity class names to ignore (e.g. Booster,CrystalStaticSpinner,etc). Includes Players, SolidTiles, BackgroundTiles, Decals and Triggers unless specifically whitelisted.
+entities.LuckyHelper/ToggleOrbitContainer.attributes.description.ignoreAnchors=Disables the movement of internal "anchor positions", which usually store the start position of the entity.
+entities.LuckyHelper/ToggleOrbitContainer.attributes.description.forceStandardBehavior=Disables new special-cased behaviour for entities. New special behaviour may be added at any time, so enable this option if you're taking advantage of any buggy/jank behaviour.
+entities.LuckyHelper/ToggleOrbitContainer.attributes.description.ignoreContainerBounds=Attempts to contain all valid entities in the room, regardless of the boundaries of the container itself.
+
+entities.LuckyHelper/ToggleOrbitContainer.attributes.description.startAngle=We define right refers to 0 degrees, down refers to 90 degrees, so startAngle determines where's the start of the track by the degree, and the circle center has been defined by the node, and the distance to circle center is calculated automatically
+entities.LuckyHelper/ToggleOrbitContainer.attributes.description.endAngle=We define right refers to 0 degrees, down refers to 90 degrees, so endAngle determines where's the end of the track by the degree, and the circle center has been defined by the node, and the distance to circle center is calculated automatically
+entities.LuckyHelper/ToggleOrbitContainer.attributes.description.moveToEndFlag=If game has this flag, the container will move to the end, otherwise the start
+entities.LuckyHelper/ToggleOrbitContainer.attributes.description.connectionType=Determines the track's direction is clockwise or anti-clockwise
+entities.LuckyHelper/ToggleOrbitContainer.attributes.description.circleSegments=Determines how accurate the circle is
+entities.LuckyHelper/ToggleOrbitContainer.attributes.description.lineNodeSpritePath=Line node sprites, start at 'gameplay' folder, with images like 'awa00.png', 'awa01.png', 'awa02.png'
+entities.LuckyHelper/ToggleOrbitContainer.attributes.description.lineNodeNumber=How many node we dot on the track, at least 2
+entities.LuckyHelper/ToggleOrbitContainer.attributes.description.speed=How fast the container will move, which will be affected by wind
+entities.LuckyHelper/ToggleOrbitContainer.attributes.description.windForceXMultiplier=How much the wind's x force will affect the container's move speed
+entities.LuckyHelper/ToggleOrbitContainer.attributes.description.windForceYMultiplier=How much the wind's y force will affect the container's move speed
+entities.LuckyHelper/ToggleOrbitContainer.attributes.description.depth=Determines nodes depth
+entities.LuckyHelper/ToggleOrbitContainer.attributes.description.drawNodes=Do you want to draw nodes or not
+entities.LuckyHelper/ToggleOrbitContainer.attributes.description.debug=Show circle center and circum for debug
+
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger
 triggers.LuckyHelper/SetPassByRefillDashesTrigger.placements.name.normal=SetPassByRefillDashesTrigger
