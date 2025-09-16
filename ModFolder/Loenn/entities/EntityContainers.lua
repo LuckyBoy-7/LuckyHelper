@@ -3,6 +3,7 @@ local drawableRectangle = require("structs.drawable_rectangle")
 local depths = require("consts.object_depths")
 local drawing = require("utils.drawing")
 local utils = require("utils")
+local drawableLine = require("structs.drawable_line")
 
 local containerFill = { 1.0, 0.6, 0.6, 0.4 }
 local containerBorder = { 1.0, 0.6, 0.6, 1 }
@@ -60,6 +61,7 @@ local toggleOrbitContainer = {
     fillColor = containerFill,
     borderColor = containerBorder,
     nodeLimits = { 1, -1 },
+    nodeLineRenderType = "circle",
 
     placements = {
         name = "normal",
@@ -76,14 +78,14 @@ local toggleOrbitContainer = {
             ignoreContainerBounds = false,
 
 
-            startAngle = 30,
-            endAngle = 200,
+            startAngle = 0,
+            endAngle = 359,
             moveToEndFlag = "LuckyHelper_MoveToEndFlag",
-            connectionType = "Clockwise",
-            circleSegments = 1000,
+            connectionType = "AntiClockwise",
+            controlType = "ByFlag",
             lineNodeSpritePath = "LuckyHelper/toggle_orbit_container/line_node",
             lineNodeNumber = 5,
-            speed = 80,
+            speed = 100,
             windForceXMultiplier = 0.2,
             windForceYMultiplier = 0.2,
             depth = 1,
@@ -107,6 +109,15 @@ local toggleOrbitContainer = {
                 "Clockwise"
             },
             editable = false
+        },
+        controlType = {
+            options = {
+                "ByFlag",
+                "AutoClockwise",
+                "AutoAntiClockwise",
+                "Pingpong",
+            },
+            editable = false
         }
     },
     fieldOrder = {
@@ -117,12 +128,13 @@ local toggleOrbitContainer = {
         "fitContained", "ignoreAnchors",
         "forceStandardBehavior", "ignoreContainerBounds",
 
-        "startAngle", "endAngle",
-        "connectionType", "circleSegments",
         "lineNodeSpritePath", "lineNodeNumber",
+        "startAngle", "endAngle",
+        "connectionType", "controlType",
+        "depth", "moveToEndFlag",
         "windForceXMultiplier", "windForceYMultiplier",
-        "speed", "moveToEndFlag",
-        "depth", "debug",
+        "speed", "",
+        "", "debug",
     }
 }
 

@@ -48,4 +48,9 @@ public static class EntityExtensions
         if (entity.Get<T>() == null)
             entity.Add(component);
     }
+    
+    public static Vector2 HalfSize(this Entity entity)
+    {
+        return new Vector2(entity.Width, entity.Height) / 2;
+    }
 }
