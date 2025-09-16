@@ -50,7 +50,7 @@ public class EntityContainerMover : EntityContainer
     public override void Added(Entity entity)
     {
         base.Added(entity);
-        
+
         entity.Add(new TransitionListener
         {
             OnOutBegin = () =>
@@ -146,9 +146,9 @@ public class EntityContainerMover : EntityContainer
         Padding = new Vector4(Entity.Left - bounds.X, Entity.Top - bounds.Y, Entity.Right - (bounds.X + bounds.Width), Entity.Bottom - (bounds.Y + bounds.Height));
     }
 
-    protected override void DetachAll()
+    protected override void DetachAll(Func<IEntityHandler, bool> condition = null)
     {
-        base.DetachAll();
+        base.DetachAll(condition);
 
         Padding = new Vector4(Entity.Width / 2f, Entity.Height / 2f, Entity.Width / 2f, Entity.Height / 2f);
     }

@@ -61,7 +61,7 @@ public class EntityContainer : Component
         ForceStandardBehavior = data.Bool("forceStandardBehavior", true);
         IgnoreContainerBounds = data.Bool("ignoreContainerBounds");
     }
-    
+
 
     public override void EntityAwake()
     {
@@ -81,7 +81,7 @@ public class EntityContainer : Component
     {
         base.Update();
         Cleanup();
-        
+
         var newAttached = string.IsNullOrEmpty(ContainFlag) || SceneAs<Level>().Session.GetFlag(ContainFlag) != NotFlag;
 
         if (!updatedOnce)
@@ -129,6 +129,18 @@ public class EntityContainer : Component
                 DetachAll();
             }
         }
+    }
+
+    public override void EntityRemoved(Scene scene)
+    {
+        base.EntityRemoved(scene);
+        DetachAllAliveEntity();
+    }
+
+    public override void Removed(Entity entity)
+    {
+        base.Removed(entity);
+        DetachAllAliveEntity();
     }
 
     public virtual List<IEntityHandler> GetHandlersFor(Entity entity)
@@ -313,7 +325,9 @@ public class EntityContainer : Component
         }
     }
 
-    protected virtual void DetachAll()
+    protected virtual void DetachAllAliveEntity() => DetachAll((handler) => handler.Entity.TagCheck(Tags.Global | Tags.Persistent));
+
+    protected virtual void DetachAll(Func<IEntityHandler, bool> condition = null)
     {
         var lastContained = new List<IEntityHandler>(Contained);
         if (Mode == ContainMode.RoomStart || Mode == ContainMode.DelayedRoomStart)
@@ -323,8 +337,11 @@ public class EntityContainer : Component
 
         foreach (var handler in lastContained)
         {
-            RemoveContained(handler);
-            OnDetach?.Invoke(handler);
+            if (condition == null || condition(handler))
+            {
+                RemoveContained(handler);
+                OnDetach?.Invoke(handler);
+            }
         }
     }
 
