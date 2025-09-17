@@ -31,6 +31,7 @@
 * AudioAdjust(Trigger): 调整特定音频的音量(其他属性等有需求了再说) -- by NaCline, 底龙
 * ColorModifier(Entity): 改实体颜色的
 * OrderedFlag(Trigger): 按顺序触发 flag -- by Shynnie
+* ToggleOrbitContainer(Entity): 框选一部分实体沿着圆周运动, 可用 flag 操控并受风的影响 -- by ShadowRo
 
 ### GhostTranspose -- by Molong
 
@@ -97,7 +98,7 @@ LuckyHelperAreaMetaData:
 * 陌生的下界合金剑
 * 茶杯
 * SunsetQuasar
-* shadowRo
+* ShadowRo
 * Wartori
 * Nacline
 * Deep Blue Berry(深蓝草莓)
