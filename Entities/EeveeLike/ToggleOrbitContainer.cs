@@ -74,6 +74,14 @@ public class ToggleOrbitContainer : Actor, IContainer
         Pingpong,
     }
 
+    public AngleExpressionTypes AngleExpressionType;
+
+    public enum AngleExpressionTypes
+    {
+        Absolute,
+        Relative,
+    }
+
     // 我们规定 index 从 0 -> n 为顺时针方向
     public List<Vector2> DebugPositions = new();
     public const int CircleSegments = 36;
@@ -143,9 +151,10 @@ public class ToggleOrbitContainer : Actor, IContainer
             OnFit = OnFit
         });
 
+        Pivot = data.NodesOffset(offset)[0] + this.HalfSize();
         // y 轴朝上的 angle
-        StartAngle = data.Float("startAngle").Mod(360);
-        EndAngle = data.Float("endAngle").Mod(360);
+        LoadStartEndAngle(data);
+
         ConnectionType = data.Enum<ConnectionTypes>("connectionType");
         AdjustStartEndRadians();
         ControlType = data.Enum<ControlTypes>("controlType");
@@ -162,7 +171,6 @@ public class ToggleOrbitContainer : Actor, IContainer
             _lineRenderer = new LineRenderer(data.Attr("lineNodeSpritePath"), data.Int("lineNodeNumber")) { Parent = this };
 
 
-        Pivot = data.NodesOffset(offset)[0] + this.HalfSize();
         Radius = Vector2.Distance(Pivot, Position);
         Debug = data.Bool("debug");
         if (Debug)
@@ -178,6 +186,23 @@ public class ToggleOrbitContainer : Actor, IContainer
             R = Radius,
             vT = Speed
         };
+    }
+
+    private void LoadStartEndAngle(EntityData data)
+    {
+        StartAngle = data.Float("startAngle");
+        EndAngle = data.Float("endAngle");
+        AngleExpressionType = data.Enum<AngleExpressionTypes>("angleExpressionType");
+        if (AngleExpressionType == AngleExpressionTypes.Relative)
+        {
+            Vector2 dir = (Position - Pivot);
+            float currentAngle = float.Atan2(dir.Y, dir.X) * Calc.RadToDeg;
+            StartAngle += currentAngle;
+            EndAngle += currentAngle;
+        }
+
+        StartAngle = StartAngle.Mod(360);
+        EndAngle = EndAngle.Mod(360);
     }
 
     private void AdjustStartEndRadians()

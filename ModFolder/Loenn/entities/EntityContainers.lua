@@ -83,6 +83,7 @@ local toggleOrbitContainer = {
             moveToEndFlag = "LuckyHelper_MoveToEndFlag",
             connectionType = "AntiClockwise",
             controlType = "ByFlag",
+            angleExpressionType = "Absolute",
             lineNodeSpritePath = "LuckyHelper/toggle_orbit_container/line_node",
             lineNodeNumber = 5,
             speed = 100,
@@ -120,6 +121,13 @@ local toggleOrbitContainer = {
                 "Pingpong",
             },
             editable = false
+        },
+        angleExpressionType = {
+            options = {
+                "Absolute",
+                "Relative",
+            },
+            editable = false
         }
     },
     fieldOrder = {
@@ -132,11 +140,11 @@ local toggleOrbitContainer = {
 
         "lineNodeSpritePath", "lineNodeNumber",
         "startAngle", "endAngle",
-        "connectionType", "controlType",
-        "depth", "moveToEndFlag",
+        "connectionType", "angleExpressionType",
+        "controlType", "moveToEndFlag",
         "windForceXMultiplier", "windForceYMultiplier",
         "additionalForceX", "additionalForceY",
-        "speed", "",
+        "speed", "depth",
         "", "debug",
     }
 }
