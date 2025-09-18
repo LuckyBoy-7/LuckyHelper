@@ -88,6 +88,8 @@ local toggleOrbitContainer = {
             speed = 100,
             windForceXMultiplier = 0.2,
             windForceYMultiplier = 0.2,
+            additionalForceX = 0,
+            additionalForceY = 0,
             depth = 1,
             drawNodes = true,
             debug = true,
@@ -133,6 +135,7 @@ local toggleOrbitContainer = {
         "connectionType", "controlType",
         "depth", "moveToEndFlag",
         "windForceXMultiplier", "windForceYMultiplier",
+        "additionalForceX", "additionalForceY",
         "speed", "",
         "", "debug",
     }

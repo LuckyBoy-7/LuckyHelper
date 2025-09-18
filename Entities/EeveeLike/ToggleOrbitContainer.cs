@@ -80,6 +80,8 @@ public class ToggleOrbitContainer : Actor, IContainer
     public float Speed;
     public float WindForceXMultiplier;
     public float WindForceYMultiplier;
+    public float AdditionalForceX;
+    public float AdditionalForceY;
     public bool DrawNodes;
     public bool Debug;
     public int PingpongDir = 1;
@@ -152,6 +154,8 @@ public class ToggleOrbitContainer : Actor, IContainer
         Speed = data.Float("speed");
         WindForceXMultiplier = data.Float("windForceXMultiplier");
         WindForceYMultiplier = data.Float("windForceYMultiplier");
+        AdditionalForceX = data.Float("additionalForceX");
+        AdditionalForceY = data.Float("additionalForceY");
         DrawNodes = data.Bool("drawNodes");
 
         if (DrawNodes)
@@ -282,8 +286,9 @@ public class ToggleOrbitContainer : Actor, IContainer
     private void Move()
     {
         Vector2 wind = this.Level().Wind * new Vector2(WindForceXMultiplier, WindForceYMultiplier);
-        circle.vAx = wind.X;
-        circle.vAy = -wind.Y;
+        Vector2 resultant = wind + new Vector2(AdditionalForceX, AdditionalForceY);
+        circle.vAx = resultant.X;
+        circle.vAy = -resultant.Y;
         circle.dir = RadiansChangeDir;
         circle.theta0 = circle.RK4Step(circle.theta0, Engine.DeltaTime);
         if (ControlType is ControlTypes.ByFlag or ControlTypes.Pingpong)
