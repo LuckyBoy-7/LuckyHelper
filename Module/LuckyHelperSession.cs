@@ -27,7 +27,7 @@ public class LuckyHelperSession : EverestModuleSession
 
     // custom water
     public float KillPlayerElapse = 0;
-    
+
     // bloompointAdjustTrigger
     // public bool LightFactorOn = false;
     // public float LightFactor = 1;
@@ -37,16 +37,18 @@ public class LuckyHelperSession : EverestModuleSession
 
     public bool DisableFastBubble = false;
     public LuckyHelperAreaMetadata LuckyHelperAreaMetadata = null;
-    
+
     // PlayerMovementController
     public bool playerUseSetMovementData = false;
     public PlayerMovementData PlayerMovementData;
 
     public Dictionary<SetFlagConditionType, SetConditionFlagTriggerData> SetConditionFlagTriggerStateToDatas { get; set; } = new();
     public bool UseUnsafeZoom;
-    
+
     public Dictionary<string, float> AudioNameToVolume = new();
     public Dictionary<string, float> AudioNameToPitch = new();
     public Dictionary<string, string> AudioNameToReplacedName = new();
-    
+
+    public string DisablePlayerCameraUpdateFlag = "LuckyHelper_DisablePlayerCameraUpdate";
+    public string DisableCameraUpdateOnTeleportFlag = "LuckyHelper_DisableCameraUpdateOnTeleportFlag";
 }
