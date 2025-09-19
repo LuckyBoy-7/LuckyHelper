@@ -16,9 +16,7 @@ float4 PSMain(PS_INPUT input) : SV_TARGET0
     float4 srcColor = SAMPLE_TEXTURE(SrcTexture, input.TexCoord) * input.Color;
     float4 destColor = SAMPLE_TEXTURE(DestTexture, input.TexCoord);
     // 把预乘的 color 夺回来ε=( o｀ω′)ノ
-    if (destColor.a == 0)
-        destColor.rgb = float3(1, 1, 1);
-    else
+    if (destColor.a != 0)
         destColor.rgb /= destColor.a;
     return float4((srcColor * destColor).rgb, destColor.a);
 }
