@@ -51,4 +51,6 @@ public class LuckyHelperSession : EverestModuleSession
 
     public string DisablePlayerCameraUpdateFlag = "LuckyHelper_DisablePlayerCameraUpdate";
     public string DisableCameraUpdateOnTeleportFlag = "LuckyHelper_DisableCameraUpdateOnTeleportFlag";
+    
+    public bool InvincibleOnStartDashInSpikes = false;
 }

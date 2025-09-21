@@ -314,4 +314,7 @@ triggers.LuckyHelper/OrderedFlagTrigger.attributes.description.updateCursorByCur
 # Camera Update Helper
 triggers.LuckyHelper/CameraUpdateHelper.placements.name.normal=Camera Update Helper
 triggers.LuckyHelper/CameraUpdateHelper.attributes.description.disableCameraUpdateOnTeleportFlag=Camera's position will be set after teleport, this option is set to disable it when you want to set your own camera position after teleport. 
-triggers.LuckyHelper/CameraUpdateHelper.attributes.description.disablePlayerCameraUpdateFlag=Camera's position will update when player's in control or player.ForceCameraUpdate is true, this option is set to disable this normal update, but you can still use some function to update camera directly. 
+triggers.LuckyHelper/CameraUpdateHelper.attributes.description.disablePlayerCameraUpdateFlag=Camera's position will update when player's in control or player.ForceCameraUpdate is true, this option is set to disable this normal update, but you can still use some function to update camera directly.
+
+# Player Invincible Controller
+triggers.LuckyHelper/PlayerInvincibleController.placements.name.normal=Player Invincible Controller

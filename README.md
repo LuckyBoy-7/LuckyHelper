@@ -33,6 +33,7 @@
 * OrderedFlag(Trigger): 按顺序触发 flag -- by Shynnie
 * ToggleOrbitContainer(Entity): 框选一部分实体沿着圆周运动, 可用 flag 操控并受风的影响 -- by ShadowRo
 * CameraUpdateHelper(Trigger): 控制摄像机部分的运动 -- by NaCline
+* PlayerInvincibleController(Trigger): 设置玩家在某些情况下的无敌状态, 比如在碰到刺的时候冲刺瞬间不会死 -- by ShadowRo
 
 ### GhostTranspose -- by Molong
 
