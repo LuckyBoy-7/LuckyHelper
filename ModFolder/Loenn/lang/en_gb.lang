@@ -196,6 +196,12 @@ entities.LuckyHelper/ToggleOrbitContainer.attributes.description.depth=Determine
 entities.LuckyHelper/ToggleOrbitContainer.attributes.description.drawNodes=Do you want to draw nodes or not
 entities.LuckyHelper/ToggleOrbitContainer.attributes.description.debug=Show circle center and circum for debug
 
+
+# Menu Button Controller
+entities.LuckyHelper/MenuButtonController.placements.name.normal=Menu Button Controller
+entities.LuckyHelper/MenuButtonController.attributes.description.buttonNames=List of raw dialog key of buttons to control, something like \n'menu_pause_resume', \n'menu_pause_skip_cutscene', \n'menu_pause_retry', \n'menu_pause_assist', \n'menu_pause_variant', \n'menu_pause_options', \n'menu_pause_savequit', \n'menu_pause_restartarea', \n'menu_pause_return', \n'communalhelper_entities_hint_controller_menu'
+entities.LuckyHelper/MenuButtonController.attributes.description.disabledIfFlags=List of flags to control buttons' disabled states
+
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger
 triggers.LuckyHelper/SetPassByRefillDashesTrigger.placements.name.normal=SetPassByRefillDashesTrigger
