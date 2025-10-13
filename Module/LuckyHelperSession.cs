@@ -43,7 +43,6 @@ public class LuckyHelperSession : EverestModuleSession
     public PlayerMovementData PlayerMovementData;
 
     public Dictionary<SetFlagConditionType, SetConditionFlagTriggerData> SetConditionFlagTriggerStateToDatas { get; set; } = new();
-    public bool UseUnsafeZoom;
 
     public Dictionary<string, float> AudioNameToVolume = new();
     public Dictionary<string, float> AudioNameToPitch = new();
