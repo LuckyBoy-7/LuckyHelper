@@ -2,6 +2,7 @@ using Celeste.Mod.Entities;
 using LuckyHelper.Extensions;
 using LuckyHelper.Module;
 using LuckyHelper.Modules;
+using LuckyHelper.Utils;
 using MonoMod.Cil;
 
 namespace LuckyHelper.Entities;
@@ -340,7 +341,7 @@ public class DreamZone_V2 : DreamBlock
             ILLabel skipOrigRefillDashLabel = cursor.DefineLabel();
             cursor.EmitDelegate<Func<Player, bool>>(player =>
             {
-                if (DreamZone_V2Module.DreamZone is { } dreamZone)
+                if (player.dreamBlock is DreamZone_V2 { } dreamZone )
                 {
                     if (dreamZone.RefillDashMode == RefillDashMode.TrySet)
                     {

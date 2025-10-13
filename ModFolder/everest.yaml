@@ -1,5 +1,5 @@
 - Name: LuckyHelper
-  Version: 0.21.1
+  Version: 0.21.2
   DLL: Code/LuckyHelper.dll
   Dependencies:
     - Name: Everest
@@ -11,8 +11,6 @@
       Version: 1.13.3
     - Name: VivHelper
       Version: 1.14.10
-    - Name: ExtendedCameraDynamics
-      Version: 1.1.1
     - Name: FrostHelper
       Version: 1.70.4
     - Name: EeveeHelper

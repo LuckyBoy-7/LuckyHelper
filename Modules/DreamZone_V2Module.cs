@@ -10,6 +10,8 @@ namespace LuckyHelper.Modules;
 public class DreamZone_V2Module
 {
     public static DreamZone_V2 DreamZone;
+    public static DreamZone_V2 LastOverlapDreamZone;
+    public static DreamBlock LastPlayerTravelledDreamBlock;
 
     [Load]
     public static void Load()
@@ -50,8 +52,12 @@ public class DreamZone_V2Module
             zone.Collidable = backup;
 
             if (DreamZone != null)
+            {
+                LastOverlapDreamZone = DreamZone;
                 break;
+            }
         }
+
 
         bool dreamdashing = self.StateMachine.State is Player.StDreamDash;
         if (dreamdashing)
@@ -64,6 +70,7 @@ public class DreamZone_V2Module
             self.StateMachine.State = Player.StDreamDash;
             self.dashAttackTimer = 0f;
             self.gliderBoostTimer = 0f;
+            self.dreamBlock = DreamZone;
         }
     }
 
@@ -161,7 +168,7 @@ public class DreamZone_V2Module
     private static int PlayerOnDreamDashUpdate(On.Celeste.Player.orig_DreamDashUpdate orig, Player self)
     {
         int state = orig(self);
-        if (DreamZone != null && self.Tracker().GetEntities<Solid>().Any(solid => solid is not DreamZone_V2 && self.CollideCheck(solid)))
+        if (DreamZone != null && self.Tracker().GetEntities<Solid>().Any(solid => solid is not DreamBlock && self.CollideCheck(solid)))
         {
             if (DreamZone.StopPlayerOnCollide)
             {
