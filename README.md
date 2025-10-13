@@ -107,3 +107,5 @@ LuckyHelperAreaMetaData:
 * Deep Blue Berry(深蓝草莓)
 * JaThePlayer
 * limia | amber leaf bluffs
+* orig_Snip
+* Luke870
