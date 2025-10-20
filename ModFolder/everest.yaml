@@ -1,5 +1,5 @@
 - Name: LuckyHelper
-  Version: 0.21.2
+  Version: 0.21.3
   DLL: Code/LuckyHelper.dll
   Dependencies:
     - Name: Everest

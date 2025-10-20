@@ -53,4 +53,13 @@ public static class EntityExtensions
     {
         return new Vector2(entity.Width, entity.Height) / 2;
     }
+    
+    public static bool SafeCollideCheck(this Entity entity, Entity other)
+    {
+        bool origCollidable = other.Collidable;
+        other.Collidable = true;
+        bool res = entity.CollideCheck(other);
+        other.Collidable = origCollidable;
+        return res;
+    }
 }

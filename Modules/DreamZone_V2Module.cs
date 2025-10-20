@@ -9,8 +9,7 @@ namespace LuckyHelper.Modules;
 
 public class DreamZone_V2Module
 {
-    public static DreamZone_V2 DreamZone;
-    public static DreamZone_V2 LastOverlapDreamZone;
+    public static DreamZone_V2 CurrentOverlappingDreamZone;
     public static DreamBlock LastPlayerTravelledDreamBlock;
 
     [Load]
@@ -42,35 +41,46 @@ public class DreamZone_V2Module
 
     private static void PlayerOnUpdate(On.Celeste.Player.orig_Update orig, Player self)
     {
+        HashSet<DreamZone_V2> outsideDreamZone = new();
         // 获取当前接触的zone
-        DreamZone = null;
-        foreach (var zone in self.Tracker().GetEntities<DreamZone_V2>())
+        CurrentOverlappingDreamZone = null;
+        foreach (DreamZone_V2 zone in self.Tracker().GetEntities<DreamZone_V2>())
         {
-            bool backup = zone.Collidable;
-            zone.Collidable = true;
-            DreamZone = self.CollideFirst<DreamZone_V2>();
-            zone.Collidable = backup;
-
-            if (DreamZone != null)
+            if (self.SafeCollideCheck(zone))
             {
-                LastOverlapDreamZone = DreamZone;
-                break;
+                CurrentOverlappingDreamZone = zone;
             }
+            else
+                outsideDreamZone.Add(zone);
         }
 
 
+        bool dashing = self.StateMachine.State is Player.StDash || self.DashAttacking;
         bool dreamdashing = self.StateMachine.State is Player.StDreamDash;
+        if (dashing || dreamdashing)
+            // 适配老特性, 即冲刺时禁用状态下的果冻有碰撞
+            SetDreamZone_V2Collidable(self, true, zone =>
+            {
+                if (!zone.UseOldFeature)
+                    return false;
+                if (zone.DisableInteraction)
+                    return false;
+                // 说明是在禁用果冻的内部冲刺的
+                if (!outsideDreamZone.Contains(zone) && !zone.playerHasDreamDash)
+                    return false;
+                return true;
+            });
+
         if (dreamdashing)
-            SetDreamZone_V2Collidable(self, true, zone => zone.playerHasDreamDash);
+            SetDreamZone_V2Collidable(self, true, zone => !zone.UseOldFeature && zone.playerHasDreamDash && !zone.DisableInteraction);
         orig(self);
-        if (dreamdashing)
-            SetDreamZone_V2Collidable(self, false);
-        else if (self.Speed != Vector2.Zero && self.DashAttacking && DreamZone is { DisableInteraction: false, playerHasDreamDash: true })
+        SetDreamZone_V2Collidable(self, false);
+        if (!dreamdashing && self.Speed != Vector2.Zero && self.DashAttacking && CurrentOverlappingDreamZone is { DisableInteraction: false, playerHasDreamDash: true })
         {
             self.StateMachine.State = Player.StDreamDash;
             self.dashAttackTimer = 0f;
             self.gliderBoostTimer = 0f;
-            self.dreamBlock = DreamZone;
+            self.dreamBlock = CurrentOverlappingDreamZone;
         }
     }
 
@@ -168,16 +178,16 @@ public class DreamZone_V2Module
     private static int PlayerOnDreamDashUpdate(On.Celeste.Player.orig_DreamDashUpdate orig, Player self)
     {
         int state = orig(self);
-        if (DreamZone != null && self.Tracker().GetEntities<Solid>().Any(solid => solid is not DreamBlock && self.CollideCheck(solid)))
+        if (CurrentOverlappingDreamZone != null && self.Tracker().GetEntities<Solid>().Any(solid => solid is not DreamBlock && self.CollideCheck(solid)))
         {
-            if (DreamZone.StopPlayerOnCollide)
+            if (CurrentOverlappingDreamZone.StopPlayerOnCollide)
             {
                 SetDreamZone_V2Collidable(self, false);
                 WigglePlayer(self);
                 return Player.StNormal;
             }
 
-            if (DreamZone.KillPlayerOnCollide)
+            if (CurrentOverlappingDreamZone.KillPlayerOnCollide)
             {
                 self.Die(Vector2.Zero);
             }

@@ -93,6 +93,7 @@ entities.LuckyHelper/DreamZone_V2.attributes.description.disableCollisionOnNotDr
 entities.LuckyHelper/DreamZone_V2.attributes.description.cancelDreamDashOnNotDreaming=If you dash into an active dream zone then disable it, will player's dream dash be canceled or not 
 entities.LuckyHelper/DreamZone_V2.attributes.description.useOldFeatureOnNotDreaming=When dashing in inactive dream zone, can you have an immediate collision with dream zone?
 entities.LuckyHelper/DreamZone_V2.attributes.description.refillDashMode=Determines how you set player's dash after exit dream zone\nForceSet: Set player's dash to 'DashesToRefill'\nTrySet: Refill player's dash first like normal dream block, then try to set 'DashesToRefill' dashes if it's higher\nAdd: Add 'DashesToRefill' dashes to Player
+entities.LuckyHelper/DreamZone_V2.attributes.description.useOldFeature=You can have collision with dream zone on start dashing
 
 # DecalWithCombinedRegistry
 entities.LuckyHelper/DecalWithCombinedRegistry.placements.name.normal=Decal With Combined Registry

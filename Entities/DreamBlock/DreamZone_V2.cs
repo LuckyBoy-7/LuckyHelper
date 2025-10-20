@@ -52,6 +52,7 @@ public class DreamZone_V2 : DreamBlock
     public bool ConserveSpeed;
     public int DashesToRefill;
     public bool UseEntrySpeedAngle;
+    public bool UseOldFeature;
     public RefillDashMode RefillDashMode;
 
 
@@ -98,6 +99,7 @@ public class DreamZone_V2 : DreamBlock
         ConserveSpeed = data.Bool("conserveSpeed", false);
         DashesToRefill = data.Int("dashesToRefill", 1);
         UseEntrySpeedAngle = data.Bool("useEntrySpeedAngle", false);
+        UseOldFeature = data.Bool("useOldFeature", false);
         RefillDashMode = data.Enum("refillDashMode", RefillDashMode.TrySet);
 
         Collidable = false;
@@ -318,7 +320,7 @@ public class DreamZone_V2 : DreamBlock
 
     private static void PlayerOnDreamDashBegin(On.Celeste.Player.orig_DreamDashBegin orig, Player self)
     {
-        if (DreamZone_V2Module.DreamZone is { UseEntrySpeedAngle: true })
+        if (DreamZone_V2Module.CurrentOverlappingDreamZone is { UseEntrySpeedAngle: true })
         {
             Vector2 enterSpeedDir = self.Speed.SafeNormalize();
             orig(self);
@@ -383,7 +385,7 @@ public class DreamZone_V2 : DreamBlock
             cursor.EmitLdarg0();
             cursor.EmitDelegate<Func<float, Player, float>>((origSpeed, player) =>
             {
-                if (DreamZone_V2Module.DreamZone is { } dreamZone)
+                if (DreamZone_V2Module.CurrentOverlappingDreamZone is { } dreamZone)
                 {
                     if (dreamZone.ConserveSpeed)
                     {

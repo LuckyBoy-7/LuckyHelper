@@ -39,6 +39,7 @@ dreamBlock.placements = {
         conserveSpeed = false,
         dashesToRefill = 1,
         useEntrySpeedAngle = false,
+        useOldFeature = false,
         refillDashMode = "TrySet",
     }
 }
