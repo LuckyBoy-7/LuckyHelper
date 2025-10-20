@@ -109,3 +109,4 @@ LuckyHelperAreaMetaData:
 * limia | amber leaf bluffs
 * orig_Snip
 * Luke870
+* Nope208
