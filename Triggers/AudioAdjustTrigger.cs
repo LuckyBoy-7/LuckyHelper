@@ -105,6 +105,8 @@ public class AudioAdjustTrigger : PositionTrigger
 
     private static string GetHandledPath(string path)
     {
+        if (string.IsNullOrEmpty(path))
+            return path;
         var dic = LuckyHelperModule.Session?.AudioNameToReplacedName;
         if (dic != null)
         {
@@ -119,6 +121,8 @@ public class AudioAdjustTrigger : PositionTrigger
 
     private static EventInstance GetHandledEventInstance(string path, EventInstance ins)
     {
+        if (string.IsNullOrEmpty(path))
+            return ins;
         var audioNameToVolume = LuckyHelperModule.Session?.AudioNameToVolume;
         if (audioNameToVolume != null)
         {
