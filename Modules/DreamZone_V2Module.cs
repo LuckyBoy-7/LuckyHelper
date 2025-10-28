@@ -10,7 +10,6 @@ namespace LuckyHelper.Modules;
 public class DreamZone_V2Module
 {
     public static DreamZone_V2 CurrentOverlappingDreamZone;
-    public static DreamBlock LastPlayerTravelledDreamBlock;
 
     [Load]
     public static void Load()
@@ -46,6 +45,8 @@ public class DreamZone_V2Module
         CurrentOverlappingDreamZone = null;
         foreach (DreamZone_V2 zone in self.Tracker().GetEntities<DreamZone_V2>())
         {
+            if (zone.DisableInteraction)
+                continue;
             if (self.SafeCollideCheck(zone))
             {
                 CurrentOverlappingDreamZone = zone;

@@ -53,6 +53,7 @@ public class DreamZone_V2 : DreamBlock
     public int DashesToRefill;
     public bool UseEntrySpeedAngle;
     public bool UseOldFeature;
+    public bool PlayerUncrouch;
     public RefillDashMode RefillDashMode;
 
 
@@ -100,6 +101,7 @@ public class DreamZone_V2 : DreamBlock
         DashesToRefill = data.Int("dashesToRefill", 1);
         UseEntrySpeedAngle = data.Bool("useEntrySpeedAngle", false);
         UseOldFeature = data.Bool("useOldFeature", false);
+        PlayerUncrouch = data.Bool("playerUncrouch", false);
         RefillDashMode = data.Enum("refillDashMode", RefillDashMode.TrySet);
 
         Collidable = false;
@@ -320,6 +322,16 @@ public class DreamZone_V2 : DreamBlock
 
     private static void PlayerOnDreamDashBegin(On.Celeste.Player.orig_DreamDashBegin orig, Player self)
     {
+        if (self.Ducking)
+        {
+            if (DreamZone_V2Module.CurrentOverlappingDreamZone is { PlayerUncrouch: true }
+                || self.dreamBlock is DreamZone_V2 { PlayerUncrouch: true })
+            {
+                self.Ducking = false;
+            }
+        }
+
+
         if (DreamZone_V2Module.CurrentOverlappingDreamZone is { UseEntrySpeedAngle: true })
         {
             Vector2 enterSpeedDir = self.Speed.SafeNormalize();
@@ -343,7 +355,7 @@ public class DreamZone_V2 : DreamBlock
             ILLabel skipOrigRefillDashLabel = cursor.DefineLabel();
             cursor.EmitDelegate<Func<Player, bool>>(player =>
             {
-                if (player.dreamBlock is DreamZone_V2 { } dreamZone )
+                if (player.dreamBlock is DreamZone_V2 { } dreamZone)
                 {
                     if (dreamZone.RefillDashMode == RefillDashMode.TrySet)
                     {

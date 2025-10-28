@@ -40,6 +40,7 @@ dreamBlock.placements = {
         dashesToRefill = 1,
         useEntrySpeedAngle = false,
         useOldFeature = false,
+        playerUncrouch = false,
         refillDashMode = "TrySet",
     }
 }
