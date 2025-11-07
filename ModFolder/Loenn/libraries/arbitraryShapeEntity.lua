@@ -1,4 +1,4 @@
-local jautils = require("mods").requireFromPlugin("libraries.jautils", "FrostHelper")
+local jautils = require("mods").requireFromPlugin("libraries.jautils")
 local drawableLineStruct = require("structs.drawable_line")
 local drawableFunction = require("structs.drawable_function")
 local utils = require("utils")
