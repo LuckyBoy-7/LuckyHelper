@@ -73,6 +73,10 @@ LuckyHelperAreaMetaData:
     DefaultMiniTextboxPath: "textbox/LuckyHelper/default_mini"
 ```
 
+## 脚本 Scripts
+
+* flip room: 反转房间/房间内的实体
+
 ## 致谢
 
 我感谢天, 感谢地, 感谢你:
