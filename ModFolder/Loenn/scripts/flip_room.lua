@@ -6,37 +6,40 @@ local script = {
     name = "flipRoom",
     displayName = "Flip Room",
     parameters = {
-        --customFlipRules = "",
-        flipHorizontal = true,
-        flipVertical = false,
+        flipContentHorizontal = true,
+        flipContentVertical = false,
+        flipRoomHorizontal = false,
+        flipRoomVertical = false,
         radicalFlip = true,
     },
-    fieldOrder = { "flipHorizontal", "flipVertical", "radicalFlip" },
+    fieldOrder = { "flipContentHorizontal", "flipContentVertical", "flipRoomHorizontal", "flipRoomVertical", "radicalFlip" },
     fieldInformation = {
 
     },
     tooltip = "Flip room",
     tooltips = {
-        customFlipRules = "This script can only do simple position flip, if you want to 'flip' specified entity's attributes, you have to do the corresponding conifgs",
         radicalFlip = "This will directly change the type of the entity like `spikesLeft` to `spikesRight`, `spikesUp` to `spikesDown` to flip them, but may break something",
     },
 }
 
 function script.run(room, args, ctx)
 
-    local flipHorizontal = args.flipHorizontal
-    local flipVertical = args.flipVertical
+    local flipContentHorizontal = args.flipContentHorizontal
+    local flipContentVertical = args.flipContentVertical
+    local flipRoomHorizontal = args.flipRoomHorizontal
+    local flipRoomVertical = args.flipRoomVertical
     local radicalFlip = args.radicalFlip
+
     local function forward(data)
-        flipTiles(room, flipHorizontal, flipVertical)
-        flipEntities(room, flipHorizontal, flipVertical, radicalFlip)
-        flipNonEntities(room, flipHorizontal, flipVertical, radicalFlip)
+        flipTiles(room, flipContentHorizontal, flipContentVertical)
+        flipItems(room, flipContentHorizontal, flipContentVertical, radicalFlip)
+        flipRoom(room, flipRoomHorizontal, flipRoomVertical)
     end
 
     local function backward(data)
-        flipTiles(room, flipHorizontal, flipVertical)
-        flipEntities(room, flipHorizontal, flipVertical, radicalFlip)
-        flipNonEntities(room, flipHorizontal, flipVertical, radicalFlip)
+        flipTiles(room, flipContentHorizontal, flipContentVertical)
+        flipItems(room, flipContentHorizontal, flipContentVertical, radicalFlip)
+        flipRoom(room, flipRoomHorizontal, flipRoomVertical)
     end
 
     forward()
@@ -44,50 +47,59 @@ function script.run(room, args, ctx)
     return snapshot.create(script.name, {}, backward, forward)
 end
 
-function flipTiles(room, horizontal, vertical)
+local entityOffset = {
+    triggerspike = {
+        horizontal = {
+            left = { 3, 0 },
+            right = { 3, 0 }
+        },
+        vertical = {
+            up = { 0, 3 },
+            down = { 0, 3 }
+        }
+    },
+    spike = {
+        horizontal = {
+            left = { 6, 0 },
+            right = { 6, 0 }
+        },
+        vertical = {
+            up = { 0, 6 },
+            down = { 0, 6 }
+        }
+    },
+    spring = {
+        horizontal = {
+            left = { 3, 0 },
+            right = { 3, 0 },
+            down = { 12, 0 },
+            up = { 12, 0 }, -- 或者 default
+        },
+        vertical = {
+            left = { 0, 12 },
+            right = { 0, 12 },
+            down = { 0, 3 },
+            up = { 0, 3 },
+        }
+    }
+}
 
-    local matrix = room.tilesFg.matrix;
-    matrix:flip(horizontal, vertical);
-    brushHelper.placeTile(room, room.x, room.y, room.tilesFg.matrix, "tilesFg")
+local horizontalDirectionMapping = {
+    ["left"] = "right",
+    ["right"] = "left",
 
-    matrix = room.tilesBg.matrix;
-    matrix:flip(horizontal, vertical);
-    brushHelper.placeTile(room, room.x, room.y, room.tilesFg.matrix, "tilesBg")
+    ["Left"] = "Right",
+    ["Right"] = "Left",
+}
 
-    return true
-end
+local verticalDirectionMapping = {
+    ["up"] = "down",
+    ["down"] = "up",
 
-function flipEntities(room, horizontal, vertical, radicalFlip)
+    ["Up"] = "Down",
+    ["Down"] = "Up",
+}
 
-    local entities = room.entities;
-
-    for i, entity in ipairs(entities) do
-        flipEntity(room, entity, horizontal, vertical, radicalFlip)
-    end
-
-    return true
-end
-function flipNonEntities(room, horizontal, vertical, radicalFlip)
-
-    local triggers = room.triggers;
-
-    for i, trigger in ipairs(triggers) do
-        flipTrigger(room, trigger, horizontal, vertical, radicalFlip)
-    end
-
-    local decalsFg = room.decalsFg;
-
-    for i, trigger in ipairs(decalsFg) do
-        flipDecal(room, trigger, "decalsFg", horizontal, vertical, radicalFlip)
-    end
-    local decalsBg = room.decalsBg;
-
-    for i, trigger in ipairs(decalsBg) do
-        flipDecal(room, trigger, "decalsBg", horizontal, vertical, radicalFlip)
-    end
-
-    return true
-end
 local axisX = {
     getPos = function(v)
         return v.x
@@ -114,96 +126,74 @@ local axisY = {
     end,
 }
 
-function flipEntity(room, entity, horizontal, vertical, radicalFlip)
+function flipRoom(room, horizontal, vertical)
+
     if horizontal then
-        flipEntityByAxis(room, entity, axisX, radicalFlip);
+        room.x = -room.x - room.width
     end
 
     if vertical then
-        flipEntityByAxis(room, entity, axisY, radicalFlip);
+        room.y = -room.y - room.height
     end
 end
 
-function flipTrigger(room, entity, horizontal, vertical, radicalFlip)
+function flipTiles(room, horizontal, vertical)
+
+    local matrix = room.tilesFg.matrix;
+    matrix:flip(horizontal, vertical);
+    brushHelper.placeTile(room, room.x, room.y, room.tilesFg.matrix, "tilesFg")
+
+    matrix = room.tilesBg.matrix;
+    matrix:flip(horizontal, vertical);
+    brushHelper.placeTile(room, room.x, room.y, room.tilesFg.matrix, "tilesBg")
+
+    return true
+end
+
+function flipItems(room, horizontal, vertical, radicalFlip)
+
+    local entities = room.entities;
+    local triggers = room.triggers;
+    local decalsFg = room.decalsFg;
+    local decalsBg = room.decalsBg;
+
+    for i, entity in ipairs(entities) do
+        flipItem(room, entity, "entities", horizontal, vertical, radicalFlip)
+    end
+
+    for i, trigger in ipairs(triggers) do
+        flipItem(room, trigger, "triggers", horizontal, vertical, false)
+    end
+
+    for i, decal in ipairs(decalsFg) do
+        flipItem(room, decal, "decalsFg", horizontal, vertical, false)
+    end
+
+    for i, decal in ipairs(decalsBg) do
+        flipItem(room, decal, "decalsBg", horizontal, vertical, false)
+    end
+end
+
+function flipItem(room, entity, layer, horizontal, vertical, radicalFlip)
     if horizontal then
-        flipTriggerByAxis(room, entity, axisX, radicalFlip);
+        flipItemByAxis(room, entity, layer, axisX, radicalFlip);
     end
 
     if vertical then
-        flipTriggerByAxis(room, entity, axisY, radicalFlip);
+        flipItemByAxis(room, entity, layer, axisY, radicalFlip);
     end
 end
 
-function flipDecal(room, entity, layer, horizontal, vertical, radicalFlip)
-    if horizontal then
-        flipDecalByAxis(room, entity, layer, axisX, radicalFlip);
-    end
-
-    if vertical then
-        flipDecalByAxis(room, entity, layer, axisY, radicalFlip);
-    end
-end
-
-local specitalEntities = {
-    "spike",
-    "spring"
-}
-function entityIsSpetial(entity)
-    for _, str in ipairs(specitalEntities) do
-        if containsWord(entity._name, str) then
-            return true
-        end
-    end
-    return false
-end
-
-function flipEntityByAxis(room, entity, axis, radicalFlip)
+function flipItemByAxis(room, entity, layer, axis, radicalFlip)
     if entity == nil then
         return
     end
 
+    local isEntity = layer == "entities"
+    local isDecal = layer == "decalsBg" or layer == "decalsFg"
+    local horizontal = axis == axisX
     -- https://github.com/CelestialCartographers/Loenn/blob/fd55ffb63a290f38bed45de3309a47b504b5ce54/src/selections.lua#L12
     --function selectionUtils.getSelectionsForItem(room, layer, item, rectangles)
-    local selection = selectionUtils.getSelectionsForItem(room, "entities", entity)
-
-    -- node
-    if entity.nodes then
-        for i, node in ipairs(entity.nodes) do
-            local nodeRectangle = selection[i + 1]
-            axis.setPos(node, getFlippedPosWithSelectionRectangle(room, node, nodeRectangle, axis))
-        end
-    end
-
-    -- main
-    local mainRectangle = selection[1]
-    if entityIsSpetial(entity) then
-        axis.setPos(entity, getFlippedPosWithEntityPos(room, entity, mainRectangle, axis))
-        addCorrectedOffsetToEntity(entity, axis)
-    else
-        axis.setPos(entity, getFlippedPosWithSelectionRectangle(room, entity, mainRectangle, axis))
-    end
-
-    -- radicalFlip
-    if radicalFlip then
-        swapDirectionInName(entity, axis)
-        invertLeftField(entity, axis)
-        invertDirection(entity, axis)
-    end
-end
-
-function flipTriggerByAxis(room, trigger, axis)
-    flipNonEntityByAxis(room, trigger, "triggers", axis)
-end
-
-function flipDecalByAxis(room, decal, layer, axis)
-    flipNonEntityByAxis(room, decal, layer, axis)
-end
-
-function flipNonEntityByAxis(room, entity, layer, axis)
-    if entity == nil then
-        return
-    end
-
     local selection = selectionUtils.getSelectionsForItem(room, layer, entity)
 
     -- node
@@ -216,23 +206,67 @@ function flipNonEntityByAxis(room, entity, layer, axis)
 
     -- main
     local mainRectangle = selection[1]
-    axis.setPos(entity, getFlippedPosWithSelectionRectangle(room, entity, mainRectangle, axis))
-
-    -- 主要用来反转 decal 那些
-    local horizontal = axis == axisX
-    if entity.scaleX ~= nil then
-        if horizontal then
-            entity.scaleX = entity.scaleX * -1
-        end
-    end
-    if entity.scaleY ~= nil then
-        if not horizontal then
-            entity.scaleY = entity.scaleY * -1
-        end
+    --print(mainRectangle.x, mainRectangle.y, mainRectangle.width, mainRectangle.height)
+    if isEntity and entityIsSpetial(entity) then
+        axis.setPos(entity, getFlippedPosWithEntityPos(room, entity, mainRectangle, axis))
+        addCorrectedOffsetToEntity(entity, horizontal)
+    else
+        axis.setPos(entity, getFlippedPosWithSelectionRectangle(room, entity, mainRectangle, axis))
     end
 
+    -- radicalFlip
+    if isEntity and radicalFlip then
+        swapDirectionInName(entity, horizontal)
+        invertLeftField(entity, horizontal)
+        invertDownField(entity, not horizontal)
+        invertDirection(entity, horizontal)
+    end
+
+    if isDecal then
+        reverseDecalScale(entity, room, layer, horizontal, flipRectangle(room, mainRectangle))
+    end
 end
 
+function flipRectangle(room, rectangle)
+    rectangle.x = room.width - rectangle.x - rectangle.width
+    rectangle.y = room.height - rectangle.y - rectangle.height
+    return rectangle
+end
+
+function reverseDecalScale(entity, room, layer, horizontal, flippedRectangle)
+    -- 主要用来反转 decal 那些
+    -- 因为 decal 反转的时候是按原图翻的, 所以如果原图有空白区域反转就会错误, 因为我们是按 selection 换位置的, 所以框的位置是对的, 但是贴图的位置不对
+    -- 所以我们要重新算一下框把位置补偿回去
+
+    local flipX = entity.scaleX ~= nil and horizontal
+    local flipY = entity.scaleY ~= nil and not horizontal
+    if flipX then
+        entity.scaleX = entity.scaleX * -1
+    end
+    if flipY then
+        entity.scaleY = entity.scaleY * -1
+    end
+
+    local selection = selectionUtils.getSelectionsForItem(room, layer, entity)
+    local rectangleAfterScale = selection[1]
+
+    if flipX then
+        entity.x = entity.x + flippedRectangle.x - rectangleAfterScale.x;
+    end
+    if flipY then
+        entity.y = entity.y + flippedRectangle.y - rectangleAfterScale.y;
+    end
+end
+
+function entityIsSpetial(entity)
+    -- 推断实体类型（spike, spring等）
+    for key in pairs(entityOffset) do
+        if entityIs(entity, key) then
+            return true
+        end
+    end
+    return false
+end
 
 -- 使用 selection 可以方便的得到 那些 改过 justification, scale 等 的实体范围
 -- 但是对于尖刺之类的最还是用普通的逻辑, 因为 selection 好像跟图像有关, 哪怕两个尖刺位置一样, 一个朝上一个朝下 selection 也会不一样的
@@ -250,103 +284,79 @@ function getFlippedPosWithEntityPos(room, entity, selectionRectangle, axis)
         size = axis.getSize(selectionRectangle)
     end
 
-    -- 补充锚点(代码越来越屎了😭), 然后突然意识到我好像拿不到这方面的数据(或者还没找到)
-    --local horizontal = axis == axisX
-    --local justification = 0
-    --print(111)
-    --if entity.justification ~= nil then
-    --    print(justification)
-    --    if horizontal then
-    --        justification = entity.justification[1]
-    --    else
-    --        justification = entity.justification[2]
-    --    end
-    --end
-
-    --local rightPadding = size * (1 - justification)
-
     return axis.getSize(room) - axis.getPos(entity) - size
 end
 
-function addCorrectedOffsetToEntity(entity, axis)
-    local name = entity._name
-    local horizontal = axis == axisX
-    local offset = { 0, 0 }
-    if containsWord(name, "spike") then
-        if (horizontal) then
-            if (containsWord(name, "left")) then
-                offset = { 6, 0 }
-            elseif (containsWord(name, "right")) then
-                offset = { 6, 0 }
-            end
-        else
-            if (containsWord(name, "up")) then
-                offset = { 0, 6 }
-            elseif (containsWord(name, "down")) then
-                offset = { 0, 6 }
-            end
-        end
-    elseif containsWord(name, "spring") then
-        if (horizontal) then
-            if (containsWord(name, "left")) then
-                offset = { 3, 0 }
-            elseif (containsWord(name, "right")) then
-                offset = { 3, 0 }
-            elseif (containsWord(name, "down")) then
-                offset = { 12, 0 }
-            else
-                -- 因为朝上的 spring 有可能写了 up, 也有可能什么都没写
-                offset = { 12, 0 }
-            end
-        else
-            if (containsWord(name, "left")) then
-                offset = { 0, 12 }
-            elseif (containsWord(name, "right")) then
-                offset = { 0, 12 }
-            elseif (containsWord(name, "down")) then
-                offset = { 0, 3 }
-            else
-                offset = { 0, 3 }
+function addCorrectedOffsetToEntity(entity, horizontal)
+
+    local name = entity._name:lower()
+    local direction = "up"
+
+    -- 从名字推断方向
+    if name:find("left") then
+        direction = "left"
+    elseif name:find("right") then
+        direction = "right"
+    elseif name:find("down") then
+        direction = "down"
+    elseif name:find("up") then
+        direction = "up"
+    end
+
+    -- 推断实体类型（spike, spring等）
+    local type
+    for key in pairs(entityOffset) do
+        if name:find(key) then
+            if type == nil or #key > #type then
+                -- 保证用长的 key, 比如 triggerSpike 和 spike 都存在的时候用前者
+                type = key
             end
         end
     end
+
+    if not type then
+        return -- 未匹配到类型
+    end
+
+    local axisType = horizontal and "horizontal" or "vertical"
+    local offsetTable = entityOffset[type][axisType]
+    local offset = offsetTable[direction] or { 0, 0 }
 
     entity.x = entity.x + offset[1]
     entity.y = entity.y + offset[2]
 end
-function containsWord(str, word)
-    if str == nil then
-        return false
+
+function invertLeftField(entity, horizontal)
+    if horizontal then
+        if entity.left ~= nil and type(entity.left) == "boolean" then
+            entity.left = not entity.left
+        end
+        if entity.leftSide ~= nil and type(entity.leftSide) == "boolean" then
+            entity.leftSide = not entity.leftSide
+        end
+
+        -- 河豚
+        if entityIs(entity, "eyebomb") and entity.right ~= nil and type(entity.right) == "boolean" then
+            entity.right = not entity.right
+        end
     end
-    return str:lower():find(word:lower(), 1, true) ~= nil
 end
 
-function invertLeftField(entity, axis)
-    if axis == axisX and entity.left ~= nil and type(entity.left) == "boolean" then
-        entity.left = not entity.left
+function entityIs(entity, str)
+    return entity._name:lower():find(str)
+end
+
+function invertDownField(entity, vertical)
+    if vertical then
+        if entityIs(entity, "dashswitch") and entity.ceiling ~= nil and type(entity.ceiling) == "boolean" then
+            entity.ceiling = not entity.ceiling
+        end
     end
 end
 
-local horizontalDirectionMapping = {
-    ["left"] = "right",
-    ["right"] = "left",
-
-    ["Left"] = "Right",
-    ["Right"] = "Left",
-}
-
-local verticalDirectionMapping = {
-    ["up"] = "down",
-    ["down"] = "up",
-
-    ["Up"] = "Down",
-    ["Down"] = "Up",
-}
-
-function invertDirection(entity, axis)
-    local name = entity._name
-    local horizontal = axis == axisX
-    if containsWord(name, "moveblock") then
+function invertDirection(entity, horizontal)
+    local name = entity._name:lower()
+    if name:find("moveblock") then
         if entity.direction ~= nil then
             if horizontal then
                 if horizontalDirectionMapping[entity.direction] ~= nil then
@@ -361,13 +371,13 @@ function invertDirection(entity, axis)
     end
 end
 
-function swapDirectionInName(entity, axis)
+function swapDirectionInName(entity, horizontal)
     local name = entity._name
     if not name then
         return
     end
 
-    if axis == axisX then
+    if horizontal then
         -- left ↔ right
         name = name:gsub("Left", "___TMP___")
                    :gsub("Right", "Left")
@@ -380,8 +390,7 @@ function swapDirectionInName(entity, axis)
         name = name:gsub("LEFT", "___TMP2___")
                    :gsub("RIGHT", "LEFT")
                    :gsub("___TMP2___", "RIGHT")
-    end
-    if axis == axisY then
+    else
         -- up ↔ down
         name = name:gsub("Up", "___TMP3___")
                    :gsub("Down", "Up")
