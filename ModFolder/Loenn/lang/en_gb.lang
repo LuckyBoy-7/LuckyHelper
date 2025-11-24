@@ -198,6 +198,24 @@ entities.LuckyHelper/ToggleOrbitContainer.attributes.description.depth=Determine
 entities.LuckyHelper/ToggleOrbitContainer.attributes.description.drawNodes=Do you want to draw nodes or not
 entities.LuckyHelper/ToggleOrbitContainer.attributes.description.debug=Show circle center and circum for debug
 
+# Move Container
+entities.LuckyHelper/MoveContainer.placements.name.normal=Move Container
+entities.LuckyHelper/MoveContainer.attributes.description.containMode=Determines how the container contains entities.\n - RoomStart: Whitelisted entities inside the container at the start of the room are the only entities that will be contained.\n - FlagChanged: Entities are re-contained whenever the flag is enabled. This means you can delay containment with a flag to contain something like the Player.\n - Always: Whitelisted entities inside the container are always affected, and entities outside the container are no longer affected.\n - DelayedRoomStart: Same as RoomStart, but will occur on the first update tick (e.g. after screen transition).
+entities.LuckyHelper/MoveContainer.attributes.description.containFlag=The container will only be enabled when the flag is active. Empty for always enabled. (Prefix flag name with "!" to invert, e.g. !myFlag)
+entities.LuckyHelper/MoveContainer.attributes.description.whitelist=Comma-separated list of entity class names to contain (e.g. Booster,CrystalStaticSpinner,etc). Contains most entities if empty.
+entities.LuckyHelper/MoveContainer.attributes.description.blacklist=Comma-separated list of entity class names to ignore (e.g. Booster,CrystalStaticSpinner,etc). Includes Players, SolidTiles, BackgroundTiles, Decals and Triggers unless specifically whitelisted.
+entities.LuckyHelper/MoveContainer.attributes.description.ignoreAnchors=Disables the movement of internal "anchor positions", which usually store the start position of the entity.
+entities.LuckyHelper/MoveContainer.attributes.description.forceStandardBehavior=Disables new special-cased behaviour for entities. New special behaviour may be added at any time, so enable this option if you're taking advantage of any buggy/jank behaviour.
+entities.LuckyHelper/MoveContainer.attributes.description.ignoreContainerBounds=Attempts to contain all valid entities in the room, regardless of the boundaries of the container itself.
+
+entities.LuckyHelper/MoveContainer.attributes.description.conditionType=Determines whether the container can move between the two points \nAlways: you can casualy move without any condition \nByTriggeredFlag: once the 'conditionFlag' is detected, it will be removed and you can move for one segment \nByExistingFlag: you can move only when the 'conditionFlag' exists
+entities.LuckyHelper/MoveContainer.attributes.description.directionType=Determines how container chooses directions \nStopAtEnd: once you reach the end point, you can't move anymore \nLoop: once you reach the end point, you can move to the start point again \nPingPong: once you reach the end point, you can move back to the start point \nToCertainFlag: you will try to move to the corresponding position of existing flag in 'directionFlags'(one flag to one position)
+entities.LuckyHelper/MoveContainer.attributes.description.moveType=Container will move with constant speed or constant duration between two points
+entities.LuckyHelper/MoveContainer.attributes.description.moveAlongType=Once you get where to go by 'DirectionType', should you move in straight line or along the node path
+entities.LuckyHelper/MoveContainer.attributes.description.speed=How fast the container will move
+entities.LuckyHelper/MoveContainer.attributes.description.duration=How long the container will take to move between two points
+entities.LuckyHelper/MoveContainer.attributes.description.ease=How the container eases when moving with 'Duration' mode
+entities.LuckyHelper/MoveContainer.attributes.description.generateContainerAlongPath=Will the container generate other move containers that have same path with current but with different start position, which will reduce work when you want to place circularly 
 
 # Menu Button Controller
 entities.LuckyHelper/MenuButtonController.placements.name.normal=Menu Button Controller

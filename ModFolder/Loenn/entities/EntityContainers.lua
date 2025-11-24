@@ -149,6 +149,90 @@ local toggleOrbitContainer = {
     }
 }
 
+local moveContainer = {
+    name = "LuckyHelper/MoveContainer",
+    fillColor = containerFill,
+    borderColor = containerBorder,
+    nodeLimits = { 1, 99 },
+    nodeLineRenderType = "line",
+
+    placements = {
+        name = "normal",
+        data = {
+            width = 8,
+            height = 8,
+            blacklist = "",
+            whitelist = "",
+            containMode = "RoomStart",
+            containFlag = "",
+            fitContained = false,
+            ignoreAnchors = false,
+            forceStandardBehavior = false,
+            ignoreContainerBounds = false,
+
+            conditionType = "Always",
+            conditionFlag = "LuckyHelper_MoveContainerConditionFlag",
+            
+            directionType = "Loop",
+            directionFlags = "flag1, flag2, flag3, flag4, flag5",
+            
+            moveType = "ByDuration",
+            moveAlongType = "StraightLine",
+            speed = 50,
+            duration = 1,
+            ease = "Linear",
+            generateContainerAlongPath = false,
+        }
+    },
+    fieldInformation = {
+        conditionType = {
+            options ={
+                "ByTriggeredFlag",
+                "ByExistingFlag",
+                "Always",
+            },
+            editable = false
+        },
+        directionType = {
+            options ={
+                "StopAtEnd",
+                "Loop",
+                "PingPong",
+                "ToCertainFlag",
+            },
+            editable = false
+        },
+        moveType = {
+            options ={
+                "BySpeed",
+                "ByDuration",
+            },
+            editable = false
+        },
+        moveAlongType = {
+            options ={
+                "AlongPath",
+                "StraightLine",
+            },
+            editable = false
+        }
+    },
+    fieldOrder = {
+        "x", "y",
+        "width", "height",
+        "blacklist", "whitelist",
+        "containMode", "containFlag",
+        "fitContained", "ignoreAnchors",
+        "forceStandardBehavior", "ignoreContainerBounds",
+
+        "conditionType", "conditionFlag",
+        "directionType", "directionFlags",
+        "moveType", "moveAlongType",
+        "speed", "duration",
+        "ease", "",
+    }
+}
+
 local colorModifier = {
     name = "LuckyHelper/ColorModifier",
     fillColor = modifierFill,
@@ -233,6 +317,7 @@ local colorModifier = {
 local containers = {
     followerContainer,
     toggleOrbitContainer,
+    moveContainer,
     colorModifier,
 }
 
@@ -279,7 +364,7 @@ local sharedFieldInformation = {
         options = containModes,
         editable = false
     },
-    easing = {
+    ease = {
         options = easeTypes,
         editable = false
     },
