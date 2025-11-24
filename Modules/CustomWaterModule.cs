@@ -4,6 +4,7 @@ using LuckyHelper.Extensions;
 using LuckyHelper.Module;
 using Mono.Cecil;
 using MonoMod.Cil;
+using Level = On.Celeste.Level;
 
 namespace LuckyHelper.Modules;
 
@@ -312,45 +313,25 @@ public class CustomWaterModule
         // gravity
         cursor.Index = 0;
         FieldInfo moveXField = typeof(Player).GetField("moveX", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-        FieldInfo speedField = typeof(Player).GetField("Speed", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-        FieldInfo yField = typeof(Vector2).GetField("Y", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-        MethodInfo deltaTime = typeof(Engine).GetMethod("get_DeltaTime", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
-        MethodInfo approach = typeof(Calc).GetMethod(
-            "Approach", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public, new[] { typeof(float), typeof(float), typeof(float) }
-        );
         if (!cursor.TryGotoNext(
                 ins => ins.MatchLdloc0(),
-                ins => ins.MatchBrtrue(out ILLabel label),
+                ins => ins.MatchBrtrue(out _),
                 ins => ins.MatchLdarg0(),
                 ins => ins.MatchLdfld(moveXField),
-                ins => ins.MatchBrfalse(out ILLabel label)
+                ins => ins.MatchBrfalse(out _)
             ))
             return;
-        cursor.Index += 1;
         if (isDebug)
-            Logger.Log(LogLevel.Warn, "Test", "SwimGravity OK");
-        // this.Speed
+            Logger.Log(LogLevel.Debug, "Test", "SwimGravity OK");
+
         cursor.EmitLdarg0();
-        cursor.EmitLdflda(speedField);
-        // this.Speed.Y
-        cursor.EmitLdarg0();
-        cursor.EmitLdflda(speedField);
-        cursor.EmitLdfld(yField);
-        // num2
         cursor.EmitLdloc3();
-        // cursor.EmitLdcI4(1);
-        // cursor.EmitMul();
-        // 600 * Engine.DeltaTime
-        cursor.EmitLdcR4(600f);
-        cursor.EmitCall(deltaTime);
-        cursor.EmitMul();
-        cursor.EmitDelegate(() => customWater == null ? 0f : customWater.PlayerGravity
-        );
-        cursor.EmitMul();
-        // Approach
-        cursor.EmitCall(approach);
-        // =
-        cursor.EmitStfld(yField);
+        cursor.EmitDelegate<Action<Player, float>>(CalculateGravity);
+    }
+
+    private static void CalculateGravity(Player player, float targetGravity)
+    {
+        player.Speed.Y = Calc.Approach(player.Speed.Y, targetGravity, 600 * Engine.DeltaTime * customWater?.PlayerGravity ?? 0f);
     }
 
     private static void PlayerOnSwimUpdate(ILContext il)
