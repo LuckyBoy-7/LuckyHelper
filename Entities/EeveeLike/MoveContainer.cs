@@ -51,6 +51,105 @@ public class MoveInListHelperConditionPart
 
 public class MoveInListHelperMovePart
 {
+    public class PathCalculator
+    {
+        protected Vector2 From { get; set; }
+        protected Vector2 To { get; set; }
+        public int NextIndex { get; protected set; }
+        protected float Elapse { get; set; }
+        protected List<Vector2> Positions { get; set; }
+
+        public virtual void InitWithIndices(int currentIndex, int idealNextIndex, int moveDir)
+        {
+        }
+
+
+        public virtual Vector2 GetPositionAt(float t) => Vector2.Lerp(From, To, t);
+
+        public virtual float GetPathLength() => Vector2.Distance(From, To);
+
+        /// <returns>是否运动到了端点</returns>
+        public bool Move(float dt, float duration, Ease.Easer ease, Action<Vector2> setter)
+        {
+            Elapse += dt;
+            float t = ease(Elapse / duration);
+
+            if (t >= 1f)
+            {
+                Elapse = 0;
+                setter(To);
+                return true;
+            }
+
+            setter(GetPositionAt(t));
+            return false;
+        }
+
+        public void InitWithPositions(List<Vector2> dataPositions)
+        {
+            Positions = dataPositions;
+        }
+    }
+
+    // 直线路径
+    public class StraightPathCalculator : PathCalculator
+    {
+        public override void InitWithIndices(int currentIndex, int idealNextIndex, int moveDir)
+        {
+            NextIndex = idealNextIndex;
+            From = Positions[currentIndex];
+            To = Positions[NextIndex];
+        }
+    }
+
+    // 直线路径
+    public class AlongPathCalculator : PathCalculator
+    {
+        public override void InitWithIndices(int currentIndex, int idealNextIndex, int moveDir)
+        {
+            NextIndex = int.Sign(idealNextIndex - currentIndex) + currentIndex;
+            From = Positions[currentIndex];
+            To = Positions[NextIndex];
+        }
+    }
+
+    // 贝塞尔路径
+    public class BezierPathCalculator : PathCalculator
+    {
+        private SimpleCurve curve = new SimpleCurve();
+
+        private Dictionary<SimpleCurve, int> bezierToLengthCache = new Dictionary<SimpleCurve, int>();
+
+        public override void InitWithIndices(int currentIndex, int idealNextIndex, int moveDir)
+        {
+            NextIndex = (moveDir * 2 + currentIndex).Mod(Positions.Count);
+            int controlIndex = (moveDir * 1 + currentIndex).Mod(Positions.Count);
+
+            From = Positions[currentIndex];
+            To = Positions[NextIndex];
+
+            curve.Begin = From;
+            curve.End = To;
+            curve.Control = Positions[controlIndex];
+        }
+
+        public override Vector2 GetPositionAt(float t)
+        {
+            return curve.GetPoint(t);
+        }
+
+        public override float GetPathLength()
+        {
+            if (bezierToLengthCache.TryGetValue(curve, out var pathLength))
+                return pathLength;
+
+            float length = curve.GetLengthParametric(30);
+            bezierToLengthCache[curve] = (int)length;
+            return length;
+        }
+    }
+
+
     public class MovePartData
     {
         public enum MoveTypes
@@ -64,7 +163,8 @@ public class MoveInListHelperMovePart
         public enum MoveAlongTypes
         {
             AlongPath,
-            StraightLine
+            StraightLine,
+            Bezier
         }
 
 
@@ -78,21 +178,33 @@ public class MoveInListHelperMovePart
 
 
         public Func<int, int> NextIndexFunc;
+        public Func<int> MoveDirFunc;
     }
 
     private MovePartData data;
 
-    private float elapsed = 0f;
+    // private float elapsed = 0f;
     private int currentIndex = 0;
     public Vector2 CurrentPosition { get; private set; }
     public bool Moving { get; private set; } // 表示当前位置正在坐标中移动还是静止在某个坐标上
+
+    private PathCalculator pathCalculator;
 
     public MoveInListHelperMovePart(MovePartData data)
     {
         this.data = data;
 
         CurrentPosition = data.Positions[0];
+        pathCalculator = data.MoveAlongType switch
+        {
+            MovePartData.MoveAlongTypes.AlongPath => new AlongPathCalculator(),
+            MovePartData.MoveAlongTypes.StraightLine => new StraightPathCalculator(),
+            MovePartData.MoveAlongTypes.Bezier => new BezierPathCalculator(),
+            _ => null
+        };
+        pathCalculator.InitWithPositions(data.Positions);
     }
+
 
     public void Update()
     {
@@ -101,41 +213,49 @@ public class MoveInListHelperMovePart
         if (idealNextIndex == -1 || idealNextIndex == currentIndex)
             return;
 
-        int actualNextIndex = idealNextIndex;
-        if (data.MoveAlongType == MovePartData.MoveAlongTypes.AlongPath)
+        if (!Moving)
         {
-            actualNextIndex = int.Sign(idealNextIndex - currentIndex) + currentIndex;
+            int moveDir = data.MoveDirFunc();
+            pathCalculator.InitWithIndices(currentIndex, idealNextIndex, moveDir);
+            Moving = true;
         }
 
-        Moving = true;
-        Vector2 from = data.Positions[currentIndex];
-        Vector2 to = data.Positions[actualNextIndex];
-        if (data.MoveType == MovePartData.MoveTypes.ByDuration)
+        float duration = data.Duration;
+        if (data.MoveType == MovePartData.MoveTypes.BySpeed)
+            duration = pathCalculator.GetPathLength() / data.Speed;
+        if (pathCalculator.Move(Engine.DeltaTime, duration, data.EaseFunc, pos => CurrentPosition = pos))
         {
-            elapsed += Engine.DeltaTime;
-            float t = Math.Min(elapsed / data.Duration, 1f);
-            t = data.EaseFunc(t);
-
-            CurrentPosition = Vector2.Lerp(from, to, t);
-            if (t >= 1f)
-            {
-                elapsed = 0f;
-                currentIndex = actualNextIndex;
-                if (actualNextIndex == idealNextIndex) // 这才算真的到了
-                    Moving = false;
-            }
+            Moving = false;
+            currentIndex = pathCalculator.NextIndex;
         }
-        else if (data.MoveType == MovePartData.MoveTypes.BySpeed)
-        {
-            float distanceToMove = data.Speed * Engine.DeltaTime;
-            CurrentPosition = Calc.Approach(CurrentPosition, to, distanceToMove);
-            if (CurrentPosition == to)
-            {
-                currentIndex = actualNextIndex;
-                if (actualNextIndex == idealNextIndex) // 这才算真的到了
-                    Moving = false;
-            }
-        }
+        //
+        // Vector2 from = data.Positions[currentIndex];
+        // Vector2 to = data.Positions[actualNextIndex];
+        // if (data.MoveType == MovePartData.MoveTypes.ByDuration)
+        // {
+        //     elapsed += Engine.DeltaTime;
+        //     float t = Math.Min(elapsed / data.Duration, 1f);
+        //     t = data.EaseFunc(t);
+        //
+        //     CurrentPosition = Vector2.Lerp(from, to, t);
+        //     if (t >= 1f)
+        //     {
+        //         elapsed = 0f;
+        //         currentIndex = actualNextIndex;
+        //         if (actualNextIndex == idealNextIndex) // 这才算真的到了
+        //     }
+        // }
+        // else if (data.MoveType == MovePartData.MoveTypes.BySpeed)
+        // {
+        //     float distanceToMove = data.Speed * Engine.DeltaTime;
+        //     CurrentPosition = Calc.Approach(CurrentPosition, to, distanceToMove);
+        //     if (CurrentPosition == to)
+        //     {
+        //         currentIndex = actualNextIndex;
+        //         if (actualNextIndex == idealNextIndex) // 这才算真的到了
+        //             Moving = false;
+        //     }
+        // }
     }
 }
 
@@ -162,6 +282,8 @@ public class MoveInListHelperDirectionPart
         this.flags = ParseUtils.ParseCommaSeperatedStringToList(flags);
         this.session = session;
     }
+
+    public int GetMoveDirIndex() => dir;
 
     public int GetNextIndex(int currentIndex)
     {
@@ -261,28 +383,27 @@ public class MoveContainer : Actor, IContainer
     public override void Added(Scene scene)
     {
         base.Added(scene);
-        moveHelper = new MoveInListHelper()
+        moveHelper = new MoveInListHelper();
+        moveHelper.Control = new MoveInListHelperConditionPart(
+            data.Enum<MoveInListHelperConditionPart.ConditionTypes>("conditionType"),
+            data.Attr("conditionFlag"),
+            this.Session());
+        moveHelper.Direction = new MoveInListHelperDirectionPart(
+            data.Enum<MoveInListHelperDirectionPart.DirectionTypes>("directionType"),
+            positions.Count,
+            data.Attr("directionFlags"),
+            this.Session());
+        moveHelper.Move = new MoveInListHelperMovePart(new MoveInListHelperMovePart.MovePartData()
         {
-            Control = new MoveInListHelperConditionPart(
-                data.Enum<MoveInListHelperConditionPart.ConditionTypes>("conditionType"),
-                data.Attr("conditionFlag"),
-                this.Session()),
-            Direction = new MoveInListHelperDirectionPart(
-                data.Enum<MoveInListHelperDirectionPart.DirectionTypes>("directionType"),
-                positions.Count,
-                data.Attr("directionFlags"),
-                this.Session()),
-            Move = new MoveInListHelperMovePart(new MoveInListHelperMovePart.MovePartData()
-            {
-                MoveType = data.Enum<MoveInListHelperMovePart.MovePartData.MoveTypes>("moveType"),
-                Positions = positions,
-                Speed = data.Float("speed"),
-                Duration = data.Float("duration"),
-                EaseFunc = EaseModule.EaseTypes[data.Attr("ease", "Linear")],
-                NextIndexFunc = index => moveHelper.Direction.GetNextIndex(index),
-                MoveAlongType = data.Enum<MoveInListHelperMovePart.MovePartData.MoveAlongTypes>("moveAlongType")
-            })
-        };
+            MoveType = data.Enum<MoveInListHelperMovePart.MovePartData.MoveTypes>("moveType"),
+            Positions = positions,
+            Speed = data.Float("speed"),
+            Duration = data.Float("duration"),
+            EaseFunc = EaseModule.EaseTypes[data.Attr("ease", "Linear")],
+            NextIndexFunc = moveHelper.Direction.GetNextIndex,
+            MoveDirFunc = moveHelper.Direction.GetMoveDirIndex,
+            MoveAlongType = data.Enum<MoveInListHelperMovePart.MovePartData.MoveAlongTypes>("moveAlongType")
+        });
 
         if (generatContainerAlongPath)
         {

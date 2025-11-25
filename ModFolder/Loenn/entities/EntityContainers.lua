@@ -213,6 +213,7 @@ local moveContainer = {
             options ={
                 "AlongPath",
                 "StraightLine",
+                "Bezier",
             },
             editable = false
         }
