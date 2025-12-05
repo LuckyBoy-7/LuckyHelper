@@ -132,8 +132,9 @@ public class CustomWater : Water
 
     public void CallRefillExtraJumpMethod()
     {
-        var jumpCount = ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.JumpCount];
-        ((JumpCount)jumpCount).RefillJumpBuffer();
+        // var jumpCount = ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.JumpCount];
+        // ((JumpCount)jumpCount).RefillJumpBuffer();
+        JumpCount.RefillJumpBuffer();
     }
 
     public override void Render()
