@@ -265,7 +265,10 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
             cursor.EmitDelegate<Action>(() =>
             {
                 // 目前 texture2D 是高斯模糊过的 GP 层, 存在 tempB, tempA 是一个个蒙版渐变圆
-                // 我们先用自定义的混合 将 texture2D "正确"的 apply 到 tempA 上 画到 tempC 缓冲中然后交换这俩缓冲, 就好像直接画在 tempA 上一样
+                // 我们先用自
+                // 定义的混合 将 texture2D "正确"的 apply 到 tempA 上 画到 tempC 缓冲中然后交换这俩缓冲, 就好像直接画在 tempA 上一样
+
+                TryResizeTmpC();
 
                 Engine.Instance.GraphicsDevice.SetRenderTarget(LuckyHelperBuffers.TempC);
                 Engine.Instance.GraphicsDevice.Clear(Color.Transparent);
@@ -283,6 +286,17 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
 
             cursor.Index = customBlendStartIndex;
             cursor.MarkLabel(customBlendLabel);
+        }
+    }
+
+    private static void TryResizeTmpC()
+    {
+        var tmpC = LuckyHelperBuffers.TempC;
+        if (tmpC.Width != GameplayBuffers.TempA.Width)
+        {
+            tmpC.Width = GameplayBuffers.TempA.Width;
+            tmpC.Height = GameplayBuffers.TempA.Height;
+            tmpC.Reload();
         }
     }
 
