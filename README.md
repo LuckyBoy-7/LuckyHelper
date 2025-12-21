@@ -35,6 +35,8 @@
 * CameraUpdateHelper(Trigger): 控制摄像机部分的运动 -- by NaCline
 * PlayerInvincibleController(Trigger): 设置玩家在某些情况下的无敌状态, 比如在碰到刺的时候冲刺瞬间不会死 -- by ShadowRo
 * MenuButtonController(Entity): 开启某些 flag 后可以禁用 pause 菜单中的特定 button -- by ShadowRo
+* MoveContainer(Entity): 更高级的 Flag Mover(也许
+* QuantumContainer(Entity): 类似 ow 里的量子碎片
 
 ### GhostTranspose -- by Molong
 

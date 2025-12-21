@@ -217,6 +217,17 @@ entities.LuckyHelper/MoveContainer.attributes.description.duration=How long the 
 entities.LuckyHelper/MoveContainer.attributes.description.ease=How the container eases when moving with 'Duration' mode
 entities.LuckyHelper/MoveContainer.attributes.description.generateContainerAlongPath=Will the container generate other move containers that have same path with current but with different start position, which will reduce work when you want to place circularly 
 
+# Quantum Container
+entities.LuckyHelper/QuantumContainer.placements.name.normal=Quantum Container
+entities.LuckyHelper/QuantumContainer.attributes.description.containMode=Determines how the container contains entities.\n - RoomStart: Whitelisted entities inside the container at the start of the room are the only entities that will be contained.\n - FlagChanged: Entities are re-contained whenever the flag is enabled. This means you can delay containment with a flag to contain something like the Player.\n - Always: Whitelisted entities inside the container are always affected, and entities outside the container are no longer affected.\n - DelayedRoomStart: Same as RoomStart, but will occur on the first update tick (e.g. after screen transition).
+entities.LuckyHelper/QuantumContainer.attributes.description.containFlag=The container will only be enabled when the flag is active. Empty for always enabled. (Prefix flag name with "!" to invert, e.g. !myFlag)
+entities.LuckyHelper/QuantumContainer.attributes.description.whitelist=Comma-separated list of entity class names to contain (e.g. Booster,CrystalStaticSpinner,etc). Contains most entities if empty.
+entities.LuckyHelper/QuantumContainer.attributes.description.blacklist=Comma-separated list of entity class names to ignore (e.g. Booster,CrystalStaticSpinner,etc). Includes Players, SolidTiles, BackgroundTiles, Decals and Triggers unless specifically whitelisted.
+entities.LuckyHelper/QuantumContainer.attributes.description.ignoreAnchors=Disables the movement of internal "anchor positions", which usually store the start position of the entity.
+entities.LuckyHelper/QuantumContainer.attributes.description.forceStandardBehavior=Disables new special-cased behaviour for entities. New special behaviour may be added at any time, so enable this option if you're taking advantage of any buggy/jank behaviour.
+entities.LuckyHelper/QuantumContainer.attributes.description.ignoreContainerBounds=Attempts to contain all valid entities in the room, regardless of the boundaries of the container itself.
+
+
 # Menu Button Controller
 entities.LuckyHelper/MenuButtonController.placements.name.normal=Menu Button Controller
 entities.LuckyHelper/MenuButtonController.attributes.description.buttonNames=List of raw dialog key of buttons to control, something like \n'menu_pause_resume', \n'menu_pause_skip_cutscene', \n'menu_pause_retry', \n'menu_pause_assist', \n'menu_pause_variant', \n'menu_pause_options', \n'menu_pause_savequit', \n'menu_pause_restartarea', \n'menu_pause_return', \n'communalhelper_entities_hint_controller_menu'

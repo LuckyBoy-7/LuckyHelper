@@ -233,7 +233,41 @@ local moveContainer = {
         "ease", "",
     }
 }
+local quantumContainer = {
+    name = "LuckyHelper/QuantumContainer",
+    fillColor = containerFill,
+    borderColor = containerBorder,
+    nodeLimits = { 1, 99 },
+    nodeLineRenderType = "fan",
 
+    placements = {
+        name = "normal",
+        data = {
+            width = 8,
+            height = 8,
+            blacklist = "",
+            whitelist = "",
+            containMode = "RoomStart",
+            containFlag = "",
+            fitContained = false,
+            ignoreAnchors = false,
+            forceStandardBehavior = false,
+            ignoreContainerBounds = false,
+        }
+    },
+    fieldInformation = {
+       
+    },
+    fieldOrder = {
+        "x", "y",
+        "width", "height",
+        "blacklist", "whitelist",
+        "containMode", "containFlag",
+        "fitContained", "ignoreAnchors",
+        "forceStandardBehavior", "ignoreContainerBounds",
+
+    }
+}
 local colorModifier = {
     name = "LuckyHelper/ColorModifier",
     fillColor = modifierFill,
@@ -319,6 +353,7 @@ local containers = {
     followerContainer,
     toggleOrbitContainer,
     moveContainer,
+    quantumContainer,
     colorModifier,
 }
 
