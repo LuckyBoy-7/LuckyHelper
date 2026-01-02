@@ -22,4 +22,10 @@ internal static class ColorExtensions
         color.A = (byte)Calc.Approach(color.A, targetColor.A, speed);
         return color;
     }
+
+    public static Color WithA(this Color color, byte a)
+    {
+        color.A = a;
+        return color;
+    }
 }

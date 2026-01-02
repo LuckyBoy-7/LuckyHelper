@@ -250,6 +250,10 @@ public class EntityContainerMover : EntityContainer
         OnPostMove?.Invoke();
     }
 
+    /// <summary>
+    /// 防止在做一些 collide check 的时候检测到容器内的对象了
+    /// </summary>
+    /// <param name="action"></param>
     public void DoIgnoreCollision(Action action)
     {
         var lastCollidable = new Dictionary<Entity, bool>();

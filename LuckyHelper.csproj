@@ -17,11 +17,17 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Reference Include="CavernHelper">
+          <HintPath>ModFolder\lib-stripped\CavernHelper-nstrip.dll</HintPath>
+        </Reference>
         <Reference Include="EeveeHelper">
           <HintPath>ModFolder\lib-stripped\EeveeHelper-nstrip.dll</HintPath>
         </Reference>
         <Reference Include="ExtendedVariantMode">
             <HintPath>ModFolder\lib-stripped\ExtendedVariantMode-nstrip.dll</HintPath>
+        </Reference>
+        <Reference Include="VortexHelper">
+          <HintPath>ModFolder\lib-stripped\VortexHelper-nstrip.dll</HintPath>
         </Reference>
     </ItemGroup>
 

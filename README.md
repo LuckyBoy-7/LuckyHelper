@@ -25,8 +25,8 @@
 * Set Condition Flag(Trigger): 在玩家做出某种行为时设置 flag -- by Shynnie
 * Invert Flag(Trigger): 反转某个 flag
 * Logic Flag(Trigger): 根据逻辑判断是否设置 flag, 比如如果条件 (flag1 && (flag2 || !flag3)) 成立, 则设置对应 flag
-* FollowerContainer(Entity): 类 Eevee 的跟随容器, 可以像草莓那样被收集  -- by Shynnie(抄了 [Eevee](https://github.com/CommunalHelper/EeveeHelper)代码, 原谅我😭)
-* DetachFollowerContainer(Trigger): 可以解绑 FollowerContainer  -- by Shynnie
+* FollowerContainer(Entity): 类 Eevee 的跟随容器, 可以像草莓那样被收集 -- by Shynnie(抄了 [Eevee](https://github.com/CommunalHelper/EeveeHelper)代码, 原谅我😭)
+* DetachFollowerContainer(Trigger): 可以解绑 FollowerContainer -- by Shynnie
 * ExCameraUseUnsafeZoom(Trigger): 调整了拓展镜头函数里的某个分支, 使其在 level zoom 的时候正常工作(等人家修好了就删) -- by NaCline
 * AudioAdjust(Trigger): 调整特定音频的音量(其他属性等有需求了再说) -- by NaCline, 底龙
 * ColorModifier(Entity): 改实体颜色的
@@ -37,6 +37,7 @@
 * MenuButtonController(Entity): 开启某些 flag 后可以禁用 pause 菜单中的特定 button -- by ShadowRo
 * MoveContainer(Entity): 更高级的 Flag Mover(也许
 * QuantumContainer(Entity): 类似 ow 里的量子碎片
+* Ball(Entity): 球 -- by 底龙
 
 ### GhostTranspose -- by Molong
 
@@ -71,8 +72,8 @@ regarded by 'LootSpeedrunController' as a returnPoint when time is over, then pu
 
 ```yaml
 LuckyHelperAreaMetaData:
-    DefaultTextboxPath: "textbox/LuckyHelper/default"
-    DefaultMiniTextboxPath: "textbox/LuckyHelper/default_mini"
+  DefaultTextboxPath: "textbox/LuckyHelper/default"
+  DefaultMiniTextboxPath: "textbox/LuckyHelper/default_mini"
 ```
 
 ## 脚本 Scripts

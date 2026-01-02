@@ -228,6 +228,32 @@ entities.LuckyHelper/QuantumContainer.attributes.description.forceStandardBehavi
 entities.LuckyHelper/QuantumContainer.attributes.description.ignoreContainerBounds=Attempts to contain all valid entities in the room, regardless of the boundaries of the container itself.
 
 
+# Ball
+entities.LuckyHelper/Ball.placements.name.normal=Ball
+
+entities.LuckyHelper/Ball.attributes.description.holdable=Whether you can pick up and throw the ball.
+entities.LuckyHelper/Ball.attributes.description.noDuplicateSelf=You pick up the ball A, walk out of room then enter again, will the ball disappear?
+entities.LuckyHelper/Ball.attributes.description.noDuplicateOthers=You pick up the ball A, walk to other rooms, should remove ball B, ball C in other rooms?
+entities.LuckyHelper/Ball.attributes.description.slowFall=Makes the ball behave like a jelly.
+entities.LuckyHelper/Ball.attributes.description.slowRun=Whether holding the ball slows the player down.
+entities.LuckyHelper/Ball.attributes.description.destroyable=Whether the ball gets destroyed on contact with seeker barriers or falls into the ground.
+entities.LuckyHelper/Ball.attributes.description.respawn=Whether the container respawns after being destroyed (by seeker barriers or falling).
+entities.LuckyHelper/Ball.attributes.description.tutorial=Whether the container should show the ball usage tutorial.
+entities.LuckyHelper/Ball.attributes.description.waitForGrab=Disables gravity until the ball is picked up.
+
+entities.LuckyHelper/Ball.attributes.description.disableRotation=Will the texture rotate on moving?
+entities.LuckyHelper/Ball.attributes.description.bounceSpeedMultiplierX=Ball speed x will multiply this constant if it hit the wall along horizontal.
+entities.LuckyHelper/Ball.attributes.description.bounceSpeedMultiplierY=Ball speed y will multiply this constant if it hit the wall along vertical.
+entities.LuckyHelper/Ball.attributes.description.decelerationMultiplierX=Horizontal friction.
+entities.LuckyHelper/Ball.attributes.description.decelerationOnIceMultiplierX=Horizontal friction on ice(icy floor from Cavern Helper or floor booster(ice) from Vortex Helper).
+entities.LuckyHelper/Ball.attributes.description.decelerationMultiplierY=Vertical friction.
+entities.LuckyHelper/Ball.attributes.description.rotateAnimationSpeed=How fast the texture rotates when the ball is moving.
+entities.LuckyHelper/Ball.attributes.description.colliderSize=Size of ball's box collider.
+entities.LuckyHelper/Ball.attributes.description.spritePath=Ball sprite path start at gameplay folder.
+entities.LuckyHelper/Ball.attributes.description.hitSideSound=Sound effect path when ball hits side wall.
+entities.LuckyHelper/Ball.attributes.description.hitGroundSound=Sound effect path when ball hits ground.
+
+
 # Menu Button Controller
 entities.LuckyHelper/MenuButtonController.placements.name.normal=Menu Button Controller
 entities.LuckyHelper/MenuButtonController.attributes.description.buttonNames=List of raw dialog key of buttons to control, something like \n'menu_pause_resume', \n'menu_pause_skip_cutscene', \n'menu_pause_retry', \n'menu_pause_assist', \n'menu_pause_variant', \n'menu_pause_options', \n'menu_pause_savequit', \n'menu_pause_restartarea', \n'menu_pause_return', \n'communalhelper_entities_hint_controller_menu'

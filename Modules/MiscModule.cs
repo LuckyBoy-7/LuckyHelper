@@ -1,6 +1,7 @@
-
-
+using LuckyHelper.Entities.EeveeLike;
+using LuckyHelper.Entities.Misc;
 using LuckyHelper.Module;
+using MonoMod.Cil;
 using Dialog = On.Celeste.Dialog;
 
 namespace LuckyHelper.Modules;
