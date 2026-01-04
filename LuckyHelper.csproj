@@ -26,6 +26,9 @@
         <Reference Include="ExtendedVariantMode">
             <HintPath>ModFolder\lib-stripped\ExtendedVariantMode-nstrip.dll</HintPath>
         </Reference>
+        <Reference Include="MonoMod.Core">
+          <HintPath>..\..\..\Game\Steam\steamapps\common\Celeste\MonoMod.Core.dll</HintPath>
+        </Reference>
         <Reference Include="VortexHelper">
           <HintPath>ModFolder\lib-stripped\VortexHelper-nstrip.dll</HintPath>
         </Reference>

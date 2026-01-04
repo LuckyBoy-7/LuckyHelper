@@ -259,6 +259,13 @@ entities.LuckyHelper/MenuButtonController.placements.name.normal=Menu Button Con
 entities.LuckyHelper/MenuButtonController.attributes.description.buttonNames=List of raw dialog key of buttons to control, something like \n'menu_pause_resume', \n'menu_pause_skip_cutscene', \n'menu_pause_retry', \n'menu_pause_assist', \n'menu_pause_variant', \n'menu_pause_options', \n'menu_pause_savequit', \n'menu_pause_restartarea', \n'menu_pause_return', \n'communalhelper_entities_hint_controller_menu'
 entities.LuckyHelper/MenuButtonController.attributes.description.disabledIfFlags=List of flags to control buttons' disabled states
 
+# AtlasPathReplacer
+entities.LuckyHelper/AtlasPathReplacer.placements.name.normal=Atlas Path Replacer
+entities.LuckyHelper/AtlasPathReplacer.attributes.description.from=You can replace hardcoded atlas path with 'from' path to 'to' path in game(you can see the default content of 'refill' as an example)
+entities.LuckyHelper/AtlasPathReplacer.attributes.description.to=You can replace hardcoded atlas path with 'from' path to 'to' path in game(you can see the default content of 'refill' as an example)
+entities.LuckyHelper/AtlasPathReplacer.attributes.description.atlasType=The certain atlas path you want to replace
+entities.LuckyHelper/AtlasPathReplacer.attributes.description.rooms=This option determines which rooms the replacer will work in, write '*' to make it work in all rooms, \notherwise, fill the room names seperated by comma, like 'room1, room2, ..., room_n', \nyou can add '*' to the end to match the prefix like 'room_*' -> 'room_a', 'room_b', 'room_1', 'roomlskadjfalskdjf' \nyou can also add '!' at beginning to make it a negative match like '!room_*' -> all rooms except those start with 'room_'(but dont forget to add '*' to match first then blacklist)
+
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger
 triggers.LuckyHelper/SetPassByRefillDashesTrigger.placements.name.normal=SetPassByRefillDashesTrigger

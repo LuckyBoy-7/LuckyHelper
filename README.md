@@ -38,6 +38,7 @@
 * MoveContainer(Entity): 更高级的 Flag Mover(也许
 * QuantumContainer(Entity): 类似 ow 里的量子碎片
 * Ball(Entity): 球 -- by 底龙
+* AtlasPathReplacer(Entity): 替换 Atlas 中的一些硬编码 -- by Myn, 底龙
 
 ### GhostTranspose -- by Molong
 
