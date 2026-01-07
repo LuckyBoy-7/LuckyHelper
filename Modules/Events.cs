@@ -17,7 +17,7 @@ public static class Events
 
     public const string AtlasPathReplacer_Registered_Token = "LuckyHelper_AtlasPathReplacer_Registered";
 
-    private static bool reload = false;
+    private static MapData lastMapData;
 
     [Load]
     public static void Load()
@@ -25,8 +25,6 @@ public static class Events
         On.Celeste.Level.LoadLevel += LevelOnLoadLevel;
         var mapDataLoadMethodInfo = typeof(MapData).GetMethod("Load", BindingFlags.Instance | BindingFlags.NonPublic);
         OnCelesteMapDataLoadHook = new Hook(mapDataLoadMethodInfo, OnCelesteMapDataLoad);
-
-        reload = true;
     }
 
 
@@ -37,6 +35,12 @@ public static class Events
 
         OnCelesteMapDataLoadHook.Dispose();
         OnCelesteMapDataLoadHook = null;
+        if (lastMapData != null)
+        {
+            DynamicData dd = DynamicData.For(lastMapData);
+            dd.Data.Clear();
+            lastMapData = null;
+        }
     }
 
     private static void MapDataLoad(MapData mapData)
@@ -47,18 +51,18 @@ public static class Events
     private static void OnCelesteMapDataLoad(OnMapDataLoadDelegate orig, MapData mapData)
     {
         orig(mapData);
-        DynamicData.For(mapData).Set(AtlasPathReplacer_Registered_Token, true);
-        MapDataLoad(mapData);
+        // DynamicData.For(mapData).Set(AtlasPathReplacer_Registered_Token, true);
+        // MapDataLoad(mapData);
     }
 
     private static void LevelOnLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader)
     {
         MapData mapData = self.Session.MapData;
         DynamicData dynamicData = DynamicData.For(mapData);
-        dynamicData.TryGet<bool>(AtlasPathReplacer_Registered_Token, out var registered);
-        if (!registered || reload)
-        {
-            reload = false;
+        dynamicData.TryGet<bool?>(AtlasPathReplacer_Registered_Token, out var registered);
+        if (registered == null || !registered.Value)
+        { 
+            lastMapData = mapData;
             dynamicData.Set(AtlasPathReplacer_Registered_Token, true);
             MapDataLoad(mapData);
         }
