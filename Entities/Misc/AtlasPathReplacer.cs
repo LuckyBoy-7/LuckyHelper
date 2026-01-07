@@ -120,6 +120,7 @@ public class AtlasPathReplacer : Entity
     }
 
     private static Hook atlasGetItemHook;
+    private static MapData lastMapData;
 
     [Load]
     public static void Load()
@@ -157,10 +158,18 @@ public class AtlasPathReplacer : Entity
 
         atlasGetItemHook?.Dispose();
         atlasGetItemHook = null;
+        
+        if (lastMapData != null)
+        {
+            DynamicData dd = DynamicData.For(lastMapData); 
+            dd.Data.Remove("LuckyHelper_AtlasPathReplacer_atlasPathReplacerHelper");
+            lastMapData = null;
+        }
     }
 
     private static void EventsOnOnMapDataLoad(MapData mapData)
     {
+        lastMapData = mapData;
         var dd = DynamicData.For(mapData);
         AtlasPathReplacerHelper atlasPathReplacerHelper = new();
         dd.Set("LuckyHelper_AtlasPathReplacer_atlasPathReplacerHelper", atlasPathReplacerHelper);
@@ -197,8 +206,9 @@ public class AtlasPathReplacer : Entity
         if (MiscUtils.TryGetSession(out Session session))
         {
             var dd = DynamicData.For(session.MapData);
-            if (dd.TryGet<AtlasPathReplacerHelper>("LuckyHelper_AtlasPathReplacer_atlasPathReplacerHelper", out var atlasPathReplacerHelper))
+            if (dd.TryGet("LuckyHelper_AtlasPathReplacer_atlasPathReplacerHelper", out var atlasPathReplacerHelperObject))
             {
+                var atlasPathReplacerHelper = atlasPathReplacerHelperObject as AtlasPathReplacerHelper;
                 AtlasTypes atlasToType = AtlasToType(atlas);
                 if (atlasPathReplacerHelper.TryGetMapping(atlasToType, path, out string newPath)
                     && atlasPathReplacerHelper.IsValidRoom(atlasToType, path, session.Level))

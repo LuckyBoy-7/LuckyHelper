@@ -38,7 +38,7 @@ public static class Events
         if (lastMapData != null)
         {
             DynamicData dd = DynamicData.For(lastMapData);
-            dd.Data.Clear();
+            dd.Data.Remove(AtlasPathReplacer_Registered_Token);
             lastMapData = null;
         }
     }
