@@ -35,6 +35,7 @@ gondola.placements = {
             moveToEndFlag = "moveToEndFlag",
             smoothFlagMove = true,
             disableInteractOnFlagMove = false,
+            disableInteract = false,
         }
     }
 }
@@ -49,6 +50,7 @@ gondola.fieldOrder = {
     "startPositionType", "positionFlag",
     "moveToStartFlag", "moveToEndFlag",
     "smoothFlagMove", "disableInteractOnFlagMove",
+    "disableInteract", "",
 }
 gondola.fieldInformation = {
     autoAlignToStartPosition = {

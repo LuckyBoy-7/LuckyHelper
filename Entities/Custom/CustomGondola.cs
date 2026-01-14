@@ -86,6 +86,8 @@ public class CustomGondola : Gondola
     private string moveToEndFlag = "GondolaMoveToEndFlag";
     private bool smoothFlagMove;
     private bool disableInteractOnFlagMove;
+    
+    private bool disableInteract;
 
     public CustomGondola(EntityData data, Vector2 offset) : base(data, offset)
     {
@@ -113,6 +115,7 @@ public class CustomGondola : Gondola
         moveToEndFlag = data.Attr("moveToEndFlag");
         smoothFlagMove = data.Bool("smoothFlagMove");
         disableInteractOnFlagMove = data.Bool("disableInteractOnFlagMove");
+        disableInteract = data.Bool("disableInteract");
 
 
         start = Position;
@@ -257,7 +260,7 @@ public class CustomGondola : Gondola
         base.Update();
 
         UpdateFlagMove();
-        interact.Enabled = ((canInteractOnMove && curSpeed == maxSpeed) || curSpeed == 0) && !lockInteractable;
+        interact.Enabled = ((canInteractOnMove && curSpeed == maxSpeed) || curSpeed == 0) && !lockInteractable && !disableInteract;
         // debug
         // if (MInput.Keyboard.Pressed(Keys.Space))
         // {

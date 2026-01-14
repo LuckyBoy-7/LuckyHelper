@@ -44,6 +44,7 @@ entities.LuckyHelper/CustomGondola.attributes.description.positionFlag=If have t
 entities.LuckyHelper/CustomGondola.attributes.description.moveToStartFlag=If detect this flag(oneshot), gondola will be placed or moved to start
 entities.LuckyHelper/CustomGondola.attributes.description.moveToEndFlag=If detect this flag(oneshot), gondola will be placed or moved to end
 entities.LuckyHelper/CustomGondola.attributes.description.smoothFlagMove=Whether the gondola will teleport or move to the target pos when flag is triggered
+entities.LuckyHelper/CustomGondola.attributes.description.disableInteract=You can control gondola's movement with flags only(won't show interact icon)
 
 # ArbitraryShapeConquestArea
 entities.LuckyHelper/ArbitraryShapeConquestArea.placements.name.normal=Arbitrary Shape Conquest Area
