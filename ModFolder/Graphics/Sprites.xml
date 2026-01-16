@@ -1,12 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Sprites>
-  <entityPinner path="LuckyHelper/" start="idle">
-    <Center/>
-    <Loop id="idle" path="entity_pinner" delay="0.08"/>
-  </entityPinner> 
-  <speedRedirect path="LuckyHelper/" start="idle">
-    <Center/>
-    <Loop id="idle" path="right_arrow" delay="0.08"/>
-  </speedRedirect>
-
+    <entityPinner path="LuckyHelper/" start="idle">
+        <Center/>
+        <Loop id="idle" path="entity_pinner" delay="0.08"/>
+    </entityPinner>
+    <speedRedirect path="LuckyHelper/" start="idle">
+        <Center/>
+        <Loop id="idle" path="right_arrow" delay="0.08"/>
+    </speedRedirect>
+    <!--Strawberry Jam Jars-->
+    <LuckyHelper_jamJar_trailer path="LuckyHelper/trailer/" start="empty">
+        <Justify x="0.5" y="1"/>
+        <Loop id="empty" path="jarempty_idle" delay="0.1"/>
+        <Anim id="before_fill" path="jarempty_idle" delay="0.1" frames="5-15" goto="fill"/>
+        <Anim id="fill" path="jarfill_" delay="0.1" goto="full"/>
+        <Loop id="full" path="jarfull_idle" delay="0.1"/>
+    </LuckyHelper_jamJar_trailer>
 </Sprites>

@@ -23,6 +23,8 @@ public static class Events
     public static void Load()
     {
         On.Celeste.Level.LoadLevel += LevelOnLoadLevel;
+        Everest.Events.AssetReload.OnReloadLevel += OnReloadLevel;
+        
         var mapDataLoadMethodInfo = typeof(MapData).GetMethod("Load", BindingFlags.Instance | BindingFlags.NonPublic);
         OnCelesteMapDataLoadHook = new Hook(mapDataLoadMethodInfo, OnCelesteMapDataLoad);
     }
@@ -32,6 +34,7 @@ public static class Events
     public static void Unload()
     {
         On.Celeste.Level.LoadLevel -= LevelOnLoadLevel;
+        Everest.Events.AssetReload.OnReloadLevel -= OnReloadLevel;
 
         OnCelesteMapDataLoadHook.Dispose();
         OnCelesteMapDataLoadHook = null;
@@ -41,6 +44,11 @@ public static class Events
             dd.Data.Remove(AtlasPathReplacer_Registered_Token);
             lastMapData = null;
         }
+    }
+
+    private static void OnReloadLevel(Level level)
+    {
+        MapDataLoad(level.Session.MapData);
     }
 
     private static void MapDataLoad(MapData mapData)

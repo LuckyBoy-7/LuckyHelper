@@ -262,10 +262,22 @@ entities.LuckyHelper/MenuButtonController.attributes.description.disabledIfFlags
 
 # AtlasPathReplacer
 entities.LuckyHelper/AtlasPathReplacer.placements.name.normal=Atlas Path Replacer
-entities.LuckyHelper/AtlasPathReplacer.attributes.description.from=You can replace hardcoded atlas path with 'from' path to 'to' path in game(you can see the default content of 'refill' as an example)
-entities.LuckyHelper/AtlasPathReplacer.attributes.description.to=You can replace hardcoded atlas path with 'from' path to 'to' path in game(you can see the default content of 'refill' as an example)
-entities.LuckyHelper/AtlasPathReplacer.attributes.description.atlasType=The certain atlas path you want to replace
-entities.LuckyHelper/AtlasPathReplacer.attributes.description.rooms=This option determines which rooms the replacer will work in, write '*' to make it work in all rooms, \notherwise, fill the room names seperated by comma, like 'room1, room2, ..., room_n', \nyou can add '*' to the end to match the prefix like 'room_*' -> 'room_a', 'room_b', 'room_1', 'roomlskadjfalskdjf' \nyou can also add '!' at beginning to make it a negative match like '!room_*' -> all rooms except those start with 'room_'(but dont forget to add '*' to match first then blacklist)
+entities.LuckyHelper/AtlasPathReplacer.attributes.description.from=You can replace hardcoded atlas path with 'from' path to 'to' path in game(you can see the default content of 'refill' as an example)\nI found hLELPER's 'Sprite Replace Trigger' is better, try it if you want :)
+entities.LuckyHelper/AtlasPathReplacer.attributes.description.to=You can replace hardcoded atlas path with 'from' path to 'to' path in game(you can see the default content of 'refill' as an example)\nI found hLELPER's 'Sprite Replace Trigger' is better, try it if you want :)
+entities.LuckyHelper/AtlasPathReplacer.attributes.description.atlasType=The certain atlas path you want to replace\nI found hLELPER's 'Sprite Replace Trigger' is better, try it if you want :)
+entities.LuckyHelper/AtlasPathReplacer.attributes.description.rooms=This option determines which rooms the replacer will work in, write '*' to make it work in all rooms, \notherwise, fill the room names seperated by comma, like 'room1, room2, ..., room_n', \nyou can add '*' to the end to match the prefix like 'room_*' -> 'room_a', 'room_b', 'room_1', 'roomlskadjfalskdjf' \nyou can also add '!' at beginning to make it a negative match like '!room_*' -> all rooms except those start with 'room_'(but dont forget to add '*' to match first then blacklist)\nI found hLELPER's 'Sprite Replace Trigger' is better, try it if you want :)
+
+
+# Strawberry Jam Jar
+entities.LuckyHelper/StrawberryJamJar.placements.name.normal=Strawberry Jam Jar
+entities.LuckyHelper/StrawberryJamJar.placements.description.normal=Ported from Strawberry Jam, you may have to replace the texture to avoid some asset attribution problems.
+entities.LuckyHelper/StrawberryJamJar.attributes.description.map=The SID (string ID) of the map that will be entered with the trigger(This entity is just a `CollabUtils2/ChapterPanelTrigger` with sprite, so don't forget to enable CollabUtils2 too).
+entities.LuckyHelper/StrawberryJamJar.attributes.description.returnToLobbyMode=Determines how "Return to Lobby" will behave after entering this map.\n- SetReturnToHere: the Return to Lobby button will return the player to the nearest spawn point in the current map.\n- RemoveReturn: the Return to Lobby button will disappear from the pause menu.\n- DoNotChangeReturn: the current Return to Lobby button will not be changed.
+entities.LuckyHelper/StrawberryJamJar.attributes.description.allowSaving=If selected, the player will be allowed to save and return to the lobby in the map this trigger teleports to, by selecting "Save" when returning to lobby. Not compatible with maps that have checkpoints.
+entities.LuckyHelper/StrawberryJamJar.attributes.description.loennImagePath=You can set an image path for display in Loenn as a visual reference only.
+entities.LuckyHelper/StrawberryJamJar.attributes.description.spriteId=The animation id in 'Graphics/Sprites.xml'(you can see LuckyHelper/Graphics/Sprites.xml for a reference)
+entities.LuckyHelper/StrawberryJamJar.attributes.description.debugMode=In debug mode, you can press 'enter' key to play the filling animation(normally you have passed a map firstly then the filling animation will be played).
+
 
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger

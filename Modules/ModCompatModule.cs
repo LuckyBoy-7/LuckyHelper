@@ -48,6 +48,15 @@ public class ModCompatModule
         Name = "VortexHelper",
         Version = new Version("1.2.19")
     };
+    
+    public static bool CollbaUtils2Loaded = false;
+
+    private static EverestModuleMetadata _collbaUtils2Metadata = new()
+    {
+        Name = "CollabUtils2",
+        Version = new Version("1.11.1")
+    };
+
 
 
     public static void Load()
@@ -57,6 +66,7 @@ public class ModCompatModule
         EeveeHelperLoaded = Everest.Loader.DependencyLoaded(_eeveeHelperMetadata);
         CavernHelperLoaded = Everest.Loader.DependencyLoaded(_cavernHelperMetadata);
         VortexHelperLoaded = Everest.Loader.DependencyLoaded(_vortexHelperMetadata);
+        CollbaUtils2Loaded = Everest.Loader.DependencyLoaded(_collbaUtils2Metadata);
     }
 
     public static void Unload()

@@ -20,6 +20,9 @@
         <Reference Include="CavernHelper">
           <HintPath>ModFolder\lib-stripped\CavernHelper-nstrip.dll</HintPath>
         </Reference>
+        <Reference Include="CollabUtils2">
+          <HintPath>ModFolder\lib-stripped\CollabUtils2-nstrip.dll</HintPath>
+        </Reference>
         <Reference Include="EeveeHelper">
           <HintPath>ModFolder\lib-stripped\EeveeHelper-nstrip.dll</HintPath>
         </Reference>
