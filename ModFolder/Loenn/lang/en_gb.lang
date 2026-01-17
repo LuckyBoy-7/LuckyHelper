@@ -278,6 +278,11 @@ entities.LuckyHelper/StrawberryJamJar.attributes.description.loennImagePath=You 
 entities.LuckyHelper/StrawberryJamJar.attributes.description.spriteId=The animation id in 'Graphics/Sprites.xml'(you can see LuckyHelper/Graphics/Sprites.xml for a reference)
 entities.LuckyHelper/StrawberryJamJar.attributes.description.debugMode=In debug mode, you can press 'enter' key to play the filling animation(normally you have passed a map firstly then the filling animation will be played).
 
+# Linked Wire
+entities.LuckyHelper/LinkedWire.placements.name.normal=Linked Wire
+entities.LuckyHelper/LinkedWire.attributes.description.depth=Determines the wire shows in which layer(if the wired is linked to another wire, then the depth will be replaced by another wire's depth instead). 
+entities.LuckyHelper/LinkedWire.attributes.description.color=Determines the color of the wire.
+entities.LuckyHelper/LinkedWire.attributes.description.ignoreLink=If true, the wire will not link to other wires automatically, just like normal wire.
 
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger
