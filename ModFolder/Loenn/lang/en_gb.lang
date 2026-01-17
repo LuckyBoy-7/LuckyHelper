@@ -96,7 +96,8 @@ entities.LuckyHelper/DreamZone_V2.attributes.description.useOldFeatureOnNotDream
 entities.LuckyHelper/DreamZone_V2.attributes.description.refillDashMode=Determines how you set player's dash after exit dream zone\nForceSet: Set player's dash to 'DashesToRefill'\nTrySet: Refill player's dash first like normal dream block, then try to set 'DashesToRefill' dashes if it's higher\nAdd: Add 'DashesToRefill' dashes to Player
 entities.LuckyHelper/DreamZone_V2.attributes.description.useOldFeature=You can have collision with dream zone on start dashing
 entities.LuckyHelper/DreamZone_V2.attributes.description.playerUncrouch=Uncrouch player when you enters the dream zone
-
+entities.LuckyHelper/DreamZone_V2.attributes.description.depth=Set depth for dreamzone, -1 for nothing(use below option instead), otherwise use the filled depth
+entities.LuckyHelper/DreamZone_V2.attributes.description.setAttachedItemAbove=Because if an entity like spring is attached to dreamzone, it will be drawn below dreamzone, so this option will set the entity's depth to be above dreamzone
 # DecalWithCombinedRegistry
 entities.LuckyHelper/DecalWithCombinedRegistry.placements.name.normal=Decal With Combined Registry
 entities.LuckyHelper/DecalWithCombinedRegistry.attributes.description.decalRegistryPaths=Create a '{YourModName(in everest.yaml)}_CombinedDecalRegistry.xml' file in root path of your Mod(In LuckyHelper, it's named "LuckyHelper_CombinedDecalRegistry.xml") and do what 'DecalRegistry.xml' do, \nbut...the path works like an id which you can casually combine to this entity, and it's seperated by comma like 'path1, path2, ..., path_n', you can check this xml in LuckyHelper.zip for more detailed information!

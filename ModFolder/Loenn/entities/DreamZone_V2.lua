@@ -29,6 +29,7 @@ dreamBlock.placements = {
         disabledLineAlpha = 0,
         activeStarAlpha = 0.9,
         disabledStarAlpha = 0.9,
+        depth = -1,
         disableWobble = false,
         disableInteraction = false,
         cancelDreamDashOnNotDreaming = false,
@@ -41,6 +42,7 @@ dreamBlock.placements = {
         useEntrySpeedAngle = false,
         useOldFeature = false,
         playerUncrouch = false,
+        setAttachedItemAbove = false,
         refillDashMode = "TrySet",
     }
 }
@@ -56,7 +58,7 @@ dreamBlock.fieldOrder = {
     "activeStarAlpha", "smallStarColors",
     "disabledStarAlpha", "mediumStarColors",
     "starNumberPerUnit", "bigStarColors",
-    "dashesToRefill", "",
+    "dashesToRefill", "depth",
     "", "",
     "", "",
 }
@@ -75,6 +77,9 @@ dreamBlock.fieldInformation = {
         fieldType = "color"
     },
     dashesToRefill = {
+        fieldType = "integer"
+    },
+    depth = {
         fieldType = "integer"
     },
     bigStarColors = {

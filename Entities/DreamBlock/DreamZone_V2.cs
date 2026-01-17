@@ -56,6 +56,8 @@ public class DreamZone_V2 : DreamBlock
     public bool PlayerUncrouch;
     public RefillDashMode RefillDashMode;
 
+    private bool setAttachedItemAbove;
+
 
     public DreamZone_V2(EntityData data, Vector2 offset) : base(data, offset)
     {
@@ -104,7 +106,25 @@ public class DreamZone_V2 : DreamBlock
         PlayerUncrouch = data.Bool("playerUncrouch", false);
         RefillDashMode = data.Enum("refillDashMode", RefillDashMode.TrySet);
 
+        int depth = data.Int("depth", -1);
+        if (depth != -1)
+        {
+            Depth = depth;
+        }
+
+        setAttachedItemAbove = data.Bool("setAttachedItemAbove", false);
+
         Collidable = false;
+    }
+
+    public override void Awake(Scene scene)
+    {
+        base.Awake(scene);
+        if (setAttachedItemAbove)
+            foreach (var staticMover in staticMovers)
+            {
+                staticMover.Entity.Depth = Depth - 1;
+            }
     }
 
     public override void Update()
