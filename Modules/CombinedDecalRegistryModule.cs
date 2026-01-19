@@ -1,6 +1,7 @@
 using System.Xml;
 using Celeste.Mod.Registry.DecalRegistryHandlers;
 using LuckyHelper.Module;
+using LuckyHelper.Utils;
 
 namespace LuckyHelper.Modules;
 
@@ -50,6 +51,10 @@ public class CombinedDecalRegistryModule
 
     internal static void LoadModCombinedDecalRegistry(ModAsset decalRegistry)
     {
+        bool factoryHasInited = DecalRegistry.PropertyHandlerFactories.Count > 0;
+        if (!factoryHasInited)
+            return;
+        
         Logger.Debug("Combined Decal Registry", "Loading registry for " + decalRegistry.Source.Name);
         foreach (KeyValuePair<string, DecalRegistry.DecalInfo> keyValuePair in DecalRegistry.ReadDecalRegistryXml(decalRegistry))
         {
@@ -61,35 +66,19 @@ public class CombinedDecalRegistryModule
 
     private static void RegisterDecal(string decalPath, DecalRegistry.DecalInfo info)
     {
-        if (info.Handlers == null)
-        {
-            info.Handlers = new List<DecalRegistryHandler>(info.CustomProperties.Count);
-            KeyValuePair<string, XmlAttributeCollection> keyValuePair = info.CustomProperties.Find((KeyValuePair<string, XmlAttributeCollection> p) => p.Key == "scale");
-            if (keyValuePair.Value != null)
-            {
-                DecalRegistryHandler decalRegistryHandler = DecalRegistry.CreateHandlerOrNull(decalPath, keyValuePair.Key, keyValuePair.Value);
-                if (decalRegistryHandler != null)
-                {
-                    info.Handlers.Add(decalRegistryHandler);
-                }
-            }
+        info.Handlers = new(info.CustomProperties.Count);
 
-            foreach (KeyValuePair<string, XmlAttributeCollection> keyValuePair2 in info.CustomProperties)
-            {
-                string text;
-                XmlAttributeCollection xmlAttributeCollection;
-                keyValuePair2.Deconstruct(out text, out xmlAttributeCollection);
-                string text2 = text;
-                XmlAttributeCollection xmlAttributeCollection2 = xmlAttributeCollection;
-                if (text2 != "scale")
-                {
-                    DecalRegistryHandler decalRegistryHandler2 = DecalRegistry.CreateHandlerOrNull(decalPath, text2, xmlAttributeCollection2);
-                    if (decalRegistryHandler2 != null)
-                    {
-                        info.Handlers.Add(decalRegistryHandler2);
-                    }
-                }
-            }
+        // Apply "scale" first since it affects other properties.
+        if (info.CustomProperties.Find(p => p.Key == "scale") is { Value: { } } scaleProp)
+        {
+            if (CreateHandlerOrNull(decalPath, scaleProp.Key, scaleProp.Value) is { } handler)
+                info.Handlers.Add(handler);
+        }
+
+        foreach ((string propertyName, var xml) in info.CustomProperties)
+        {
+            if (propertyName != "scale" && CreateHandlerOrNull(decalPath, propertyName, xml) is { } handler)
+                info.Handlers.Add(handler);
         }
 
         if (RegisteredDecals.ContainsKey(decalPath))
@@ -102,5 +91,18 @@ public class CombinedDecalRegistryModule
         }
 
         RegisteredDecals[decalPath] = info;
+    }
+
+    private static DecalRegistryHandler CreateHandlerOrNull(string decalName, string propertyName, XmlAttributeCollection xmlAttributes)
+    {
+        if (!DecalRegistry.PropertyHandlerFactories.TryGetValue(propertyName, out var factory))
+        {
+            Logger.Warn("Decal Registry", $"Unknown property {propertyName} in decal {decalName}");
+            return null;
+        }
+
+        var handler = factory();
+        handler.Parse(xmlAttributes);
+        return handler;
     }
 }
