@@ -7,11 +7,13 @@ namespace LuckyHelper.Modules;
 public class CombinedDecalRegistryModule
 {
     public static readonly Dictionary<string, DecalRegistry.DecalInfo> RegisteredDecals = new Dictionary<string, DecalRegistry.DecalInfo>();
+    public const string CombinedDecalRegistry = "CombinedDecalRegistry";
 
     [Load]
     public static void Load()
     {
         On.Celeste.Celeste.Initialize += CelesteOnInitialize;
+        NonConfilctContentLoaderHelper.RegisterContent(CombinedDecalRegistry, LoadCombinedDecalRegistry);
     }
 
     private static void CelesteOnInitialize(On.Celeste.Celeste.orig_Initialize orig, Celeste.Celeste self)
@@ -25,9 +27,17 @@ public class CombinedDecalRegistryModule
     public static void Unload()
     {
         On.Celeste.Celeste.Initialize -= CelesteOnInitialize;
+        NonConfilctContentLoaderHelper.UnregisterContent(CombinedDecalRegistry);
     }
 
-    internal static void LoadCombinedDecalRegistry()
+
+    private static void LoadCombinedDecalRegistry(ModAsset modAsset)
+    {
+        if (modAsset.Type == typeof(AssetTypeXml))
+            LoadModCombinedDecalRegistry(modAsset);
+    }
+
+    private static void LoadCombinedDecalRegistry()
     {
         foreach (ModContent modContent in Everest.Content.Mods)
         {
@@ -84,11 +94,11 @@ public class CombinedDecalRegistryModule
 
         if (RegisteredDecals.ContainsKey(decalPath))
         {
-            Logger.Verbose("Decal Registry", "Replaced decal " + decalPath);
+            Logger.Verbose("Decal Registry", "Replaced decal id " + decalPath);
         }
         else
         {
-            Logger.Verbose("Decal Registry", "Registered decal " + decalPath);
+            Logger.Verbose("Decal Registry", "Registered decal id " + decalPath);
         }
 
         RegisteredDecals[decalPath] = info;

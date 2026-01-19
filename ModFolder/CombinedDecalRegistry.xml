@@ -1,0 +1,43 @@
+<decals>
+    <decal path="lucky_floaty">
+        <floaty/>
+    </decal>
+    <decal path="lucky_scale">
+        <scale multiplyX="2" multiplyY="2"/>
+    </decal>
+    <decal path="lucky_scale_big">
+        <scale multiplyX="5" multiplyY="5"/>
+    </decal>
+    <decal path="lucky_flipX">
+        <scale multiplyX="-1"/>
+    </decal>
+    <decal path="lucky_flipY">
+        <scale multiplyY="-1"/>
+    </decal>
+    <decal path="lucky_smoke">
+        <smoke offsetX="0.1" offsetY="0.1" inbg="false"/>
+    </decal>
+    <decal path="lucky_banner">
+        <banner speed="1" amplitude="4" sliceSize="1" sliceSinIncrement="0.5" easeDown="true" offset="0.5" onlyIfWindy="false"/>
+    </decal>
+    <decal path="lucky_bloom">
+        <bloom offsetX="0" offsetY="0" alpha="0.1" radius="5"/>
+    </decal>
+    <decal path="lucky_mirror">
+        <mirror keepOffsetsClose="false"/>
+    </decal>
+    <decal path="lucky_animationSpeed">
+        <animationSpeed value="1"/>
+    </decal>
+    <!-- works like a tile that replace the overlayed tile like DashBlock, CoverupWall, FakeWall, e.g. the overlay before 1a's cassette, after the zip mover  -->
+    <decal path="lucky_overlay">
+        <overlay/>
+    </decal>
+    <decal path="lucky_small_staticMover">
+        <staticMover x="-8" y="-8" width="16" height="16"/>
+    </decal>
+    <!-- from adamsaddons helper -->
+    <decal path="lucky_rotate">
+        <adamsaddons.rotate speed="1" addX="0" addY="0" addWind="0"/>
+    </decal>
+</decals>

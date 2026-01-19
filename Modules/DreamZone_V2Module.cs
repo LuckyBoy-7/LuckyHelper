@@ -112,6 +112,7 @@ public class DreamZone_V2Module
         cursor.EmitDelegate<Action<DreamBlock>>((dreamBlock) =>
         {
             if (dreamBlock is not DreamZone_V2 dreamZone) return;
+            if (!dreamBlock.playerHasDreamDash) return;
             for (var index = 0; index < dreamZone.particles.Length; index++)
             {
                 switch (dreamZone.particles[index].Layer)
