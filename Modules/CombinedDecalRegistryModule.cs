@@ -51,7 +51,7 @@ public class CombinedDecalRegistryModule
 
     internal static void LoadModCombinedDecalRegistry(ModAsset decalRegistry)
     {
-        bool factoryHasInited = DecalRegistry.PropertyHandlerFactories.Count > 0;
+        bool factoryHasInited = DecalRegistry.EverestHandlersRegistered;
         if (!factoryHasInited)
             return;
         
