@@ -14,14 +14,13 @@ public enum EntityTriggerMode
 public abstract class EntityTrigger : Trigger
 {
     public EntityTriggerMode EntityTriggerMode;
-    
+
     private HashSet<string> briefTypes = new();
 
     private HashSet<Entity> preCollidedEntities = new();
 
     private bool hasPlayer;
-    
-    
+
 
     public EntityTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
@@ -35,6 +34,7 @@ public abstract class EntityTrigger : Trigger
             briefTypes.Remove(nameof(Player));
         }
     }
+
     public abstract void OnTriggered();
 
     public override void Update()
@@ -42,8 +42,10 @@ public abstract class EntityTrigger : Trigger
         base.Update();
 
         HashSet<Entity> curCollidedEntities = new HashSet<Entity>();
-        foreach (Entity entity in TypeToObjectsModule.IterEntitiesByTypes(briefTypes))
+        foreach (Entity entity in Scene.Entities)
         {
+            if (entity == this || !briefTypes.Contains(entity.GetType().Name))
+                continue;
             if (EntityInsideTrigger(entity))
             {
                 curCollidedEntities.Add(entity);
@@ -86,7 +88,7 @@ public abstract class EntityTrigger : Trigger
             OnTriggered();
     }
 
-    
+
     private bool EntityInsideTrigger(Entity entity)
     {
         if (entity.Collider == null)
@@ -96,7 +98,6 @@ public abstract class EntityTrigger : Trigger
 
         return CollideCheck(entity);
     }
-
 
 
     public override void OnEnter(Player player)

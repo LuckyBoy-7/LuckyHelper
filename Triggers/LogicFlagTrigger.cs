@@ -215,12 +215,12 @@ public class LogicFlagTrigger : FlagTrigger
             res.Add(operators.Pop().ToString());
         }
 #if DEBUG
-        foreach (string s in res)
-        {
-            LogUtils.LogWarning(s);
-        }
-
-        LogUtils.LogWarning("=====================");
+        // foreach (string s in res)
+        // {
+        //     LogUtils.LogWarning(s);
+        // }
+        //
+        // LogUtils.LogWarning("=====================");
 #endif
         if (debug)
             debugInfo.Add($"[{string.Join(" ", res)}](Parsed Expression)");

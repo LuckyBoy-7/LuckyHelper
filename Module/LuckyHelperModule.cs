@@ -30,6 +30,18 @@ public class LuckyHelperModule : EverestModule
     public override void Initialize()
     {
         AttributeUtils.Invoke<InitializeAttribute>();
+        
+        // https://discord.com/channels/403698615446536203/908809001834274887/1418153890020589668
+        // 有点不理解, 所以暂时先这么写了(看了源码感觉没问题, 但是实际上用 GetComponentsTrackIfNeeded 的时候可能触发 failed for an unknown reason
+        if (!Tracker.StoredComponentTypes.Contains(typeof(TalkComponent)))
+        {
+            Tracker.AddTypeToTracker(typeof(TalkComponent));
+        }
+        
+        if (!Tracker.StoredEntityTypes.Contains(typeof(TextMenu)))
+        {
+            Tracker.AddTypeToTracker(typeof(TextMenu));
+        }
     }
 
     public override void Load()

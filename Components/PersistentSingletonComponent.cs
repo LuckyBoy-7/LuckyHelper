@@ -31,7 +31,7 @@ public class PersistentSingletonComponent(bool addGlobalToo = false, bool active
 
     private static void LevelOnLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader)
     {
-        var singletons = TypeToObjectsModule.BriefTypeToComponents[nameof(PersistentSingletonComponent)]
+        var singletons = self.Tracker.GetComponents<PersistentSingletonComponent>()
             .Select(com => ((PersistentSingletonComponent)com).EntityID)
             .Where(entityID => entityID.ID != 0).ToHashSet();
 

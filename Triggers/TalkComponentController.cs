@@ -1,5 +1,6 @@
 using Celeste.Mod.Entities;
 using LuckyHelper.Extensions;
+using LuckyHelper.Module;
 using LuckyHelper.Modules;
 
 namespace LuckyHelper.Triggers;
@@ -26,6 +27,7 @@ public class TalkComponentController : Trigger
     public override void Awake(Scene scene)
     {
         base.Awake(scene);
+        
 
         if (!dynamic)
             FillAllCollidedTalkComponents(collidedTalkComponents);
@@ -33,7 +35,7 @@ public class TalkComponentController : Trigger
 
     private void FillAllCollidedTalkComponents(List<TalkComponent> lst)
     {
-        foreach (TalkComponent talkComponent in TypeToObjectsModule.BriefTypeToComponents["TalkComponent"])
+        foreach (TalkComponent talkComponent in this.Tracker().GetComponentsTrackIfNeeded(typeof(TalkComponent)))
         {
             if (CollideWithTalkComponent(talkComponent) && !blackLists.Contains(talkComponent.Entity.BriefTypeName()))
             {

@@ -26,7 +26,7 @@ public class MenuButtonController : Entity
 
     private static void ItemOnctor(On.Celeste.TextMenu.Item.orig_ctor orig, TextMenu.Item self)
     {
-        if (Engine.Scene is Level level && TypeToObjectsModule.BriefTypeToEntities[nameof(MenuButtonController)].Count > 0)
+        if (Engine.Scene is Level level && level.Tracker.GetEntities<MenuButtonController>().Count > 0)
             new DynamicData(self).Set(RawDialogNameToken, MiscModule.LastCleanedDialog);
         orig(self);
     }
@@ -37,7 +37,7 @@ public class MenuButtonController : Entity
         orig(self);
         if (self.Tracker.GetEntity<MenuButtonController>() is { } buttonController)
         {
-            foreach (TextMenu.Item item in TypeToObjectsModule.BriefTypeToEntities[nameof(TextMenu)].Cast<TextMenu>().SelectMany(menu => menu.items))
+            foreach (TextMenu.Item item in self.Tracker.GetEntitiesTrackIfNeeded(typeof(TextMenu)).Cast<TextMenu>().SelectMany(menu => menu.items))
             {
                 if (item is TextMenu.Button button)
                 {

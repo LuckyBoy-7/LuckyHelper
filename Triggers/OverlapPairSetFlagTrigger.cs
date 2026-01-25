@@ -40,7 +40,7 @@ public class OverlapPairSetFlagTrigger : Trigger
             return;
 
         bool on = false;
-        foreach (OverlapPairSetFlagTrigger tri in TypeToObjectsModule.BriefTypeToEntities[nameof(OverlapPairSetFlagTrigger)]
+        foreach (OverlapPairSetFlagTrigger tri in this.GetEntities<OverlapPairSetFlagTrigger>()
                      .Where(entity => ((OverlapPairSetFlagTrigger)entity).ID == ID))
         {
             if (tri != null && tri != this && CollideCheck(tri))

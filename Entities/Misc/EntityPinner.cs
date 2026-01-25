@@ -76,7 +76,7 @@ public class EntityPinner : Entity
         // borderColor = new Color(35, 125, 255);
         // innerColor = new Color(150, 255, 255);
         renderComponent.OnRender += () =>
-        { 
+        {
             if (colliderType == ColliderType.Circle)
             {
                 Vector2 start = Position - new Vector2(radius, radius);
@@ -103,22 +103,23 @@ public class EntityPinner : Entity
     {
         base.Update();
 
-        foreach (var type in briefTypes)
+        foreach (var entity in Scene.Entities)
         {
-            foreach (var entity in TypeToObjectsModule.BriefTypeToEntities[type])
-            {
-                if (entity.CollideCheck(this))
-                {
-                    var config = GetHandler(entity);
-                    if (config == null)
-                        continue;
+            if (entity == this)
+                continue;
+            if (!briefTypes.Contains(entity.GetType().Name))
+                continue;
+            if (!entity.CollideCheck(this)) 
+                continue;
+            
+            var config = GetHandler(entity);
+            if (config == null)
+                continue;
 
-                    var targetPos = Calc.Approach(config.Position, Position + Collider.Center + new Vector2(adjustX, adjustY), attractSpeed * Engine.DeltaTime);
-                    config.Position = targetPos;
-                    var dyn = new DynamicData(entity);
-                    config.PinnedAction(dyn);
-                }
-            }
+            var targetPos = Calc.Approach(config.Position, Position + Collider.Center + new Vector2(adjustX, adjustY), attractSpeed * Engine.DeltaTime);
+            config.Position = targetPos;
+            var dyn = new DynamicData(entity);
+            config.PinnedAction(dyn);
         }
     }
 
