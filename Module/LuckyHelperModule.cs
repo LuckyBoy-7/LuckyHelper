@@ -1,7 +1,9 @@
 using LuckyHelper.Handlers;
 using LuckyHelper.Handlers.Impl;
+using LuckyHelper.ModInterop;
 using LuckyHelper.Modules;
 using LuckyHelper.Utils;
+using MonoMod.ModInterop;
 
 namespace LuckyHelper.Module;
 
@@ -68,6 +70,8 @@ public class LuckyHelperModule : EverestModule
             (entity, container) => SwapBlockHandler.InsideCheck(container, false, entity as SwapBlock));
         EntityHandler.RegisterInherited<Decal>((entity, container) => new DecalHandler(entity),
             (entity, container) => container.CheckDecal(entity as Decal));
+        
+        typeof(LuckyHelperExports).ModInterop();
     }
 
     public override void LoadContent(bool firstLoad)

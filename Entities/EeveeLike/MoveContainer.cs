@@ -433,7 +433,7 @@ public class MoveContainer : Actor, IContainer
         moveHelper.Update();
         Vector2 targetPosition = moveHelper.Move.CurrentPosition;
         if (targetPosition != Position)
-            _Container.DoMoveAction(() => Position = targetPosition);
+            _Container.DoMoveAction(() => { NaiveMove(targetPosition - ExactPosition); });
     }
 
 

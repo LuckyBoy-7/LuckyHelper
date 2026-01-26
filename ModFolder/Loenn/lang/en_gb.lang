@@ -287,6 +287,10 @@ entities.LuckyHelper/LinkedWire.attributes.description.depth=Determines the wire
 entities.LuckyHelper/LinkedWire.attributes.description.color=Determines the color of the wire.
 entities.LuckyHelper/LinkedWire.attributes.description.ignoreLink=If true, the wire will not link to other wires automatically, just like normal wire.
 
+# Dummy Player
+entities.LuckyHelper/DummyPlayer.placements.name.normal=Dummy Player
+entities.LuckyHelper/DummyPlayer.attributes.description.sendOriginalPlayerToTrigger=Some triggers may just work to set some global thing, so using dummy player is enough to trigger them.\nBut if you want to use it for something position related trigger, you can using dummy player with Eevee/FlagMover or something.\nIf you want to trigger something with dummy player and set original player's data like where the camera should look at, you can check this option to realize it(but in some triggers like SmoothCameraOffsetTrigger, you should uncheck this).\nSo, whether you should check this depends on how the trigger is implemented, if you don't know the details, just try both lol :)
+
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger
 triggers.LuckyHelper/SetPassByRefillDashesTrigger.placements.name.normal=SetPassByRefillDashesTrigger
