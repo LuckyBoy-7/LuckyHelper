@@ -25,8 +25,7 @@ entity.placements = {
     }
 }
 
-entity.fieldInformation =
-{
+entity.fieldInformation = {
     color = {
         fieldType = "color",
         useAlpha = true,
@@ -46,10 +45,10 @@ entity.fieldInformation =
 }
 function entity.fieldOrder(layer, decal)
     return { "x", "y",
-        "scaleX", "scaleY",
-        "texture", "depth",
-        "rotation", "color",
-        "decalRegistryPaths" }
+             "scaleX", "scaleY",
+             "texture", "depth",
+             "rotation", "color",
+             "decalRegistryPaths" }
 end
 
 local function getSprite(room, entity)
@@ -66,6 +65,22 @@ function entity.sprite(room, entity)
     --local sprite = getSprite(room, entity)
     --table.insert(sprites, sprite)
     return getSprite(room, entity)
+end
+
+function entity.onFlip(room, decal, horizontal, vertical)
+    if horizontal then
+        decal.scaleX = -1 * decal.scaleX
+    end
+
+    if vertical then
+        decal.scaleY = -1 * decal.scaleY
+    end
+end
+
+function entity.onRotate(room, decal, direction)
+    if direction ~= 0 then
+        decal.rotation = ((decal.rotation or 0) + direction * 90) % 360
+    end
 end
 
 return entity
