@@ -4,6 +4,7 @@ using LuckyHelper.Module;
 using LuckyHelper.Modules;
 using LuckyHelper.Utils;
 using MonoMod.Cil;
+using Player = On.Celeste.Player;
 
 namespace LuckyHelper.Entities;
 
@@ -40,8 +41,8 @@ public class DreamZone_V2 : DreamBlock
     public string SmallStarColors = "5b6ee1,CC3B3B,7daa64";
 
     public bool DisableWobble = true;
-    public bool DisableInteraction = false;
-    public bool CancelDreamDashOnNotDreaming = false;
+    public bool DisableInteraction;
+    public bool CancelDreamDashOnNotDreaming;
 
     public double StarNumberPerUnit;
     public float ActiveStarAlpha;
@@ -97,13 +98,13 @@ public class DreamZone_V2 : DreamBlock
         }
 
         DisableInsideVerticalJump = data.FitBool(false, "disableInsideVerticalJump", "disableVerticalJump");
-        DisableInsideDreamJump = data.Bool("disableInsideDreamJump", false);
+        DisableInsideDreamJump = data.Bool("disableInsideDreamJump");
         GetVerticalOutsideJump = data.FitBool(false, "getVerticalOutsideJump", "getVerticalCoyote");
-        ConserveSpeed = data.Bool("conserveSpeed", false);
+        ConserveSpeed = data.Bool("conserveSpeed");
         DashesToRefill = data.Int("dashesToRefill", 1);
-        UseEntrySpeedAngle = data.Bool("useEntrySpeedAngle", false);
-        UseOldFeature = data.Bool("useOldFeature", false);
-        PlayerUncrouch = data.Bool("playerUncrouch", false);
+        UseEntrySpeedAngle = data.Bool("useEntrySpeedAngle");
+        UseOldFeature = data.Bool("useOldFeature");
+        PlayerUncrouch = data.Bool("playerUncrouch");
         RefillDashMode = data.Enum("refillDashMode", RefillDashMode.TrySet);
 
         int depth = data.Int("depth", -1);
@@ -112,7 +113,7 @@ public class DreamZone_V2 : DreamBlock
             Depth = depth;
         }
 
-        setAttachedItemAbove = data.Bool("setAttachedItemAbove", false);
+        setAttachedItemAbove = data.Bool("setAttachedItemAbove");
 
         Collidable = false;
     }
@@ -323,12 +324,71 @@ public class DreamZone_V2 : DreamBlock
         }
     }
 
+
+    public override void MoveHExact(int move)
+    {
+        GetRiders();
+        float right = Right;
+        float left = Left;
+        // Celeste.Player entity = Scene.Tracker.GetEntity<Celeste.Player>();
+        // if (entity != null && Input.MoveX.Value == Math.Sign(move) && Math.Sign(entity.Speed.X) == Math.Sign(move) && !riders.Contains(entity) && CollideCheck(entity, Position + Vector2.UnitX * move - Vector2.UnitY))
+        // {
+        //     entity.MoveV(1f);
+        // }
+        X += move;
+        MoveStaticMovers(Vector2.UnitX * move);
+        if (Collidable)
+        {
+            foreach (Entity entity2 in Scene.Tracker.GetEntities<Actor>())
+            {
+                Actor actor = (Actor)entity2;
+                if (actor.AllowPushing)
+                {
+                    bool collidable = actor.Collidable;
+                    actor.Collidable = true;
+                    if (!actor.TreatNaive && CollideCheck(actor, Position))
+                    {
+                        int num;
+                        if (move > 0)
+                        {
+                            num = move - (int)(actor.Left - right);
+                        }
+                        else
+                        {
+                            num = move - (int)(actor.Right - left);
+                        }
+                        Collidable = false;
+                        actor.MoveHExact(num, actor.SquishCallback, this);
+                        actor.LiftSpeed = LiftSpeed;
+                        Collidable = true;
+                    }
+                    else if (riders.Contains(actor))
+                    {
+                        Collidable = false;
+                        if (actor.TreatNaive)
+                        {
+                            actor.NaiveMove(Vector2.UnitX * move);
+                        }
+                        else
+                        {
+                            actor.MoveHExact(move);
+                        }
+                        actor.LiftSpeed = LiftSpeed;
+                        Collidable = true;
+                    }
+                    actor.Collidable = collidable;
+                }
+            }
+        }
+        riders.Clear();
+    }
+
     [Load]
     public static void Load()
     {
         IL.Celeste.Player.DreamDashBegin += PlayerOnDreamDashBegin;
         IL.Celeste.Player.DreamDashEnd += PlayerOnDreamDashEnd;
-        On.Celeste.Player.DreamDashBegin += PlayerOnDreamDashBegin;
+        Player.DreamDashBegin += PlayerOnDreamDashBegin;
     }
 
 
@@ -337,10 +397,10 @@ public class DreamZone_V2 : DreamBlock
     {
         IL.Celeste.Player.DreamDashBegin -= PlayerOnDreamDashBegin;
         IL.Celeste.Player.DreamDashEnd -= PlayerOnDreamDashEnd;
-        On.Celeste.Player.DreamDashBegin -= PlayerOnDreamDashBegin;
+        Player.DreamDashBegin -= PlayerOnDreamDashBegin;
     }
 
-    private static void PlayerOnDreamDashBegin(On.Celeste.Player.orig_DreamDashBegin orig, Player self)
+    private static void PlayerOnDreamDashBegin(Player.orig_DreamDashBegin orig, Celeste.Player self)
     {
         if (self.Ducking)
         {
@@ -368,12 +428,12 @@ public class DreamZone_V2 : DreamBlock
     {
         ILCursor cursor = new ILCursor(il);
 
-        var origRefillDashMethod = typeof(Player).GetMethod("RefillDash");
-        var origRefillStaminaMethod = typeof(Player).GetMethod("RefillStamina");
+        var origRefillDashMethod = typeof(Celeste.Player).GetMethod("RefillDash");
+        var origRefillStaminaMethod = typeof(Celeste.Player).GetMethod("RefillStamina");
         if (cursor.TryGotoNext(ins => ins.MatchCallvirt(origRefillDashMethod)))
         {
             ILLabel skipOrigRefillDashLabel = cursor.DefineLabel();
-            cursor.EmitDelegate<Func<Player, bool>>(player =>
+            cursor.EmitDelegate<Func<Celeste.Player, bool>>(player =>
             {
                 if (player.dreamBlock is DreamZone_V2 { } dreamZone)
                 {
@@ -415,7 +475,7 @@ public class DreamZone_V2 : DreamBlock
         {
             cursor.Index += 1;
             cursor.EmitLdarg0();
-            cursor.EmitDelegate<Func<float, Player, float>>((origSpeed, player) =>
+            cursor.EmitDelegate<Func<float, Celeste.Player, float>>((origSpeed, player) =>
             {
                 if (DreamZone_V2Module.CurrentOverlappingDreamZone is { } dreamZone)
                 {
