@@ -4,7 +4,8 @@ local entity = {
     placements = {
         name = "normal",
         data = {
-            sendOriginalPlayerToTrigger = false
+            sendOriginalPlayerToTrigger = false,
+            triggerDashFlag = "LuckyHelper_TriggerDashFlag"
         }
     },
     texture = "characters/player/sitDown00",

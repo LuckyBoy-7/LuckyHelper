@@ -2,6 +2,7 @@
 using LuckyHelper.Handlers;
 using Celeste.Mod.Helpers;
 using LuckyHelper.Entities.EeveeLike;
+using LuckyHelper.Entities.Misc;
 using LuckyHelper.Utils;
 using MonoMod.Utils;
 
@@ -22,6 +23,11 @@ public class EntityContainerMover : EntityContainer
     private static HashSet<string> CommonAnchors = new()
     {
         "anchor", "anchorPosition", "start", "startPosition"
+    };
+    
+    private static HashSet<Type> IgnoreAnchorTypes = new()
+    {
+        typeof(DummyPlayer)
     };
 
     public Vector4 Padding;
@@ -288,9 +294,15 @@ public class EntityContainerMover : EntityContainer
     public static List<string> FindAnchors(Entity entity)
     {
         var result = new List<string>();
+
+        // 一些需要排除 anchor 的实体, 防止神秘 bug
+        if (IgnoreAnchorTypes.Contains(entity.GetType()))
+            return result;
+        
         var data = new InheritedDynData(entity);
         foreach (var pair in data)
         {
+            // 如果字段里存在一个和实体一样位置的 Vector2 或者与预测的名字相符
             if (pair.Value is Vector2 vector && !IgnoredAnchors.Contains(pair.Key) && (vector == EeveeUtils.GetPosition(entity) || CommonAnchors.Contains(pair.Key)))
             {
                 result.Add(pair.Key);
