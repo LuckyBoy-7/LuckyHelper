@@ -89,6 +89,11 @@ public class MoveInListHelperMovePart
         {
             Positions = dataPositions;
         }
+
+        public void Reset()
+        {
+            Elapse = 0;
+        }
     }
 
     // 直线路径
@@ -228,34 +233,14 @@ public class MoveInListHelperMovePart
             Moving = false;
             currentIndex = pathCalculator.NextIndex;
         }
-        //
-        // Vector2 from = data.Positions[currentIndex];
-        // Vector2 to = data.Positions[actualNextIndex];
-        // if (data.MoveType == MovePartData.MoveTypes.ByDuration)
-        // {
-        //     elapsed += Engine.DeltaTime;
-        //     float t = Math.Min(elapsed / data.Duration, 1f);
-        //     t = data.EaseFunc(t);
-        //
-        //     CurrentPosition = Vector2.Lerp(from, to, t);
-        //     if (t >= 1f)
-        //     {
-        //         elapsed = 0f;
-        //         currentIndex = actualNextIndex;
-        //         if (actualNextIndex == idealNextIndex) // 这才算真的到了
-        //     }
-        // }
-        // else if (data.MoveType == MovePartData.MoveTypes.BySpeed)
-        // {
-        //     float distanceToMove = data.Speed * Engine.DeltaTime;
-        //     CurrentPosition = Calc.Approach(CurrentPosition, to, distanceToMove);
-        //     if (CurrentPosition == to)
-        //     {
-        //         currentIndex = actualNextIndex;
-        //         if (actualNextIndex == idealNextIndex) // 这才算真的到了
-        //             Moving = false;
-        //     }
-        // }
+    }
+
+    public void ResetToStart()
+    {
+        Moving = false;
+        currentIndex = 0;
+        CurrentPosition = data.Positions[0];
+        pathCalculator.Reset();
     }
 }
 
@@ -335,12 +320,8 @@ public class MoveInListHelper
 
     public void Update()
     {
-        if (Move.Moving)
+        if (Move.Moving || Control.IsTriggered())
             Move.Update();
-        else if (Control.IsTriggered())
-        {
-            Move.Update();
-        }
     }
 }
 
@@ -357,6 +338,7 @@ public class MoveContainer : Actor, IContainer
     private EntityData data;
     private Vector2 offset;
     private bool generatContainerAlongPath;
+    private string resetToStartPositionFlag;
 
 
     public MoveContainer(EntityData data, Vector2 offset) : base(data.Position + offset + new Vector2(data.Width / 2f, data.Height / 2f))
@@ -364,6 +346,7 @@ public class MoveContainer : Actor, IContainer
         this.data = data;
         this.offset = offset;
         generatContainerAlongPath = data.Bool("generateContainerAlongPath");
+        resetToStartPositionFlag = data.Attr("resetToStartPositionFlag", "LuckyHelper_ResetToStartPositionFlag");
         Collider = new Hitbox(data.Width, data.Height);
         Collider.Position = new Vector2(-Width / 2f, -Height / 2f);
         AllowPushing = false;
@@ -430,6 +413,13 @@ public class MoveContainer : Actor, IContainer
     public override void Update()
     {
         base.Update();
+        Session session = this.Session();
+        if (session.GetFlag(resetToStartPositionFlag))
+        {
+            session.SetFlag(resetToStartPositionFlag, false);
+            moveHelper.Move.ResetToStart();
+        }
+
         moveHelper.Update();
         Vector2 targetPosition = moveHelper.Move.CurrentPosition;
         if (targetPosition != Position)

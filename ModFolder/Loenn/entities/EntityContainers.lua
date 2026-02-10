@@ -182,6 +182,8 @@ local moveContainer = {
             duration = 1,
             ease = "Linear",
             generateContainerAlongPath = false,
+
+            resetToStartPositionFlag = "LuckyHelper_ResetToStartPositionFlag",
         }
     },
     fieldInformation = {
@@ -230,7 +232,7 @@ local moveContainer = {
         "directionType", "directionFlags",
         "moveType", "moveAlongType",
         "speed", "duration",
-        "ease", "",
+        "ease", "resetToStartPositionFlag",
     }
 }
 local quantumContainer = {

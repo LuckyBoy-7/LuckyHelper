@@ -220,6 +220,7 @@ entities.LuckyHelper/MoveContainer.attributes.description.speed=How fast the con
 entities.LuckyHelper/MoveContainer.attributes.description.duration=How long the container will take to move between two points
 entities.LuckyHelper/MoveContainer.attributes.description.ease=How the container eases when moving with 'Duration' mode
 entities.LuckyHelper/MoveContainer.attributes.description.generateContainerAlongPath=Will the container generate other move containers that have same path with current but with different start position, which will reduce work when you want to place circularly 
+entities.LuckyHelper/MoveContainer.attributes.description.resetToStartPositionFlag=Once the flag is detected, it will be removed and the container will reset to its start position
 
 # Quantum Container
 entities.LuckyHelper/QuantumContainer.placements.name.normal=Quantum Container
