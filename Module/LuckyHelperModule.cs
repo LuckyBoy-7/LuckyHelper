@@ -57,6 +57,7 @@ public class LuckyHelperModule : EverestModule
         EntityHandler.RegisterInherited<TrackSpinner>((entity, container) => new TrackSpinnerHandler(entity));
         EntityHandler.RegisterInherited<RotateSpinner>((entity, container) => new RotateSpinnerHandler(entity));
         EntityHandler.RegisterInherited<DreamBlock>((entity, container) => new DreamBlockHandler(entity));
+        EntityHandler.RegisterInherited<TriggerSpikes>((entity, container) => new TriggerSpikesHandler(entity));
 
         EntityHandler.RegisterInherited<DashSwitch>((entity, container) => new AxisMoverHandler(entity, new Tuple<string, bool>("startY", true)));
 
