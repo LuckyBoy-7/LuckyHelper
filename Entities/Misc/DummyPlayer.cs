@@ -1,6 +1,8 @@
 using Celeste.Mod.Entities;
 using LuckyHelper.Extensions;
+using LuckyHelper.Module;
 using LuckyHelper.Utils;
+using MonoMod.Cil;
 using MonoMod.Utils;
 
 namespace LuckyHelper.Entities.Misc;
@@ -14,7 +16,8 @@ public class DummyPlayer : Player
     private string triggeredToken;
     private bool sendOriginalPlayerToTrigger;
     private string triggerDashFlag;
-    
+    private bool affectedByWind;
+
     private Vector2 prePosition;
 
     // todo: lerp 可能还真得手动钩一下
@@ -22,9 +25,13 @@ public class DummyPlayer : Player
     {
         sendOriginalPlayerToTrigger = data.Bool("sendOriginalPlayerToTrigger");
         triggerDashFlag = data.Attr("triggerDashFlag", "LuckyHelper_TriggerDashFlag");
+        affectedByWind = data.FitBool(true, "canAffectedByWind", "affectedByWind");
         Visible = false;
         // 必须比 move container 之类的的 container 还晚更新, 不然会导致设置 trigger 和 collide 时 Dummy Player 的状态不一致 
         Depth = -10000001;
+
+        if (!affectedByWind)
+            Components.RemoveAll<WindMover>();
     }
 
     public override void Awake(Scene scene)
@@ -59,7 +66,7 @@ public class DummyPlayer : Player
             speed.Sign();
             dashDir = speed;
         }
-        
+
         foreach (DashListener dashListener in Scene.Tracker.GetComponents<DashListener>())
         {
             dashListener.OnDash?.Invoke(dashDir);

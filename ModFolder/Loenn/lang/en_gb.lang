@@ -292,7 +292,7 @@ entities.LuckyHelper/LinkedWire.attributes.description.ignoreLink=If true, the w
 entities.LuckyHelper/DummyPlayer.placements.name.normal=Dummy Player
 entities.LuckyHelper/DummyPlayer.attributes.description.sendOriginalPlayerToTrigger=Some triggers may just work to set some global thing, so using dummy player is enough to trigger them.\nBut if you want to use it for something position related trigger, you can using dummy player with Eevee/FlagMover or something.\nIf you want to trigger something with dummy player and set original player's data like where the camera should look at, you can check this option to realize it(but in some triggers like SmoothCameraOffsetTrigger, you should uncheck this).\nSo, whether you should check this depends on how the trigger is implemented, if you don't know the details, just try both lol :)
 entities.LuckyHelper/DummyPlayer.attributes.description.triggerDashFlag=Once the flag is detected, it will be removed and dummy player will trigger dash event once like player do a dash to trigger some objects like swapblock or something else\nif you want to use it in dash code or somewhere, I treat dummy player's movement dir as dash dir, so you can use some movement entity like `EeveeHelper/FlagMover` to control its "dash dir" 
-
+entities.LuckyHelper/DummyPlayer.attributes.description.affectedByWind=Whether player will be blew by wind
 
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger

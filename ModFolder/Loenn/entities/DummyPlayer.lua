@@ -5,7 +5,8 @@ local entity = {
         name = "normal",
         data = {
             sendOriginalPlayerToTrigger = false,
-            triggerDashFlag = "LuckyHelper_TriggerDashFlag"
+            triggerDashFlag = "LuckyHelper_TriggerDashFlag",
+            affectedByWind = false
         }
     },
     texture = "characters/player/sitDown00",
