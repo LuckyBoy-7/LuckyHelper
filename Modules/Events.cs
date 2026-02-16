@@ -4,6 +4,7 @@ using LuckyHelper.Module;
 using LuckyHelper.Utils;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
+using LevelLoader = On.Celeste.LevelLoader;
 
 namespace LuckyHelper.Modules;
 
@@ -15,7 +16,7 @@ public static class Events
 
     public static event OnMapDataLoadDelegate OnMapDataLoad;
 
-    public const string AtlasPathReplacer_Registered_Token = "LuckyHelper_AtlasPathReplacer_Registered";
+    public const string MapDataChangedToken = "LuckyHelper_MapDataChanged";
 
     private static MapData lastMapData;
 
@@ -23,10 +24,8 @@ public static class Events
     public static void Load()
     {
         On.Celeste.Level.LoadLevel += LevelOnLoadLevel;
+        On.Celeste.LevelLoader.LoadingThread += LevelLoaderOnLoadingThread;
         Everest.Events.AssetReload.OnReloadLevel += OnReloadLevel;
-        
-        var mapDataLoadMethodInfo = typeof(MapData).GetMethod("Load", BindingFlags.Instance | BindingFlags.NonPublic);
-        OnCelesteMapDataLoadHook = new Hook(mapDataLoadMethodInfo, OnCelesteMapDataLoad);
     }
 
 
@@ -34,6 +33,7 @@ public static class Events
     public static void Unload()
     {
         On.Celeste.Level.LoadLevel -= LevelOnLoadLevel;
+        On.Celeste.LevelLoader.LoadingThread -= LevelLoaderOnLoadingThread;
         Everest.Events.AssetReload.OnReloadLevel -= OnReloadLevel;
 
         OnCelesteMapDataLoadHook.Dispose();
@@ -41,7 +41,7 @@ public static class Events
         if (lastMapData != null)
         {
             DynamicData dd = DynamicData.For(lastMapData);
-            dd.Data.Remove(AtlasPathReplacer_Registered_Token);
+            dd.Data.Remove(MapDataChangedToken);
             lastMapData = null;
         }
     }
@@ -53,28 +53,34 @@ public static class Events
 
     private static void MapDataLoad(MapData mapData)
     {
+        lastMapData = mapData;
         OnMapDataLoad?.Invoke(mapData);
-    }
-
-    private static void OnCelesteMapDataLoad(OnMapDataLoadDelegate orig, MapData mapData)
-    {
-        orig(mapData);
-        // DynamicData.For(mapData).Set(AtlasPathReplacer_Registered_Token, true);
-        // MapDataLoad(mapData);
+        DynamicData dynamicData = DynamicData.For(mapData);
+        dynamicData.Set(MapDataChangedToken, true);
     }
 
     private static void LevelOnLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader)
     {
         MapData mapData = self.Session.MapData;
+        UpdateTokenState(mapData);
+        orig(self, playerIntro, isFromLoader);
+    }
+
+    private static void UpdateTokenState(MapData mapData)
+    {
         DynamicData dynamicData = DynamicData.For(mapData);
-        dynamicData.TryGet<bool?>(AtlasPathReplacer_Registered_Token, out var registered);
+        dynamicData.TryGet<bool?>(MapDataChangedToken, out var registered);
         if (registered == null || !registered.Value)
-        { 
-            lastMapData = mapData;
-            dynamicData.Set(AtlasPathReplacer_Registered_Token, true);
+        {
+            dynamicData.Set(MapDataChangedToken, true);
             MapDataLoad(mapData);
         }
+    }
 
-        orig(self, playerIntro, isFromLoader);
+    private static void LevelLoaderOnLoadingThread(LevelLoader.orig_LoadingThread orig, Celeste.LevelLoader self)
+    {
+        MapData mapData = self.session.MapData;
+        MapDataLoad(mapData);
+        orig(self);
     }
 }
