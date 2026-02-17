@@ -1,6 +1,6 @@
 namespace LuckyHelper.Extensions;
 
-internal static class EntityDataExtensions
+public static class EntityDataExtensions
 {
     /// <summary>
     /// 适配一些实体的老的Key
@@ -26,4 +26,28 @@ internal static class EntityDataExtensions
     public static float FitFloat(this EntityData data, float defaultValue, params string[] keys) => Fit(data, data.Float, defaultValue, keys);
     public static Color FitColor(this EntityData data, Color defaultValue, params string[] keys) => Fit(data, data.HexColor, defaultValue, keys);
     public static bool FitBool(this EntityData data, bool defaultValue, params string[] keys) => Fit(data, data.Bool, defaultValue, keys);
+
+    public static EntityData Clone(this EntityData orig)
+    {
+        var newData = new EntityData
+        {
+            Name = orig.Name,
+            ID = orig.ID,
+            Level = orig.Level, // 应用偏移
+            Position = orig.Position, // 应用偏移
+            Width = orig.Width,
+            Height = orig.Height,
+            Origin = orig.Origin,
+            Nodes = orig.Nodes?.Select(node => node).ToArray()
+        };
+        if (orig.Values != null)
+            newData.Values = new Dictionary<string, object>(orig.Values);
+
+        return newData;
+    }
+    
+    public static Vector2 Center(this EntityData orig)
+    {
+        return orig.Position + new Vector2(orig.Width, orig.Height) / 2;
+    }
 }

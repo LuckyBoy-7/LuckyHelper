@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using Celeste.Mod.Entities;
+using LuckyHelper.Extensions;
 using LuckyHelper.Module;
 using LuckyHelper.Modules;
 using LuckyHelper.Utils;
@@ -12,21 +13,35 @@ namespace LuckyHelper.Entities.Room;
 [CustomEntity("LuckyHelper/PasteRoom")]
 public class PasteRoom : Entity
 {
-    private string pastedFromID;
+    public class CopiedLevelData
+    {
+        public List<EntityData> Entities;
+        public List<EntityData> Triggers;
+        public List<DecalData> FgDecals;
+        public List<DecalData> BgDecals;
+        public string Solids;
+        public string Bg;
+    }
+
+    public static Dictionary<string, CopiedLevelData> levelToCopiedLevelData = new();
+    public static Dictionary<LevelData, List<PasteRoom>> levelToPasteRooms = new();
+
+
+    public string PastedFromRoom;
     public int PasteOrder;
     public float OffsetX;
     public float OffsetY;
     private bool pasteEntity;
     private bool pasteTrigger;
-    private bool pasteForegroundDecal;
-    private bool pasteBackgroundDecal;
-    private bool pasteForegroundTile;
-    private bool pasteBackgroundTile;
+    public bool pasteForegroundDecal;
+    public bool pasteBackgroundDecal;
+    public bool pasteForegroundTile;
+    public bool pasteBackgroundTile;
 
 
     public PasteRoom(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
-        pastedFromID = data.Attr("pastedFromID");
+        PastedFromRoom = data.Attr("pastedFromRoom");
         PasteOrder = data.Int("pasteOrder");
         OffsetX = data.Float("offsetX");
         OffsetY = data.Float("offsetY");
@@ -40,21 +55,66 @@ public class PasteRoom : Entity
 
     public static ILHook origLevelLoadHook;
 
-    [Load]
     public static void Load()
     {
         origLevelLoadHook = new ILHook(typeof(Level).GetMethod("orig_LoadLevel"), LevelOnOirgLoadLevelILHook);
         IL.Celeste.LevelLoader.LoadingThread += LevelLoaderOnLoadingThread;
+        Events.OnMapDataLoad += EventsOnOnMapDataLoad;
     }
 
 
-    [Unload]
     public static void Unload()
     {
         origLevelLoadHook?.Dispose();
         origLevelLoadHook = null;
 
         IL.Celeste.LevelLoader.LoadingThread -= LevelLoaderOnLoadingThread;
+        Events.OnMapDataLoad -= EventsOnOnMapDataLoad;
+    }
+
+
+    private static void EventsOnOnMapDataLoad(MapData mapData)
+    {
+        levelToCopiedLevelData.Clear();
+        levelToPasteRooms.Clear();
+
+        HashSet<string> shouldCopiedLevels = new();
+        foreach (var levelData in mapData.Levels)
+        {
+            foreach (var entityData in levelData.Entities)
+            {
+                if (entityData.Name != "LuckyHelper/PasteRoom")
+                    continue;
+
+                if (!levelToPasteRooms.ContainsKey(levelData))
+                    levelToPasteRooms[levelData] = new List<PasteRoom>();
+                PasteRoom pasteRoom = new PasteRoom(entityData, Vector2.Zero);
+                levelToPasteRooms[levelData].Add(pasteRoom);
+                shouldCopiedLevels.Add(pasteRoom.PastedFromRoom);
+            }
+        }
+
+        foreach (var (_, pasteRooms) in levelToPasteRooms)
+        {
+            pasteRooms.Sort((left, right) => left.PasteOrder - right.PasteOrder);
+        }
+
+        foreach (var levelData in mapData.Levels)
+        {
+            if (!shouldCopiedLevels.Contains(levelData.Name))
+                continue;
+            CopiedLevelData data = new CopiedLevelData
+            {
+                Entities = levelData.Entities,
+                Triggers = levelData.Triggers,
+                FgDecals = levelData.FgDecals,
+                BgDecals = levelData.BgDecals,
+                Solids = levelData.Solids,
+                Bg = levelData.Bg
+            };
+
+            levelToCopiedLevelData[levelData.Name] = data;
+        }
     }
 
     private static void LevelLoaderOnLoadingThread(ILContext il)
@@ -79,11 +139,11 @@ public class PasteRoom : Entity
         Rectangle mapTileBounds = mapData.TileBounds;
         Regex regex = new Regex("\\r\\n|\\n\\r|\\n|\\r");
 
-        foreach (var (levelData, pasteRooms) in CopyRoom.levelToPasteRooms)
+        foreach (var (levelData, pasteRooms) in levelToPasteRooms)
         {
             foreach (var pasteRoom in pasteRooms)
             {
-                if (!CopyRoom.levelToCopiedLevelData.TryGetValue(pasteRoom.pastedFromID, out CopyRoom.CopiedLevelData copiedData))
+                if (!levelToCopiedLevelData.TryGetValue(pasteRoom.PastedFromRoom, out CopiedLevelData copiedData))
                     continue;
 
                 int offsetX = (int)Math.Floor(pasteRoom.OffsetX / 8 + 0.5f);
@@ -176,14 +236,14 @@ public class PasteRoom : Entity
     }
 
 
-    private static List<T> InsertItems<T>(LevelData levelData, List<T> items, Func<PasteRoom, bool> condition, Func<CopyRoom.CopiedLevelData, List<T>> selectItem)
+    private static List<T> InsertItems<T>(LevelData levelData, List<T> items, Func<PasteRoom, bool> condition, Func<CopiedLevelData, List<T>> selectItem)
     {
-        if (!CopyRoom.levelToPasteRooms.TryGetValue(levelData, out List<PasteRoom> pasteRooms))
+        if (!levelToPasteRooms.TryGetValue(levelData, out List<PasteRoom> pasteRooms))
             return items;
         List<T> newItems = new();
         foreach (PasteRoom pasteRoom in pasteRooms)
         {
-            if (condition(pasteRoom) && CopyRoom.levelToCopiedLevelData.TryGetValue(pasteRoom.pastedFromID, out CopyRoom.CopiedLevelData copiedData))
+            if (condition(pasteRoom) && levelToCopiedLevelData.TryGetValue(pasteRoom.PastedFromRoom, out CopiedLevelData copiedData))
             {
                 List<T> selectItems = selectItem(copiedData);
 
@@ -217,49 +277,16 @@ public class PasteRoom : Entity
 
 
     private static List<EntityData> InsertCopiedEntities(List<EntityData> entityDatas, LevelData levelData) =>
-        InsertItems(levelData, entityDatas, pasteRoom => pasteRoom.pasteEntity, data => data.Entities.Select(GetCopiedEntityData).ToList());
+        InsertItems(levelData, entityDatas, pasteRoom => pasteRoom.pasteEntity, data => data.Entities.Select(EntityDataExtensions.Clone).ToList());
 
     private static List<EntityData> InsertCopiedTriggers(List<EntityData> entityDatas, LevelData levelData) =>
-        InsertItems(levelData, entityDatas, pasteRoom => pasteRoom.pasteTrigger, data => data.Triggers.Select(GetCopiedEntityData).ToList());
+        InsertItems(levelData, entityDatas, pasteRoom => pasteRoom.pasteTrigger, data => data.Triggers.Select(EntityDataExtensions.Clone).ToList());
 
     private static List<DecalData> InsertCopiedFgDecals(List<DecalData> entityDatas, LevelData levelData) =>
-        InsertItems(levelData, entityDatas, pasteRoom => pasteRoom.pasteForegroundDecal, data => data.FgDecals.Select(GetCopiedDecalData).ToList());
+        InsertItems(levelData, entityDatas, pasteRoom => pasteRoom.pasteForegroundDecal, data => data.FgDecals.Select(DecalDataExtensions.Clone).ToList());
 
     private static List<DecalData> InsertCopiedBgDecals(List<DecalData> entityDatas, LevelData levelData) =>
-        InsertItems(levelData, entityDatas, pasteRoom => pasteRoom.pasteBackgroundDecal, data => data.BgDecals.Select(GetCopiedDecalData).ToList());
+        InsertItems(levelData, entityDatas, pasteRoom => pasteRoom.pasteBackgroundDecal, data => data.BgDecals.Select(DecalDataExtensions.Clone).ToList());
 
-    private static EntityData GetCopiedEntityData(EntityData orig)
-    {
-        var newData = new EntityData
-        {
-            Name = orig.Name,
-            ID = orig.ID,
-            Level = orig.Level, // 应用偏移
-            Position = orig.Position, // 应用偏移
-            Width = orig.Width,
-            Height = orig.Height,
-            Origin = orig.Origin,
-            Nodes = orig.Nodes?.Select(node => node).ToArray()
-        };
-        if (orig.Values != null)
-            newData.Values = new Dictionary<string, object>(orig.Values);
 
-        return newData;
-    }
-
-    private static DecalData GetCopiedDecalData(DecalData orig)
-    {
-        var newData = new DecalData
-        {
-            Texture = orig.Texture,
-            Position = orig.Position,
-            Scale = orig.Scale, // 应用偏移
-            Rotation = orig.Rotation, // 应用偏移
-            ColorHex = orig.ColorHex,
-            Depth = orig.Depth,
-            Parallax = orig.Parallax,
-        };
-
-        return newData;
-    }
 }

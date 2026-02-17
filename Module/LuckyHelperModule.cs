@@ -1,3 +1,5 @@
+using LuckyHelper.Entities.Misc;
+using LuckyHelper.Entities.Room;
 using LuckyHelper.Handlers;
 using LuckyHelper.Handlers.Impl;
 using LuckyHelper.ModInterop;
@@ -32,14 +34,14 @@ public class LuckyHelperModule : EverestModule
     public override void Initialize()
     {
         AttributeUtils.Invoke<InitializeAttribute>();
-        
+
         // https://discord.com/channels/403698615446536203/908809001834274887/1418153890020589668
         // 有点不理解, 所以暂时先这么写了(看了源码感觉没问题, 但是实际上用 GetComponentsTrackIfNeeded 的时候可能触发 failed for an unknown reason
         if (!Tracker.StoredComponentTypes.Contains(typeof(TalkComponent)))
         {
             Tracker.AddTypeToTracker(typeof(TalkComponent));
         }
-        
+
         if (!Tracker.StoredEntityTypes.Contains(typeof(TextMenu)))
         {
             Tracker.AddTypeToTracker(typeof(TextMenu));
@@ -50,6 +52,7 @@ public class LuckyHelperModule : EverestModule
     {
         ModCompatModule.Load();
         AttributeUtils.Invoke<LoadAttribute>();
+        CustomOrderedLoad();
 
 
         // eevee: https://github.com/CommunalHelper/EeveeHelper/blob/dev/Code/EeveeHelperModule.cs#L48
@@ -71,8 +74,20 @@ public class LuckyHelperModule : EverestModule
             (entity, container) => SwapBlockHandler.InsideCheck(container, false, entity as SwapBlock));
         EntityHandler.RegisterInherited<Decal>((entity, container) => new DecalHandler(entity),
             (entity, container) => container.CheckDecal(entity as Decal));
-        
+
         typeof(LuckyHelperExports).ModInterop();
+    }
+
+    private void CustomOrderedLoad()
+    {
+        PasteItem.Load();
+        PasteRoom.Load();
+    }
+
+    private void CustomOrderedUnload()
+    {
+        PasteItem.Unload();
+        PasteRoom.Unload();
     }
 
     public override void LoadContent(bool firstLoad)
@@ -85,5 +100,6 @@ public class LuckyHelperModule : EverestModule
     {
         ModCompatModule.Unload();
         AttributeUtils.Invoke<UnloadAttribute>();
+        CustomOrderedUnload();
     }
 }

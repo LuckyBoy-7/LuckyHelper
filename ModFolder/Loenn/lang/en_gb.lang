@@ -294,13 +294,9 @@ entities.LuckyHelper/DummyPlayer.attributes.description.sendOriginalPlayerToTrig
 entities.LuckyHelper/DummyPlayer.attributes.description.triggerDashFlag=Once the flag is detected, it will be removed and dummy player will trigger dash event once like player do a dash to trigger some objects like swapblock or something else\nif you want to use it in dash code or somewhere, I treat dummy player's movement dir as dash dir, so you can use some movement entity like `EeveeHelper/FlagMover` to control its "dash dir" 
 entities.LuckyHelper/DummyPlayer.attributes.description.affectedByWind=Whether player will be blew by wind
 
-# Copy Room
-entities.LuckyHelper/CopyRoom.placements.name.normal=Copy Room
-entities.LuckyHelper/CopyRoom.attributes.description.copiedToID=Room's information will be stored in the ID you filled in, and you can paste the info with `PasteRoom` entity afterwards
-
 # Paste Room
 entities.LuckyHelper/PasteRoom.placements.name.normal=Paste Room
-entities.LuckyHelper/PasteRoom.attributes.description.pastedFromID=You can paste information stored in ID that you previous stored it with `CopyRoom` entity
+entities.LuckyHelper/PasteRoom.attributes.description.pastedFromRoom=Which room you want to paste
 entities.LuckyHelper/PasteRoom.attributes.description.pasteOrder=If you want to paste more than one room, you may want to control the paste order, although there's almost nothing affected by this
 entities.LuckyHelper/PasteRoom.attributes.description.offsetX=By defalut, the copied room items will be placed at the same relative position in the new room, so this option controls x offset of the paste
 entities.LuckyHelper/PasteRoom.attributes.description.offsetY=By defalut, the copied room items will be placed at the same relative position in the new room, so this option controls y offset of the paste
@@ -310,6 +306,17 @@ entities.LuckyHelper/PasteRoom.attributes.description.pasteForegroundDecal=Do yo
 entities.LuckyHelper/PasteRoom.attributes.description.pasteBackgroundDecal=Do you want to paste background decals from the copied room?
 entities.LuckyHelper/PasteRoom.attributes.description.pasteForegroundTile=Do you want to paste foreground tiles from the copied room?
 entities.LuckyHelper/PasteRoom.attributes.description.pasteBackgroundTile=Do you want to paste background tiles from the copied room?
+
+
+# Paste Item
+entities.LuckyHelper/PasteItem.placements.name.normal=Paste Item
+entities.LuckyHelper/PasteItem.attributes.description.pastedFromID=You can paste the info that stored with `Paste Item Trigger` entity
+entities.LuckyHelper/PasteItem.attributes.description.pasteEntity=Do you want to paste entities from the copied collection?
+entities.LuckyHelper/PasteItem.attributes.description.pasteTrigger=Do you want to paste triggers from the copied collection?
+entities.LuckyHelper/PasteItem.attributes.description.pasteForegroundDecal=Do you want to paste foreground decals from the copied collection?
+entities.LuckyHelper/PasteItem.attributes.description.pasteBackgroundDecal=Do you want to paste background decals from the copied collection?
+entities.LuckyHelper/PasteItem.attributes.description.pasteForegroundTile=Do you want to paste foreground tiles from the copied collection?
+entities.LuckyHelper/PasteItem.attributes.description.pasteBackgroundTile=Do you want to paste background tiles from the copied collection?
 
 
 #todo Triggers =======================================================================================================================================
@@ -434,3 +441,7 @@ triggers.LuckyHelper/CameraUpdateHelper.attributes.description.disablePlayerCame
 
 # Player Invincible Controller
 triggers.LuckyHelper/PlayerInvincibleController.placements.name.normal=Player Invincible Controller
+
+# Copy Item
+triggers.LuckyHelper/CopyItem.placements.name.normal=Copy Item
+triggers.LuckyHelper/CopyItem.attributes.description.copiedToID=Items' information will be stored in the ID you filled in, and you can paste the info with `PasteItem` entity afterwards

@@ -5,7 +5,7 @@ entity.name = "LuckyHelper/PasteRoom"
 entity.placements = {
     name = "normal",
     data = {
-        pastedFromID = "exampleID",
+        pastedFromRoom = "",
         pasteOrder = 0,
         offsetX = 0,
         offsetY = 0,
@@ -24,7 +24,7 @@ entity.placements = {
 entity.fieldOrder = {
     "x", "y",
     "offsetX", "offsetY",
-    "pastedFromID", "pasteOrder",
+    "pastedFromRoom", "pasteOrder",
     "pasteEntity", "pasteTrigger",
     "pasteForegroundDecal", "pasteBackgroundDecal",
     "pasteForegroundTile", "pasteBackgroundTile",
@@ -33,9 +33,12 @@ entity.fieldOrder = {
 entity.fieldInformation = {
     pasteOrder = {
         fieldType = "integer"
+    },
+    pastedFromRoom = {
+        fieldType = "LuckyHelper.room_names"
     }
 }
 
-entity.texture = "LuckyHelper/room/paste_room"
+entity.texture = "LuckyHelper/room/copy_room"
 
 return entity

@@ -46,5 +46,21 @@ namespace Lucky.Kits.Extensions
 
             return res;
         }
+
+        public static (List<T> matched, List<T> unmatched) Partition<T>(
+            this IEnumerable<T> source, Func<T, bool> predicate)
+        {
+            var matched = new List<T>();
+            var unmatched = new List<T>();
+            foreach (var item in source)
+            {
+                if (predicate(item)) 
+                    matched.Add(item);
+                else 
+                    unmatched.Add(item);
+            }
+
+            return (matched, unmatched);
+        }
     }
 }
