@@ -79,7 +79,6 @@ public class LuckyHelperModule : EverestModule
         typeof(LuckyHelperExports).ModInterop();
     }
 
-
     public override void LoadContent(bool firstLoad)
     {
         base.LoadContent(firstLoad);
@@ -90,6 +89,7 @@ public class LuckyHelperModule : EverestModule
     {
         ModCompatModule.Unload();
         AttributeUtils.Invoke<UnloadAttribute>();
+
 
         PasteRoom.Unload();
     }

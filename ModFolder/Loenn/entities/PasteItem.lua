@@ -10,6 +10,9 @@ entity.placements = {
     name = "normal",
     data = {
         pastedFromID = "exampleID",
+        generateFlag = "LuckyHelper_GenerateItemFlag",
+
+        pasteOnEnter = true,
         
         pasteEntity = true,
         pasteTrigger = true,
@@ -21,7 +24,8 @@ entity.placements = {
 
 entity.fieldOrder = {
     "x", "y",
-    "pastedFromID", 
+    "pastedFromID", "generateFlag",
+    "pasteOnEnter",
     "pasteEntity", "pasteTrigger",
     "pasteForegroundDecal", "pasteBackgroundDecal",
 }

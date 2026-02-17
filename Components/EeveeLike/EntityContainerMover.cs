@@ -27,7 +27,8 @@ public class EntityContainerMover : EntityContainer
     
     private static HashSet<Type> IgnoreAnchorTypes = new()
     {
-        typeof(DummyPlayer)
+        typeof(DummyPlayer),
+        typeof(PasteItem),
     };
 
     public Vector4 Padding;

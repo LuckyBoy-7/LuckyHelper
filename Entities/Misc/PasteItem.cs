@@ -15,6 +15,8 @@ namespace LuckyHelper.Entities.Misc;
 public class PasteItem : Entity
 {
     public string PastedFromID;
+    private string generateFlag;
+    private bool pasteOnEnter;
     public bool pasteEntity;
     public bool pasteTrigger;
     public bool pasteForegroundDecal;
@@ -22,193 +24,95 @@ public class PasteItem : Entity
 
     public Vector2 PositionRelativeToRoom;
 
+    private Vector2 origPosition;
+
 
     public PasteItem(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
         PositionRelativeToRoom = data.Position;
+        origPosition = Position;
         PastedFromID = data.Attr("pastedFromID");
+        generateFlag = data.Attr("generateFlag", "LuckyHelper_GenerateItemFlag");
+        pasteOnEnter = data.Bool("pasteOnEnter", true);
         pasteEntity = data.Bool("pasteEntity");
         pasteTrigger = data.Bool("pasteTrigger");
         pasteForegroundDecal = data.Bool("pasteForegroundDecal");
         pasteBackgroundDecal = data.Bool("pasteBackgroundDecal");
     }
 
-    public static ILHook origLevelLoadHook;
-
-    public static void Load()
+    public override void Added(Scene scene)
     {
-        origLevelLoadHook = new ILHook(typeof(Level).GetMethod("orig_LoadLevel"), LevelOnOirgLoadLevelILHook);
-    }
-
-
-    public static void Unload()
-    {
-        origLevelLoadHook?.Dispose();
-        origLevelLoadHook = null;
-    }
-
-
-    // 本来可以提前记录省点的, 但后来发现好像
-    public static List<PasteItem> currentPasteItems = new();
-
-
-    private static void LevelOnOirgLoadLevelILHook(ILContext il)
-    {
-        ILCursor cursor = new ILCursor(il);
-
-        Type levelDataType = typeof(LevelData);
-        if (cursor.TryGotoNext(ins => ins.MatchLdfld(levelDataType.GetField("Entities"))
-            ))
-        {
-            cursor.Index += 1;
-
-            cursor.EmitDup();
-            cursor.EmitDelegate(InitializeCurrentPasteItems);
-
-            cursor.EmitLdloc3();
-            cursor.EmitDelegate(InsertCopiedEntities);
-        }
-
-        if (cursor.TryGotoNext(ins => ins.MatchLdfld(levelDataType.GetField("Triggers"))
-            ))
-        {
-            cursor.Index += 1;
-
-            cursor.EmitLdloc3();
-            cursor.EmitDelegate(InsertCopiedTriggers);
-        }
-
-        if (cursor.TryGotoNext(ins => ins.MatchLdfld(levelDataType.GetField("FgDecals"))
-            ))
-        {
-            cursor.Index += 1;
-
-            cursor.EmitLdloc3();
-            cursor.EmitDelegate(InsertCopiedFgDecals);
-        }
-
-        if (cursor.TryGotoNext(ins => ins.MatchLdfld(levelDataType.GetField("BgDecals"))
-            ))
-        {
-            cursor.Index += 1;
-
-            cursor.EmitLdloc3();
-            cursor.EmitDelegate(InsertCopiedBgDecals);
-        }
-    }
-
-    public static void InitializeCurrentPasteItems(List<EntityData> entities)
-    {
-        currentPasteItems = entities.Where(entityData => entityData.Name == "LuckyHelper/PasteItem")
-            .Select(data => new PasteItem(data, Vector2.Zero)).ToList();
-    }
-
-
-    private static List<T> AddCopiedItems<T>(LevelData levelData, List<T> items, Func<PasteItem, bool> condition,
-        Func<CopyItem.CopiedItemData, List<CopyItem.DataWithOffset<T>>> selectItem)
-    {
-        if (currentPasteItems.Count == 0)
-            return items;
+        base.Added(scene);
+        if (pasteOnEnter)
+            NewCopiedItems();
         
-        List<T> newItems = new();
-        foreach (PasteItem pasteItem in currentPasteItems)
-        {
-            if (condition(pasteItem) && CopyItem.idToCopiedItemData.TryGetValue(pasteItem.PastedFromID, out CopyItem.CopiedItemData copiedData))
-            {
-                InsertItems(newItems, pasteItem, selectItem);
-            }
-        }
-
-        if (newItems.Count == 0)
-            return items;
-
-        List<T> returnItems = new(items);
-        returnItems.AddRange(newItems);
-        return returnItems;
     }
 
-    private static void InsertItems<T>(List<T> items, PasteItem pasteItem, Func<CopyItem.CopiedItemData, List<CopyItem.DataWithOffset<T>>> selectItem)
+    public override void Update()
     {
-        if (!CopyItem.idToCopiedItemData.TryGetValue(pasteItem.PastedFromID, out CopyItem.CopiedItemData copiedData))
-            return;
-        List<CopyItem.DataWithOffset<T>> selectItems = selectItem(copiedData);
+        base.Update();
 
-        if (typeof(T) != typeof(EntityData))
+        if (this.TriggeredByFlag(generateFlag))
         {
-            pasteItem.ApplyOffset(selectItems);
-            items.AddRange(selectItems.Select(dataWithOffset => dataWithOffset.Data));
-            return;
-        }
-
-        var (pasteDatas, normalDatas) = selectItems.Partition(dataWithOffset =>
-        {
-            if (dataWithOffset.Data is EntityData entityData)
-            {
-                return entityData.Name == "LuckyHelper/PasteItem";
-            }
-
-            return false;
-        });
-
-        // 同时 offset 了 PasteItem, 方便后边 PasteItem offset 其他的 item
-        pasteItem.ApplyOffset(selectItems);
-        items.AddRange(normalDatas.Select(dataWithOffset => dataWithOffset.Data));
-
-        foreach (var pasteData in pasteDatas)
-        {
-            PasteItem paste = new PasteItem(pasteData.Data as EntityData, pasteData.PivotToItemOffset);
-            InsertItems(items, paste, selectItem);
+            NewCopiedItems();
         }
     }
 
-    private void ApplyOffset<T>(List<CopyItem.DataWithOffset<T>> datas)
+    private void NewCopiedItems()
     {
-        foreach (var dataWithOffset in datas)
+        if (CopyItem.idToCopiedItemData.TryGetValue(PastedFromID, out var copiedItemData))
         {
-            Vector2 offsetPosition = dataWithOffset.PivotToItemOffset + PositionRelativeToRoom;
-            if (dataWithOffset.Data is EntityData entityData)
+            Level level = this.Level();
+
+            // 因为 PasteItem 有可能会被移动, 所以还得算上后续场景中 PasteItem 的偏移
+            Vector2 relativePosition = PositionRelativeToRoom + Position - origPosition;
+            if (pasteEntity)
             {
-                entityData.Position = offsetPosition;
+                foreach (var entityDataWithOffset in copiedItemData.Entities)
+                {
+                    EntityData clonedEntityData = entityDataWithOffset.Data.Clone();
+                    Vector2 offsetPosition = entityDataWithOffset.PivotToItemOffset + relativePosition;
+                    clonedEntityData.Position = offsetPosition;
+
+                    level.AddEntityWithEntityData(clonedEntityData);
+                }
             }
-            else if (dataWithOffset.Data is DecalData decalData)
+
+            if (pasteTrigger)
             {
-                decalData.Position = offsetPosition;
+                foreach (var entityDataWithOffset in copiedItemData.Triggers)
+                {
+                    EntityData clonedEntityData = entityDataWithOffset.Data.Clone();
+                    Vector2 offsetPosition = entityDataWithOffset.PivotToItemOffset + relativePosition;
+                    clonedEntityData.Position = offsetPosition;
+
+                    level.AddEntityWithTriggerData(clonedEntityData);
+                }
+            }
+
+            if (pasteForegroundDecal)
+            {
+                foreach (var decalDataWithOffset in copiedItemData.FgDecals)
+                {
+                    DecalData clonedDecalData = decalDataWithOffset.Data.Clone();
+                    Vector2 offsetPosition = decalDataWithOffset.PivotToItemOffset + relativePosition;
+                    clonedDecalData.Position = offsetPosition;
+
+                    level.AddEntityWithDecalData(clonedDecalData, true);
+                }
+            }
+
+            if (pasteBackgroundDecal)
+            {
+                foreach (var decalDataWithOffset in copiedItemData.BgDecals)
+                {
+                    DecalData clonedDecalData = decalDataWithOffset.Data.Clone();
+                    Vector2 offsetPosition = decalDataWithOffset.PivotToItemOffset + relativePosition;
+                    clonedDecalData.Position = offsetPosition;
+
+                    level.AddEntityWithDecalData(clonedDecalData, false);
+                }
             }
         }
-    }
-
-
-    private static List<EntityData> InsertCopiedEntities(List<EntityData> entityDatas, LevelData levelData) =>
-        AddCopiedItems(levelData, entityDatas, pasteItem => pasteItem.pasteEntity, data => data.Entities.Select(GetCopiedEntityData).ToList());
-
-    private static List<EntityData> InsertCopiedTriggers(List<EntityData> entityDatas, LevelData levelData) =>
-        AddCopiedItems(levelData, entityDatas, pasteItem => pasteItem.pasteTrigger, data => data.Triggers.Select(GetCopiedEntityData).ToList());
-
-    private static List<DecalData> InsertCopiedFgDecals(List<DecalData> entityDatas, LevelData levelData) =>
-        AddCopiedItems(levelData, entityDatas, pasteItem => pasteItem.pasteForegroundDecal, data => data.FgDecals.Select(GetCopiedDecalData).ToList());
-
-    private static List<DecalData> InsertCopiedBgDecals(List<DecalData> entityDatas, LevelData levelData) =>
-        AddCopiedItems(levelData, entityDatas, pasteItem => pasteItem.pasteBackgroundDecal, data => data.BgDecals.Select(GetCopiedDecalData).ToList());
-
-    private static CopyItem.DataWithOffset<EntityData> GetCopiedEntityData(CopyItem.DataWithOffset<EntityData> orig)
-    {
-        var newData = new CopyItem.DataWithOffset<EntityData>()
-        {
-            Data = orig.Data.Clone(),
-            PivotToItemOffset = orig.PivotToItemOffset
-        };
-
-        return newData;
-    }
-
-    private static CopyItem.DataWithOffset<DecalData> GetCopiedDecalData(CopyItem.DataWithOffset<DecalData> orig)
-    {
-        var newData = new CopyItem.DataWithOffset<DecalData>()
-        {
-            Data = orig.Data.Clone(),
-            PivotToItemOffset = orig.PivotToItemOffset
-        };
-
-        return newData;
     }
 }

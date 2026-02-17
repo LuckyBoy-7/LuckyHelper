@@ -28,14 +28,27 @@ public class DecalWithCombinedRegistry : Decal
 
     public static Color HexToColorWithAlpha(string hex)
     {
-        if (hex.Length == 8 && hex.All(char.IsLetterOrDigit))
+        if (hex.All(char.IsLetterOrDigit))
         {
-            byte r = Convert.ToByte(hex.Substring(0, 2), 16);
-            byte g = Convert.ToByte(hex.Substring(2, 2), 16);
-            byte b = Convert.ToByte(hex.Substring(4, 2), 16);
-            byte a = Convert.ToByte(hex.Substring(6, 2), 16);
-            return new Color(r, g, b, 255) * (a / 255f);
+            if (hex.Length == 8)
+            {
+                byte r = Convert.ToByte(hex.Substring(0, 2), 16);
+                byte g = Convert.ToByte(hex.Substring(2, 2), 16);
+                byte b = Convert.ToByte(hex.Substring(4, 2), 16);
+                byte a = Convert.ToByte(hex.Substring(6, 2), 16);
+                return new Color(r, g, b, 255) * (a / 255f);
+            }
+        
+            // 有猪啊, 加了 alpha 忘记处理原来的颜色了(
+            if (hex.Length == 6)
+            {
+                byte r = Convert.ToByte(hex.Substring(0, 2), 16);
+                byte g = Convert.ToByte(hex.Substring(2, 2), 16);
+                byte b = Convert.ToByte(hex.Substring(4, 2), 16);
+                return new Color(r, g, b, 255);
+            }
         }
+       
 
         return Color.White;
     }

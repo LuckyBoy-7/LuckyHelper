@@ -36,7 +36,7 @@ public static class Events
         On.Celeste.LevelLoader.LoadingThread -= LevelLoaderOnLoadingThread;
         Everest.Events.AssetReload.OnReloadLevel -= OnReloadLevel;
 
-        OnCelesteMapDataLoadHook.Dispose();
+        OnCelesteMapDataLoadHook?.Dispose(); 
         OnCelesteMapDataLoadHook = null;
         if (lastMapData != null)
         {

@@ -62,4 +62,17 @@ public static class EntityExtensions
         other.Collidable = origCollidable;
         return res;
     }
+    
+    public static bool TriggeredByFlag(this Entity entity, string flag)
+    {
+        Session session = entity.Session();
+        if (session == null)
+            return false;
+        if (session.GetFlag(flag))
+        {
+            session.SetFlag(flag, false);
+            return true;
+        }
+        return false;
+    }
 }

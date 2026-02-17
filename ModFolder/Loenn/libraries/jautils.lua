@@ -1,3 +1,4 @@
+-- copied from frost helper
 local drawableSpriteStruct = require("structs.drawable_sprite")
 local drawableRectangleStruct = require("structs.drawable_rectangle")
 local drawableNinePatch = require("structs.drawable_nine_patch")
