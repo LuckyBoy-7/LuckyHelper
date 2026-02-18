@@ -36,7 +36,7 @@
     <decal path="lucky_small_staticMover">
         <staticMover x="-8" y="-8" width="16" height="16"/>
     </decal>
-    <!-- from adamsaddons helper -->
+    <!-- from adamsaddons helper, you should enable them to use their feature -->
     <decal path="lucky_rotate">
         <adamsaddons.rotate speed="1" addX="0" addY="0" addWind="0"/>
     </decal>

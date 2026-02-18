@@ -55,7 +55,7 @@ public class CombinedDecalRegistryModule
         if (!factoryHasInited)
             return;
         
-        Logger.Debug("Combined Decal Registry", "Loading registry for " + decalRegistry.Source.Name);
+        // Logger.Debug("Combined Decal Registry", "Loading registry for " + decalRegistry.Source.Name);
         foreach (KeyValuePair<string, DecalRegistry.DecalInfo> keyValuePair in DecalRegistry.ReadDecalRegistryXml(decalRegistry))
         {
             string decalPath = keyValuePair.Key;
@@ -97,7 +97,7 @@ public class CombinedDecalRegistryModule
     {
         if (!DecalRegistry.PropertyHandlerFactories.TryGetValue(propertyName, out var factory))
         {
-            Logger.Warn("Decal Registry", $"Unknown property {propertyName} in decal {decalName}");
+            // Logger.Warn("Decal Registry", $"Unknown property {propertyName} in decal {decalName}");
             return null;
         }
 

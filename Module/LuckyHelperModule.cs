@@ -52,7 +52,8 @@ public class LuckyHelperModule : EverestModule
     {
         ModCompatModule.Load();
         AttributeUtils.Invoke<LoadAttribute>();
-        CustomOrderedLoad();
+
+        PasteRoom.Load();
 
 
         // eevee: https://github.com/CommunalHelper/EeveeHelper/blob/dev/Code/EeveeHelperModule.cs#L48
@@ -78,17 +79,6 @@ public class LuckyHelperModule : EverestModule
         typeof(LuckyHelperExports).ModInterop();
     }
 
-    private void CustomOrderedLoad()
-    {
-        PasteItem.Load();
-        PasteRoom.Load();
-    }
-
-    private void CustomOrderedUnload()
-    {
-        PasteItem.Unload();
-        PasteRoom.Unload();
-    }
 
     public override void LoadContent(bool firstLoad)
     {
@@ -100,6 +90,7 @@ public class LuckyHelperModule : EverestModule
     {
         ModCompatModule.Unload();
         AttributeUtils.Invoke<UnloadAttribute>();
-        CustomOrderedUnload();
+
+        PasteRoom.Unload();
     }
 }
