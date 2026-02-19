@@ -34,6 +34,7 @@
             <!-- 排除 Code 目录下所有不是自己 dll/pdb 的文件 -->
             <_ModAssetsFolderContents Remove="$(ModAssetsFolderName)/Code/*.dll" Condition="'%(Filename)' != '$(AssemblyName)'"/>
             <_ModAssetsFolderContents Remove="$(ModAssetsFolderName)/Code/*.pdb" Condition="'%(Filename)' != '$(AssemblyName)'"/>
+            <_ModAssetsFolderContents Remove="$(ModAssetsFolderName)/Code/*.xml"/>
 
         </ItemGroup>
         <RemoveDir Directories="$(CelesteRootPath)/Mods/$(AssemblyName)_link" Condition="Exists('$(CelesteRootPath)/Mods/$(AssemblyName)_link')"/>
@@ -50,6 +51,7 @@
             <!-- 排除 Code 目录下所有不是自己 dll/pdb 的文件 -->
             <_ModAssetsFolderContents Remove="$(ModAssetsFolderName)/Code/*.dll" Condition="'%(Filename)' != '$(AssemblyName)'"/>
             <_ModAssetsFolderContents Remove="$(ModAssetsFolderName)/Code/*.pdb" Condition="'%(Filename)' != '$(AssemblyName)'"/>
+            <_ModAssetsFolderContents Remove="$(ModAssetsFolderName)/Code/*.xml"/>
 
         </ItemGroup>
         <RemoveDir Directories="$(CelesteRootPath)/CustomMods/$(AssemblyName)_link" Condition="Exists('$(CelesteRootPath)/CustomMods/$(AssemblyName)_link')"/>
