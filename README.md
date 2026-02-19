@@ -128,3 +128,4 @@ LuckyHelperAreaMetaData:
 * Maddie
 * 云雀
 * 电箱
+* 小豹猫awa
