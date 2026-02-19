@@ -12,28 +12,29 @@ using MonoMod.RuntimeDetour;
 namespace LuckyHelper.Entities.Misc;
 
 [CustomEntity("LuckyHelper/PasteItem")]
+[Tracked]
 public class PasteItem : Entity
 {
-    public string PastedFromID;
+    private string pastedFromID;
     private string generateFlag;
     private bool pasteOnEnter;
-    public bool pasteEntity;
-    public bool pasteTrigger;
-    public bool pasteForegroundDecal;
-    public bool pasteBackgroundDecal;
+    private bool pasteEntity;
+    private bool pasteTrigger;
+    private bool pasteForegroundDecal;
+    private bool pasteBackgroundDecal;
 
-    public Vector2 PositionRelativeToRoom;
+    private Vector2 positionRelativeToRoom;
 
     private Vector2 origPosition;
 
 
     public PasteItem(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
-        PositionRelativeToRoom = data.Position;
+        positionRelativeToRoom = data.Position;
         origPosition = Position;
-        PastedFromID = data.Attr("pastedFromID");
+        pastedFromID = data.Attr("pastedFromID");
         generateFlag = data.Attr("generateFlag", "LuckyHelper_GenerateItemFlag");
-        pasteOnEnter = data.Bool("pasteOnEnter", true);
+        pasteOnEnter = data.FitBool(true, "pasteOnEnterRoom", "pasteOnEnter");
         pasteEntity = data.Bool("pasteEntity");
         pasteTrigger = data.Bool("pasteTrigger");
         pasteForegroundDecal = data.Bool("pasteForegroundDecal");
@@ -44,7 +45,7 @@ public class PasteItem : Entity
     {
         base.Added(scene);
         if (pasteOnEnter)
-            NewCopiedItems();
+            GenerateCopiedItems();
         
     }
 
@@ -54,18 +55,18 @@ public class PasteItem : Entity
 
         if (this.TriggeredByFlag(generateFlag))
         {
-            NewCopiedItems();
+            GenerateCopiedItems();
         }
     }
 
-    private void NewCopiedItems()
+    public void GenerateCopiedItems(Vector2 extraOffset = default)
     {
-        if (CopyItem.idToCopiedItemData.TryGetValue(PastedFromID, out var copiedItemData))
+        if (CopyItem.idToCopiedItemData.TryGetValue(pastedFromID, out var copiedItemData))
         {
             Level level = this.Level();
 
             // 因为 PasteItem 有可能会被移动, 所以还得算上后续场景中 PasteItem 的偏移
-            Vector2 relativePosition = PositionRelativeToRoom + Position - origPosition;
+            Vector2 relativePosition = positionRelativeToRoom + Position - origPosition + extraOffset;
             if (pasteEntity)
             {
                 foreach (var entityDataWithOffset in copiedItemData.Entities)

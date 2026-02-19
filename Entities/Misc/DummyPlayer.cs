@@ -34,7 +34,7 @@ public class DummyPlayer : Player
         triggerRidingFlag = data.Attr("triggerRidingFlag", "LuckyHelper_TriggerRidingFlag");
         triggerCollisionFlag = data.Attr("triggerCollisionFlag", "LuckyHelper_TriggerCollisionFlag");
         affectRadius = data.Float("affectRadius", 114514);
-        affectedByWind = data.FitBool(true, "canAffectedByWind", "affectedByWind");
+        affectedByWind = data.FitBool(true, "affectedByWind", "canAffectedByWind");
 
         whiteBlacklistChecker = new WhiteBlacklistChecker(data);
         Visible = false;

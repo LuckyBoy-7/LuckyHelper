@@ -209,7 +209,7 @@ public static class LevelExtensions
 
                 orig.CassetteBlockBeats = Math.Max(cassetteBlock.Index + 1, orig.CassetteBlockBeats);
 
-                // 如果我们有磁带要复制, 这意味着已经有 CassetteBlockManager 了
+                // 如果我们有磁带要复制, 这意味着已经有 CassetteBlockManager 了(不过好像也不太对, 好像至少磁带得放当前房间里, 不过在房间里额外放一个应该也行x)
                 // if (!flag)
                 // {
                 //  flag = true;

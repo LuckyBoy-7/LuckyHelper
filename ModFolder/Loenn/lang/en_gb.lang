@@ -452,3 +452,14 @@ triggers.LuckyHelper/PlayerInvincibleController.placements.name.normal=Player In
 # Copy Item
 triggers.LuckyHelper/CopyItem.placements.name.normal=Copy Item
 triggers.LuckyHelper/CopyItem.attributes.description.copiedToID=Items' information will be stored in the ID you filled in, and you can paste the info with `PasteItem` entity afterwards\n(by the way, the node position determines the pivot of PasteItem afterwards, you can imagine placing PasteItem at the pivot position and generate items around)
+
+# Paste Item Duplicator
+triggers.LuckyHelper/PasteItemDuplicator.placements.name.normal=Paste Item Duplicator
+triggers.LuckyHelper/PasteItemDuplicator.attributes.description.startOffsetX=Determines the x offset of the first paste compared to the original paste item position
+triggers.LuckyHelper/PasteItemDuplicator.attributes.description.startOffsetY=Determines the y offset of the first paste compared to the original paste item position
+triggers.LuckyHelper/PasteItemDuplicator.attributes.description.startOffsetX=Determines the x offset of the paste compared to the previous pasted position
+triggers.LuckyHelper/PasteItemDuplicator.attributes.description.startOffsetY=Determines the y offset of the paste compared to the previous pasted position
+triggers.LuckyHelper/PasteItemDuplicator.attributes.description.pasteNumber=How many items you want to paste in total
+triggers.LuckyHelper/PasteItemDuplicator.attributes.description.duplicateFlag=Once the flag is detected, it will be removed and Paste Item Duplicator will do paste action once(paste `PasteItem` that is inside the trigger)
+triggers.LuckyHelper/PasteItemDuplicator.attributes.description.duplicateOnEnterRoom=Whether you want to just paste thing at start or control paste action with duplicateFlag by yourself
+triggers.LuckyHelper/PasteItemDuplicator.attributes.description.showDuplicatedOrderNumber=This will generate number text to show the order of duplicated items, which can be helpful when you want to place items in a certain place
