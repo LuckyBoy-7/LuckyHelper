@@ -44,6 +44,7 @@
 * PasteRoom(Entity): 粘贴房间实体 
 * CopyItem(Trigger): 复制 entity, trigger, decal 的实体 
 * PasteItem(Entity): 粘贴 CopyItem 复制的东西 
+* PasteItemDuplicator(Trigger): 使用 PasteItem 来等距的生成多个复制品(114514 系列😱)
 
 ### GhostTranspose -- by Molong
 
