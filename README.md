@@ -127,3 +127,4 @@ LuckyHelperAreaMetaData:
 * Butcherberries
 * Maddie
 * 云雀
+* 电箱
