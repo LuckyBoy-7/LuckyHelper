@@ -325,6 +325,15 @@ entities.LuckyHelper/PasteItem.attributes.description.pasteBackgroundDecal=Do yo
 entities.LuckyHelper/PasteItem.attributes.description.pasteForegroundTile=Do you want to paste foreground tiles from the copied collection?
 entities.LuckyHelper/PasteItem.attributes.description.pasteBackgroundTile=Do you want to paste background tiles from the copied collection?
 
+# Crack Adder
+entities.LuckyHelper/CrackAdder.placements.name.normal=Crack Adder
+entities.LuckyHelper/CrackAdder.attributes.description.crackLeftTexturePath=Texture path for the left-side cracks, which starts at 'Gameplay' folder\n(if you want to draw the texture by yourself make sure the texture size is (16 px, 16 px))
+entities.LuckyHelper/CrackAdder.attributes.description.crackMiddleTexturePath=Texture path for the middle cracks, which starts at 'Gameplay' folder\n(if you want to draw the texture by yourself make sure the texture size is (16 px, 16 px))
+entities.LuckyHelper/CrackAdder.attributes.description.sideCrackDensity=Determines how many side cracks will be generated(from 0 to 1)
+entities.LuckyHelper/CrackAdder.attributes.description.middleCrackDensity=Determines how many middle cracks will be generated(from 0 to 1)
+entities.LuckyHelper/CrackAdder.attributes.description.hideFlag=If the flag exists, the cracks will be hidden, otherwise they will be shown
+entities.LuckyHelper/CrackAdder.attributes.description.color=Determines the color of the cracks
+entities.LuckyHelper/CrackAdder.attributes.description.targetAppliedTileIDs=Comma-seperated tile id to specify what tile you want to add cracks, if left empty, the cracks will be added to all tiles\nz -> template\n1 -> dirt\n3 -> snow\n4 -> girder\n5 -> tower\n6 -> stone\n7 -> cement\n8 -> rock\n9 -> wood\na -> woodStoneEdges\nb -> cliffside\nc -> poolEdges\nd -> templeA\ne -> templeB\nf -> cliffsideAlt\ng -> reflection\nG -> reflectionAlt\nh -> grass\ni -> summit\nj -> summitNoSnow\nm -> lostlevels\nk -> core\nl -> deadgrass\nn -> scifi
 
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger
@@ -463,3 +472,6 @@ triggers.LuckyHelper/PasteItemDuplicator.attributes.description.pasteNumber=How 
 triggers.LuckyHelper/PasteItemDuplicator.attributes.description.duplicateFlag=Once the flag is detected, it will be removed and Paste Item Duplicator will do paste action once(paste `PasteItem` that is inside the trigger)
 triggers.LuckyHelper/PasteItemDuplicator.attributes.description.duplicateOnEnterRoom=Whether you want to just paste thing at start or control paste action with duplicateFlag by yourself
 triggers.LuckyHelper/PasteItemDuplicator.attributes.description.showDuplicatedOrderNumber=This will generate number text to show the order of duplicated items, which can be helpful when you want to place items in a certain place
+
+# AudioPlay
+triggers.LuckyHelper/AudioPlay.placements.name.normal=Audio Play

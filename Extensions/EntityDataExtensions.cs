@@ -45,9 +45,33 @@ public static class EntityDataExtensions
 
         return newData;
     }
-    
+
     public static Vector2 Center(this EntityData orig)
     {
         return orig.Position + new Vector2(orig.Width, orig.Height) / 2;
+    }
+
+
+    public static Color HexColorWithAlpha(this EntityData entityData, string key, Color defaultValue = default)
+    {
+        if (!entityData.Has(key))
+            return defaultValue;
+
+        string hex = entityData.Attr(key);
+
+        // 有猪啊, 加了 alpha 忘记处理原来的颜色了(
+        if (hex.Length == 6)
+            return Calc.HexToColor(hex);
+
+        if (hex.All(char.IsLetterOrDigit) && hex.Length == 8)
+        {
+            byte r = Convert.ToByte(hex.Substring(0, 2), 16);
+            byte g = Convert.ToByte(hex.Substring(2, 2), 16);
+            byte b = Convert.ToByte(hex.Substring(4, 2), 16);
+            byte a = Convert.ToByte(hex.Substring(6, 2), 16);
+            return new Color(r, g, b, 255) * (a / 255f);
+        }
+
+        return Color.White;
     }
 }

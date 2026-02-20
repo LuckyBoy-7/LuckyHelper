@@ -22,11 +22,13 @@ public class MenuButtonController : Entity
     public static void Unload()
     {
         On.Celeste.Level.Update -= LevelOnUpdate;
+        On.Celeste.TextMenu.Item.ctor -= ItemOnctor;
     }
 
     private static void ItemOnctor(On.Celeste.TextMenu.Item.orig_ctor orig, TextMenu.Item self)
     {
-        if (Engine.Scene is Level level && level.Tracker.GetEntities<MenuButtonController>().Count > 0)
+        // 不这么写好像会崩, 虽然我已经 track 了🤔
+        if (Engine.Scene is Level level && level.Tracker.GetEntitiesTrackIfNeeded<MenuButtonController>().Count > 0)
             new DynamicData(self).Set(RawDialogNameToken, MiscModule.LastCleanedDialog);
         orig(self);
     }
