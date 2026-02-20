@@ -2,14 +2,14 @@
 
 由于基本上都是给别人写的东西, 所以会附上灵感作者, 同时也非常感谢反馈 bug 的人🥰
 
-* PassByRefill(Entity): 梦...开始的地方 -- by Saplonily
+* PassByRefill(Entity): 梦...开始的地方 -- by Saplonily(伟大无需多言)
 * SetFallingBlockBlockFloatySpaceBlock(Trigger): 使用后掉落块掉在月亮块上时月亮块会停止, 否则原版会抽搐 -- by Dizer
 * Custom Water(Entity): 自定义的水 -- by Molong
 * Death Count Text(Entity): 死亡计数器 -- by Molong
 * Timer Text(Entity): 计时器 -- by Molong
 * Custom Gondola(Entity): 自定义缆车 -- by Breaker-K, 底龙
 * Arbitrary Shape Conquest Area(Entity): 灵感来源于战地占点 -- by 键盘英雄(由于好像没人用过, 所以可能会有很多 bug)
-* Dream Zone(Entity): 梦境区域, 可看作没有碰撞的果冻 -- by 底龙, Shynnie, AD
+* Dream Zone(Entity): 梦境区域, 可看作没有碰撞的果冻 -- by 底龙(Shynnie, AfterDawn, Myn)
 * Enable Player Falling Through JumpThru(Settings): 下蹲穿单向板
 * Light Source Adjust(Trigger): 调整光源亮度和透明度(本来应该给别人提 pr 的, 但是人家好像好久没更了就还是选择了抄())  -- by Myn
 * Freeze Trigger(Trigger): 给冻结帧的 Trigger -- by Myn
@@ -27,7 +27,6 @@
 * Logic Flag(Trigger): 根据逻辑判断是否设置 flag, 比如如果条件 (flag1 && (flag2 || !flag3)) 成立, 则设置对应 flag
 * FollowerContainer(Entity): 类 Eevee 的跟随容器, 可以像草莓那样被收集 -- by Shynnie(抄了 [Eevee](https://github.com/CommunalHelper/EeveeHelper)代码, 原谅我😭)
 * DetachFollowerContainer(Trigger): 可以解绑 FollowerContainer -- by Shynnie
-* ExCameraUseUnsafeZoom(Trigger): 调整了拓展镜头函数里的某个分支, 使其在 level zoom 的时候正常工作(等人家修好了就删) -- by NaCline
 * AudioAdjust(Trigger): 调整特定音频的音量(其他属性等有需求了再说) -- by NaCline, 底龙
 * ColorModifier(Entity): 改实体颜色的
 * OrderedFlag(Trigger): 按顺序触发 flag -- by Shynnie
@@ -44,7 +43,9 @@
 * PasteRoom(Entity): 粘贴房间实体 
 * CopyItem(Trigger): 复制 entity, trigger, decal 的实体 
 * PasteItem(Entity): 粘贴 CopyItem 复制的东西 
-* PasteItemDuplicator(Trigger): 使用 PasteItem 来等距的生成多个复制品(114514 系列😱)
+* PasteItemDuplicator(Trigger): 使用 PasteItem 来等距的生成多个复制品(小豹猫awa 114514 系列😱)
+* CrackAdder(Entity): 自动为砖添加裂纹 -- by 北极星(Nacline) 
+* AudioPlay(Trigger): 播放音效 -- (懒得开 Helper 导致的) 
 
 ### GhostTranspose -- by Molong
 
