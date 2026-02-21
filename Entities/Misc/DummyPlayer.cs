@@ -33,7 +33,7 @@ public class DummyPlayer : Player
         triggerDashFlag = data.Attr("triggerDashFlag", "LuckyHelper_TriggerDashFlag");
         triggerRidingFlag = data.Attr("triggerRidingFlag", "LuckyHelper_TriggerRidingFlag");
         triggerCollisionFlag = data.Attr("triggerCollisionFlag", "LuckyHelper_TriggerCollisionFlag");
-        affectRadius = data.Float("affectRadius", 114514);
+        affectRadius = data.Float("affectRadius", -1);
         affectedByWind = data.FitBool(true, "affectedByWind", "canAffectedByWind");
 
         whiteBlacklistChecker = new WhiteBlacklistChecker(data);
@@ -74,7 +74,7 @@ public class DummyPlayer : Player
 
     public bool AffectDistCheck(Entity otherEntity)
     {
-        return Vector2.Distance(otherEntity.Position, Position) <= affectRadius;
+        return affectRadius == -1 || Vector2.Distance(otherEntity.Position, Position) <= affectRadius;
     }
 
     private void UpdateDash()

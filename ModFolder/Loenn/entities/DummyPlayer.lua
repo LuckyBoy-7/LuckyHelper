@@ -13,12 +13,12 @@ local entity = {
             triggerCollisionFlag = "LuckyHelper_TriggerCollisionFlag",
             whiteList = "",
             blackList = "",
-            affectRadius = 100000,
+            affectRadius = -1,
             affectedByWind = false
         }
     },
     color = { 0.3, 0.3, 0.3 },
-    
+
     fieldOrder = {
         "x", "y",
         "whiteList", "blackList",
@@ -47,11 +47,13 @@ function entity.sprite(room, entity)
 
     local texture = drawableSprite.fromTexture("characters/player/sitDown00", entity)
     texture:setJustification(0.5, 1)
-    texture.color = {0.5, 0.5, 0.5, 1}
-    local circle = jautils.getCircleSprite(entity.x, entity.y, entity.affectRadius or 100000, { 1, 0, 0, 1 })
-
+    texture.color = { 0.5, 0.5, 0.5, 1 }
     table.insert(sprites, texture)
-    table.insert(sprites, circle)
+
+    if entity.affectRadius > 0 then
+        local circle = jautils.getCircleSprite(entity.x, entity.y, entity.affectRadius or 100000, { 1, 0, 0, 1 })
+        table.insert(sprites, circle)
+    end
 
     return sprites
 end

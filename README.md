@@ -39,7 +39,7 @@
 * Ball(Entity): 球 -- by 底龙
 * AtlasPathReplacer(Entity): 替换 Atlas 中的一些硬编码 -- by Myn, 底龙
 * LinkedWire(Entity): 可以相互链接的 Wire -- by 底龙
-* DummyPlayer(Entity): Player 木偶, 用来触发各种 Trigger -- by Riki
+* DummyPlayer(Entity): Player 木偶, 用来触发各种 Trigger -- by Riki(云雀)
 * PasteRoom(Entity): 粘贴房间实体 
 * CopyItem(Trigger): 复制 entity, trigger, decal 的实体 
 * PasteItem(Entity): 粘贴 CopyItem 复制的东西 
