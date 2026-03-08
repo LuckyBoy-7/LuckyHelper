@@ -131,7 +131,7 @@ public class DreamZone_V2Module
         });
     }
 
-    private static void SetDreamZone_V2Collidable(Player self, bool on, Func<DreamZone_V2, bool> condition = null)
+    public static void SetDreamZone_V2Collidable(Player self, bool on, Func<DreamZone_V2, bool> condition = null)
     {
         foreach (DreamZone_V2 zone in self.Tracker().GetEntities<DreamZone_V2>())
         {

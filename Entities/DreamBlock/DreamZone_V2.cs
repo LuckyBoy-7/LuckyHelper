@@ -389,6 +389,7 @@ public class DreamZone_V2 : DreamBlock
         IL.Celeste.Player.DreamDashBegin += PlayerOnDreamDashBegin;
         IL.Celeste.Player.DreamDashEnd += PlayerOnDreamDashEnd;
         Player.DreamDashBegin += PlayerOnDreamDashBegin;
+        Player.DreamDashEnd += PlayerOnDreamDashEnd;
     }
 
 
@@ -398,6 +399,13 @@ public class DreamZone_V2 : DreamBlock
         IL.Celeste.Player.DreamDashBegin -= PlayerOnDreamDashBegin;
         IL.Celeste.Player.DreamDashEnd -= PlayerOnDreamDashEnd;
         Player.DreamDashBegin -= PlayerOnDreamDashBegin;
+        Player.DreamDashEnd -= PlayerOnDreamDashEnd;
+    }
+
+    private static void PlayerOnDreamDashEnd(Player.orig_DreamDashEnd orig, Celeste.Player self)
+    {
+        orig(self);
+        DreamZone_V2Module.SetDreamZone_V2Collidable(self, false);
     }
 
     private static void PlayerOnDreamDashBegin(Player.orig_DreamDashBegin orig, Celeste.Player self)

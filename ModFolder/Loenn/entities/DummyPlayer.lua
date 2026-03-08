@@ -49,8 +49,8 @@ function entity.sprite(room, entity)
     texture:setJustification(0.5, 1)
     texture.color = { 0.5, 0.5, 0.5, 1 }
     table.insert(sprites, texture)
-
-    if entity.affectRadius > 0 then
+    
+    if entity.affectRadius ~= nil and entity.affectRadius > 0 then
         local circle = jautils.getCircleSprite(entity.x, entity.y, entity.affectRadius or 100000, { 1, 0, 0, 1 })
         table.insert(sprites, circle)
     end
