@@ -324,6 +324,7 @@ public class CustomWaterModule
         if (isDebug)
             Logger.Log(LogLevel.Debug, "Test", "SwimGravity OK");
 
+        cursor.Index += 1;
         cursor.EmitLdarg0();
         cursor.EmitLdloc3();
         cursor.EmitDelegate<Action<Player, float>>(CalculateGravity);
