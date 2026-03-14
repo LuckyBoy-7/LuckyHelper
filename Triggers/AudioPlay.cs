@@ -8,11 +8,13 @@ public class AudioPlay : Trigger
 {
     private string audioEvent;
     private bool playOnEnterRoom;
+    private bool onlyOnce;
 
     public AudioPlay(EntityData data, Vector2 offset) : base(data, offset)
     {
         audioEvent = data.Attr("audioEvent");
         playOnEnterRoom = data.Bool("playOnEnterRoom");
+        onlyOnce = data.Bool("onlyOnce");
     }
 
     public override void Added(Scene scene)
@@ -33,5 +35,8 @@ public class AudioPlay : Trigger
         if (string.IsNullOrEmpty(audioEvent))
             return;
         Audio.Play(audioEvent, Center);
+        
+        if (onlyOnce)
+            RemoveSelf();
     }
 }

@@ -42,18 +42,18 @@ public static class EntityExtensions
             res = "";
         return res;
     }
-    
-    public static void AddNoDuplicatedComponent<T>(this Entity entity, T component) where T: Component
+
+    public static void AddNoDuplicatedComponent<T>(this Entity entity, T component) where T : Component
     {
         if (entity.Get<T>() == null)
             entity.Add(component);
     }
-    
+
     public static Vector2 HalfSize(this Entity entity)
     {
         return new Vector2(entity.Width, entity.Height) / 2;
     }
-    
+
     public static bool SafeCollideCheck(this Entity entity, Entity other)
     {
         bool origCollidable = other.Collidable;
@@ -62,17 +62,20 @@ public static class EntityExtensions
         other.Collidable = origCollidable;
         return res;
     }
-    
+
     public static bool TriggeredByFlag(this Entity entity, string flag)
     {
         Session session = entity.Session();
         if (session == null)
+            return false;
+        if (string.IsNullOrEmpty(flag))
             return false;
         if (session.GetFlag(flag))
         {
             session.SetFlag(flag, false);
             return true;
         }
+
         return false;
     }
 }

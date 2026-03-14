@@ -473,5 +473,22 @@ triggers.LuckyHelper/PasteItemDuplicator.attributes.description.duplicateFlag=On
 triggers.LuckyHelper/PasteItemDuplicator.attributes.description.duplicateOnEnterRoom=Whether you want to just paste thing at start or control paste action with duplicateFlag by yourself
 triggers.LuckyHelper/PasteItemDuplicator.attributes.description.showDuplicatedOrderNumber=This will generate number text to show the order of duplicated items, which can be helpful when you want to place items in a certain place
 
-# AudioPlay
+# Audio Play
 triggers.LuckyHelper/AudioPlay.placements.name.normal=Audio Play
+
+# Disperse Sprites Trigger
+triggers.LuckyHelper/DisperseSpritesTrigger.placements.name.normal=Disperse Sprites Trigger
+triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.whiteList=Comma-separated list of entity class names to contain (e.g. Booster,CrystalStaticSpinner,etc). Contains most entities if empty.
+triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.blackList=Comma-separated list of entity class names to ignore (e.g. Booster,CrystalStaticSpinner,etc).
+triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.disperseFlag=Once the flag is detected, it will be removed and contained entities will be dispersed once, if left empty, it will be triggered when madeline enters(it can only be triggered once)
+triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.disperseAudioEvent=Audio to play when disperse, left empty to make no sound
+triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.disperseDirX=Disperse direction x
+triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.disperseDirY=Disperse direction y
+triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.depth=Depth of despersed particles(because all the tracked entities will be drawn in one layer due to implementation)
+triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.delay=Seconds delay to desperse since you trigger the event, left -1 to trigger immediately
+triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.disableEntityUpdate=Can the dispersed entities still update?
+triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.disableEntityVisible=Can the dispersed entities still render their images?
+triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.disableEntityCollision=Can the dispersed entities still collide with player?
+triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.fadeOutLight=Do you want to fade out dispersed entities' lights?
+triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.fadeOutSound=Do you want to fade out dispersed entities' sounds?
+triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.fadeOutTalk=Do you want to fade out interaction icon of dispersed entities?
