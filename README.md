@@ -46,7 +46,7 @@
 * PasteItemDuplicator(Trigger): 使用 PasteItem 来等距的生成多个复制品(小豹猫awa 114514 系列😱)
 * CrackAdder(Entity): 自动为砖添加裂纹 -- by 北极星(Nacline) 
 * AudioPlay(Trigger): 播放音效 -- (懒得开 Helper 导致的) 
-* DisperseSprites(Trigger): 消散对象(剧情向) -- 云起时 
+* DisperseSprites(Trigger): 消散对象(剧情向) -- 云起时(tmszzzzz)
 
 ### GhostTranspose -- by Molong
 
@@ -132,4 +132,4 @@ LuckyHelperAreaMetaData:
 * 云雀
 * 电箱
 * 小豹猫awa
-* 云起时
+* 云起时(tmszzzzz)
