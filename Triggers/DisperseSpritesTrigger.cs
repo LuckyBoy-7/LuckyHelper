@@ -21,6 +21,7 @@ public class DisperseSpritesTrigger : Trigger
     private bool fadeOutLight;
     private bool fadeOutSound;
     private bool fadeOutTalk;
+    private bool dontLoadAfterFade;
     private float delay;
 
     private VirtualRenderTarget buffer;
@@ -30,9 +31,9 @@ public class DisperseSpritesTrigger : Trigger
     private bool dispersedOver;
     List<Entity> trackedEntities;
     private DustEdges dustEdges;
-    private int indexOfSelf;
+    private int id;
 
-    public DisperseSpritesTrigger(EntityData data, Vector2 offset) : base(data, offset)
+    public DisperseSpritesTrigger(EntityData data, Vector2 offset, EntityID entityId) : base(data, offset)
     {
         disperseFlag = data.Attr("disperseFlag");
         disperseAudioEvent = data.Attr("disperseAudioEvent");
@@ -42,20 +43,29 @@ public class DisperseSpritesTrigger : Trigger
         disableEntityUpdate = data.Bool("disableEntityUpdate");
         disableEntityVisible = data.Bool("disableEntityVisible");
         disableEntityCollision = data.Bool("disableEntityCollision", true);
+        dontLoadAfterFade = data.Bool("dontLoadAfterFade");
         fadeOutLight = data.Bool("fadeOutLight");
         fadeOutSound = data.Bool("fadeOutSound");
         fadeOutTalk = data.Bool("fadeOutTalk");
         Depth = data.Int("depth");
         whiteBlacklistChecker = new WhiteBlacklistChecker(data);
+
+        id = entityId.ID;
         Add(new BeforeRenderHook(BeforeRender));
     }
 
     public override void Awake(Scene scene)
     {
         base.Awake(scene);
-        indexOfSelf = this.Tracker().GetEntities<DisperseSpritesTrigger>().IndexOf(this);
-        dustEdges = new DustEdges(indexOfSelf);
+        dustEdges = new DustEdges(id);
         scene.Add(dustEdges);
+    }
+
+    public override void Removed(Scene scene)
+    {
+        buffer?.Dispose();
+        buffer = null;
+        base.Removed(scene);
     }
 
     private void BeforeRender()
@@ -65,7 +75,7 @@ public class DisperseSpritesTrigger : Trigger
 
         if (buffer == null)
         {
-            buffer = VirtualContent.CreateRenderTarget("lucky-DisperseSpritesTrigger" + indexOfSelf, GameplayBuffers.Gameplay.Width, GameplayBuffers.Gameplay.Height);
+            buffer = VirtualContent.CreateRenderTarget("lucky-DisperseSpritesTrigger-" + id, GameplayBuffers.Gameplay.Width, GameplayBuffers.Gameplay.Height);
         }
 
         if (trackedEntities == null || trackedEntities.Count == 0)
@@ -173,6 +183,8 @@ public class DisperseSpritesTrigger : Trigger
     {
         if (delay > 0)
             yield return delay;
+        else
+            yield return null; // 这一帧 update 刚触发, 但是得等 render 后填好数据我们才能用
         RenderTarget2D renderTarget = buffer.Target;
         int width = renderTarget.Width;
         int height = renderTarget.Height;
@@ -186,14 +198,19 @@ public class DisperseSpritesTrigger : Trigger
         Audio.Play(disperseAudioEvent, Position);
 
 
-        yield return null;
+        yield return null; // 我们得在一帧后改原对象的的状态, 不然 DisperseImage 还没画出来画面会闪一下
 
         foreach (var trackedEntity in trackedEntities)
         {
             if (disableEntityVisible)
                 trackedEntity.Visible = false;
             if (disableEntityUpdate)
+            {
                 trackedEntity.Active = false;
+                // Active 不会影响 TransitionUpdate, 所以为了让对象真的不更新, 这里把 tag 删了(比如圆刺就会出显示问题)
+                trackedEntity.RemoveTag(Tags.TransitionUpdate);
+            }
+
             if (disableEntityCollision)
                 trackedEntity.Collidable = false;
 
@@ -219,6 +236,18 @@ public class DisperseSpritesTrigger : Trigger
                     talkcomponent.Enabled = false;
                 }
             }
+
+            if (dontLoadAfterFade)
+            {
+                if (trackedEntity.SourceId.Level != null)
+                    this.Session().DoNotLoad.Add(trackedEntity.SourceId);
+            }
+        }
+        
+        if (dontLoadAfterFade)
+        {
+            var session = this.Session();
+            session.DoNotLoad.Add(SourceId);
         }
 
         yield return 6;
@@ -280,6 +309,11 @@ public class DisperseSpritesTrigger : Trigger
 
         public override void Update()
         {
+            Simulate();
+        }
+
+        private void Simulate()
+        {
             bool flag = false;
             foreach (Particle particle in particles)
             {
@@ -332,14 +366,14 @@ public class DisperseSpritesTrigger : Trigger
     public class DustEdges : Entity
     {
         VirtualRenderTarget buffer;
-        private int index;
+        private int id;
 
-        public DustEdges(int index)
+        public DustEdges(int id)
         {
             AddTag(Tags.Global | Tags.TransitionUpdate);
             Depth = -48;
             // Add(new BeforeRenderHook(BeforeRender));
-            this.index = index;
+            this.id = id;
         }
 
         private void CreateTextures()
@@ -373,8 +407,6 @@ public class DisperseSpritesTrigger : Trigger
                 noiseToPos = new Vector2(Calc.Random.NextFloat(), Calc.Random.NextFloat());
                 noiseEase = 0f;
             }
-
-            DustGraphicEstabledCounter = 0;
         }
 
         public override void Removed(Scene scene)
@@ -429,7 +461,7 @@ public class DisperseSpritesTrigger : Trigger
             if (hasDust)
             {
                 if (buffer == null)
-                    buffer = VirtualContent.CreateRenderTarget("lucky-ResortDust-" + index, GameplayBuffers.Gameplay.Width, GameplayBuffers.Gameplay.Height);
+                    buffer = VirtualContent.CreateRenderTarget("lucky-ResortDust-" + id, GameplayBuffers.Gameplay.Width, GameplayBuffers.Gameplay.Height);
 
                 Engine.Graphics.GraphicsDevice.SetRenderTarget(GameplayBuffers.TempA);
                 Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
@@ -482,8 +514,6 @@ public class DisperseSpritesTrigger : Trigger
             position.Y = (int)Math.Floor(position.Y);
             return position;
         }
-
-        public static int DustGraphicEstabledCounter;
 
         private bool hasDust;
 

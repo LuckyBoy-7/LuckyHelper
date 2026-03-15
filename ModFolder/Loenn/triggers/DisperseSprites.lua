@@ -5,7 +5,7 @@ trigger.placements = {
     name = "normal",
     data = {
         whiteList = "",
-        blackList = "Player",
+        blackList = "Player,SolidTiles",
         disperseFlag = "",
         disperseAudioEvent = "event:/new_content/char/granny/dissipate",
         disperseDirX = 1,
@@ -19,6 +19,7 @@ trigger.placements = {
         fadeOutLight = true,
         fadeOutSound = true,
         fadeOutTalk = true,
+        dontLoadAfterFade = false,
     }
 }
 
@@ -32,12 +33,24 @@ trigger.fieldOrder = {
     "disableEntityUpdate", "disableEntityVisible",
     "disableEntityCollision", "",
     "fadeOutLight", "fadeOutSound",
-    "fadeOutTalk", "",
+    "fadeOutTalk", "dontLoadAfterFade",
 }
 
 trigger.fieldInformation = {
     depth = {
         fieldType = "integer"
+    },
+    whiteList = {
+        fieldType = "list",
+        elementOptions = {
+            fieldType = "string",
+        }
+    },
+    blackList = {
+        fieldType = "list",
+        elementOptions = {
+            fieldType = "string",
+        }
     }
 }
 
