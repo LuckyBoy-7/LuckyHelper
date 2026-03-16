@@ -492,4 +492,5 @@ triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.disableEntity
 triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.fadeOutLight=Do you want to fade out dispersed entities' lights?
 triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.fadeOutSound=Do you want to fade out dispersed entities' sounds?
 triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.fadeOutTalk=Do you want to fade out interaction icon of dispersed entities?
-triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.dontLoadAfterFade=Dispersed entities and the trigger self will not load afterwards(you may need to restart chapter to clear the data to load them again)
+triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.dontLoadAfterFade=Dispersed entitiepaddings and the trigger self will not load afterwards(you may need to restart chapter to clear the data to load them again)
+triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.padding=Because the disperse will only render entity that is inside of view, if you found an entity was clipped, you can increase the render padding to contain them even they are out of the view

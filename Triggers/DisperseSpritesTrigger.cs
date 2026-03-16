@@ -1,9 +1,11 @@
 using System.Collections;
+using System.Reflection;
 using Celeste.Mod.Entities;
 using LuckyHelper.Entities.Misc;
 using LuckyHelper.Extensions;
-using LuckyHelper.Utils;
+using LuckyHelper.Module;
 using Microsoft.Xna.Framework.Graphics;
+using MonoMod.RuntimeDetour;
 
 namespace LuckyHelper.Triggers;
 
@@ -23,15 +25,21 @@ public class DisperseSpritesTrigger : Trigger
     private bool fadeOutTalk;
     private bool dontLoadAfterFade;
     private float delay;
+    private int padding;
 
     private VirtualRenderTarget buffer;
     private WhiteBlacklistChecker whiteBlacklistChecker;
 
     private bool hasDispersed;
-    private bool dispersedOver;
     List<Entity> trackedEntities;
     private DustEdges dustEdges;
     private int id;
+    private bool shouldRender;
+
+    private static int currentPadding;
+    private static bool wantReplaceGameplayRenderer;
+    private static bool ShouldReplaceGameplayRenderer => wantReplaceGameplayRenderer && currentPadding > 0;
+    private static Hook dustGraphic_InView_Get_Hook;
 
     public DisperseSpritesTrigger(EntityData data, Vector2 offset, EntityID entityId) : base(data, offset)
     {
@@ -48,16 +56,16 @@ public class DisperseSpritesTrigger : Trigger
         fadeOutSound = data.Bool("fadeOutSound");
         fadeOutTalk = data.Bool("fadeOutTalk");
         Depth = data.Int("depth");
+        padding = data.Int("padding");
         whiteBlacklistChecker = new WhiteBlacklistChecker(data);
 
         id = entityId.ID;
-        Add(new BeforeRenderHook(BeforeRender));
     }
 
     public override void Awake(Scene scene)
     {
         base.Awake(scene);
-        dustEdges = new DustEdges(id);
+        dustEdges = new DustEdges(id, padding);
         scene.Add(dustEdges);
     }
 
@@ -68,25 +76,77 @@ public class DisperseSpritesTrigger : Trigger
         base.Removed(scene);
     }
 
-    private void BeforeRender()
+    [Load]
+    public static void Load()
     {
-        if (dispersedOver)
-            return;
+        On.Celeste.GameplayRenderer.Begin += GameplayRendererOnBegin;
+        On.Celeste.Water.Surface.Render += SurfaceOnRender;
+        On.Monocle.TileGrid.GetClippedRenderTiles += TileGridOnGetClippedRenderTiles;
 
-        if (buffer == null)
-        {
-            buffer = VirtualContent.CreateRenderTarget("lucky-DisperseSpritesTrigger-" + id, GameplayBuffers.Gameplay.Width, GameplayBuffers.Gameplay.Height);
-        }
+        MethodInfo dustGraphic_InView_Get = typeof(DustGraphic).GetProperty("InView", BindingFlags.NonPublic | BindingFlags.Instance).GetGetMethod(true);
+        dustGraphic_InView_Get_Hook = new Hook(dustGraphic_InView_Get, DustGraphicOnInViewGet);
+    }
 
+    [Unload]
+    public static void Unload()
+    {
+        On.Celeste.GameplayRenderer.Begin -= GameplayRendererOnBegin;
+        On.Celeste.Water.Surface.Render -= SurfaceOnRender;
+        On.Monocle.TileGrid.GetClippedRenderTiles -= TileGridOnGetClippedRenderTiles;
+        dustGraphic_InView_Get_Hook?.Dispose();
+        dustGraphic_InView_Get_Hook = null;
+    }
+
+    private static bool DustGraphicOnInViewGet(Func<DustGraphic, bool> orig, DustGraphic self)
+    {
+        // dust 的 render 也有优化, 我们得把这部分去掉
+        if (ShouldReplaceGameplayRenderer)
+            return true;
+        return orig(self);
+    }
+
+    private static Rectangle TileGridOnGetClippedRenderTiles(On.Monocle.TileGrid.orig_GetClippedRenderTiles orig, TileGrid self)
+    {
+        // 为了让月亮块那些方块不被 clip
+        if (ShouldReplaceGameplayRenderer)
+            self.ClipCamera = null;
+        return orig(self);
+    }
+
+    private static void SurfaceOnRender(On.Celeste.Water.Surface.orig_Render orig, Water.Surface self, Camera camera)
+    {
+        if (ShouldReplaceGameplayRenderer)
+            GFX.DrawVertices(camera.Matrix * Matrix.CreateTranslation(new Vector3(currentPadding, currentPadding, 0)), self.mesh, self.mesh.Length);
+        else
+            orig(self, camera);
+    }
+
+
+    private static void GameplayRendererOnBegin(On.Celeste.GameplayRenderer.orig_Begin orig)
+    {
+        // 由于我们要做 padding, 但是 Water.Surface 会在 render 的时候 End/Begin 刷新一次 batch 数据, 所以我们得 hook 这部分, 不然在 water 后 render 的对象都会偏移一定距离
+        if (ShouldReplaceGameplayRenderer)
+            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.None, RasterizerState.CullNone, null,
+                GameplayRenderer.instance.Camera.Matrix * Matrix.CreateTranslation(new Vector3(currentPadding, currentPadding, 0)));
+        else
+            orig();
+    }
+
+    public void RenderToBuffer()
+    {
+        buffer ??= VirtualContent.CreateRenderTarget("lucky-DisperseSpritesTrigger-" + id, GameplayBuffers.Gameplay.Width + padding * 2,
+            GameplayBuffers.Gameplay.Height + padding * 2);
         if (trackedEntities == null || trackedEntities.Count == 0)
             return;
 
+        wantReplaceGameplayRenderer = true;
+        currentPadding = padding;
         dustEdges.CustomBeforeRender();
-
+        // 由于我们就画一帧, 所以这么做应该不会有什么性能问题
         GameplayRenderer.Begin();
+
         Engine.Graphics.GraphicsDevice.SetRenderTarget(buffer);
         Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
-        dustEdges.Render();
         foreach (Entity entity in trackedEntities)
         {
             if (entity.Visible && !entity.TagCheck(Tags.HUD | TagsExt.SubHUD))
@@ -96,6 +156,8 @@ public class DisperseSpritesTrigger : Trigger
         }
 
         GameplayRenderer.End();
+        wantReplaceGameplayRenderer = false;
+        currentPadding = 0;
     }
 
     public override void OnEnter(Player player)
@@ -139,7 +201,7 @@ public class DisperseSpritesTrigger : Trigger
             }
         }
 
-        List<Entity> specialEntitiesBeforeRender = new();
+        List<Entity> specialEntitiesBeforeRender = new() { dustEdges };
         List<Entity> specialEntitiesAfterRender = new();
 
         if (dustEntities.Count != 0)
@@ -183,8 +245,11 @@ public class DisperseSpritesTrigger : Trigger
     {
         if (delay > 0)
             yield return delay;
-        else
-            yield return null; // 这一帧 update 刚触发, 但是得等 render 后填好数据我们才能用
+        RenderToBuffer();
+
+        // Coroutine 刚加进来来会晚一帧 update, 让好这个时间在 BeforeRender 的时候填好数据, 这一帧实例化 Image, 等下一帧绘制
+        // 不过这样会慢 2f, 高速说不定会露馅
+        // 不对 其实只会慢 1f, 因为 DisperseImage 生成完后的位置是固定的
         RenderTarget2D renderTarget = buffer.Target;
         int width = renderTarget.Width;
         int height = renderTarget.Height;
@@ -194,7 +259,7 @@ public class DisperseSpritesTrigger : Trigger
         Color GetPixelColor(int x, int y) => pixels[y * width + x];
 
         Level level = this.Level();
-        level.Add(new DisperseImage(new Vector2(disperseDirX, disperseDirY), Depth, renderTarget, GetPixelColor));
+        level.Add(new DisperseImage(new Vector2(disperseDirX, disperseDirY), Depth, renderTarget, GetPixelColor, -Vector2.One * padding));
         Audio.Play(disperseAudioEvent, Position);
 
 
@@ -226,6 +291,7 @@ public class DisperseSpritesTrigger : Trigger
                 var soundSource = trackedEntity.Get<SoundSource>();
                 if (soundSource != null)
                     Add(new Coroutine(FadeOutSound(soundSource)));
+                HandleSpecialSoundFadeOut(trackedEntity);
             }
 
             if (fadeOutTalk)
@@ -243,15 +309,21 @@ public class DisperseSpritesTrigger : Trigger
                     this.Session().DoNotLoad.Add(trackedEntity.SourceId);
             }
         }
-        
+
         if (dontLoadAfterFade)
         {
             var session = this.Session();
             session.DoNotLoad.Add(SourceId);
         }
+    }
 
-        yield return 6;
-        dispersedOver = true;
+    private void HandleSpecialSoundFadeOut(Entity trackedEntity)
+    {
+        if (trackedEntity is SwapBlock swapBlock)
+        {
+            Audio.Stop(swapBlock.returnSfx, true);
+            Audio.Stop(swapBlock.moveSfx, true);
+        }
     }
 
     private IEnumerator FadeOutLight(BloomPoint light)
@@ -281,7 +353,7 @@ public class DisperseSpritesTrigger : Trigger
 
     public class DisperseImage : Entity
     {
-        public DisperseImage(Vector2 direction, int depth, RenderTarget2D renderTarget, Func<int, int, Color> getPixelFunc)
+        public DisperseImage(Vector2 direction, int depth, RenderTarget2D renderTarget, Func<int, int, Color> getPixelFunc, Vector2 offset)
         {
             Depth = depth;
 
@@ -295,7 +367,7 @@ public class DisperseSpritesTrigger : Trigger
                         continue;
                     particles.Add(new Particle
                     {
-                        Position = GameplayRenderer.instance.Camera.Position + new Vector2(i, j),
+                        Position = GameplayRenderer.instance.Camera.Position + new Vector2(i, j) + offset,
                         Direction = Calc.AngleToVector(num + Calc.Random.Range(-0.2f, 0.2f), 1f),
                         Sin = Calc.Random.NextFloat(6.2831855f),
                         Speed = Calc.Random.Range(0f, 4f),
@@ -366,20 +438,22 @@ public class DisperseSpritesTrigger : Trigger
     public class DustEdges : Entity
     {
         VirtualRenderTarget buffer;
+        VirtualRenderTarget tmpBuffer;
         private int id;
+        private int padding;
 
-        public DustEdges(int id)
+        public DustEdges(int id, int padding)
         {
             AddTag(Tags.Global | Tags.TransitionUpdate);
             Depth = -48;
-            // Add(new BeforeRenderHook(BeforeRender));
             this.id = id;
+            this.padding = padding;
         }
 
         private void CreateTextures()
         {
-            DustNoiseFrom = VirtualContent.CreateTexture("lucky-dust-noise-a", 128, 72, Color.White);
-            DustNoiseTo = VirtualContent.CreateTexture("lucky-dust-noise-b", 128, 72, Color.White);
+            DustNoiseFrom = VirtualContent.CreateTexture("lucky-dust-noise-a-" + id, 128, 72, Color.White);
+            DustNoiseTo = VirtualContent.CreateTexture("lucky-dust-noise-b-" + id, 128, 72, Color.White);
             Color[] array = new Color[DustNoiseFrom.Width * DustNoiseTo.Height];
             for (int i = 0; i < array.Length; i++)
             {
@@ -456,17 +530,21 @@ public class DisperseSpritesTrigger : Trigger
 
         public void CustomBeforeRender()
         {
-            // List<Component> components = Scene.Tracker.GetComponents<DustEdge>();
             hasDust = dustEdges.Count > 0;
             if (hasDust)
             {
                 if (buffer == null)
-                    buffer = VirtualContent.CreateRenderTarget("lucky-ResortDust-" + id, GameplayBuffers.Gameplay.Width, GameplayBuffers.Gameplay.Height);
+                {
+                    buffer = VirtualContent.CreateRenderTarget("lucky-ResortDust-" + id, GameplayBuffers.Gameplay.Width + padding * 2,
+                        GameplayBuffers.Gameplay.Height + padding * 2);
+                    tmpBuffer = VirtualContent.CreateRenderTarget("lucky-ResortDust-tmp-" + id, GameplayBuffers.Gameplay.Width + padding * 2,
+                        GameplayBuffers.Gameplay.Height + padding * 2);
+                }
 
-                Engine.Graphics.GraphicsDevice.SetRenderTarget(GameplayBuffers.TempA);
+                Engine.Graphics.GraphicsDevice.SetRenderTarget(tmpBuffer);
                 Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
                 Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, null,
-                    (Scene as Level).Camera.Matrix);
+                    (Scene as Level).Camera.Matrix * Matrix.CreateTranslation(new Vector3(padding, padding, 0)));
                 foreach (DustEdge dustEdge in dustEdges)
                 {
                     if (dustEdge.Visible && dustEdge.Entity.Visible)
@@ -490,10 +568,14 @@ public class DisperseSpritesTrigger : Trigger
                 GFX.FxDust.Parameters["noiseEase"].SetValue(noiseEase);
                 GFX.FxDust.Parameters["noiseFromPos"].SetValue(noiseFromPos + new Vector2(vector.X / 320f, vector.Y / 180f));
                 GFX.FxDust.Parameters["noiseToPos"].SetValue(noiseToPos + new Vector2(vector.X / 320f, vector.Y / 180f));
-                GFX.FxDust.Parameters["pixel"].SetValue(new Vector2(0.003125f, 0.0055555557f));
+                GFX.FxDust.Parameters["pixel"].SetValue(new Vector2(
+                    1f / (GameplayBuffers.Gameplay.Width + padding * 2),
+                    1f / (GameplayBuffers.Gameplay.Height + padding * 2)
+                ));
+                // GFX.FxDust.Parameters["pixel"].SetValue(new Vector2(0.003125f, 0.0055555557f));
                 Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, GFX.FxDust,
                     Matrix.Identity);
-                Draw.SpriteBatch.Draw(GameplayBuffers.TempA, Vector2.Zero, Color.White);
+                Draw.SpriteBatch.Draw(tmpBuffer, Vector2.Zero, Color.White);
                 Draw.SpriteBatch.End();
             }
         }
@@ -502,7 +584,7 @@ public class DisperseSpritesTrigger : Trigger
         {
             if (hasDust)
             {
-                Vector2 vector = FlooredCamera();
+                Vector2 vector = FlooredCamera() - new Vector2(padding, padding);
                 Draw.SpriteBatch.Draw(buffer, vector, Color.White);
             }
         }

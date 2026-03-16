@@ -12,6 +12,7 @@ trigger.placements = {
         disperseDirY = -0.1,
         depth = 0,
         delay = -1,
+        padding = 50,
         
         disableEntityUpdate = true,
         disableEntityVisible = true,
@@ -30,6 +31,7 @@ trigger.fieldOrder = {
     "disperseDirX", "disperseDirY",
     "disperseFlag", "disperseAudioEvent",
     "depth", "delay",
+    "padding", "",
     "disableEntityUpdate", "disableEntityVisible",
     "disableEntityCollision", "",
     "fadeOutLight", "fadeOutSound",
@@ -38,6 +40,9 @@ trigger.fieldOrder = {
 
 trigger.fieldInformation = {
     depth = {
+        fieldType = "integer"
+    },
+    padding = {
         fieldType = "integer"
     },
     whiteList = {
