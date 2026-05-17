@@ -32,6 +32,7 @@ public class SpeedRedirect : Entity
     private bool showSprite;
     private bool flipSpriteX;
     private bool flipSpriteY;
+    private bool onlyOnce;
     private float spriteRotation;
 
     // 触发相关
@@ -86,6 +87,7 @@ public class SpeedRedirect : Entity
         showSprite = data.Bool("showSprite");
         flipSpriteX = data.Bool("flipSpriteX");
         flipSpriteY = data.Bool("flipSpriteY");
+        onlyOnce = data.Bool("onlyOnce");
         spriteRotation = data.Float("spriteRotation");
 
         borderColor = data.HexColor("borderColor");
@@ -279,6 +281,12 @@ public class SpeedRedirect : Entity
             Vector2 velocity = new Vector2(redirectDirX, redirectDirY) * speedAmount;
             player.Speed = velocity;
             // LogUtils.LogWarning($"{player.Speed}");
+        }
+
+        if (onlyOnce)
+        {
+            Scene.Remove(bg);
+            RemoveSelf();
         }
     }
 }

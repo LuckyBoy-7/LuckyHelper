@@ -27,6 +27,7 @@ entity.placements = {
         showSprite = true,
         flipSpriteX = false,
         flipSpriteY = false,
+        onlyOnce = false,
         spriteRotation = -45,
 
         triggerRedirectTiming = "OnAttractedToCenter",
@@ -52,7 +53,7 @@ entity.fieldOrder = {
     "attractSpeed", "colliderType",
     "spriteXMLID",
     "naiveMove", "showBorder", "showBackground", "showSprite",
-    "flipSpriteX", "flipSpriteY", "spriteRotation",
+    "flipSpriteX", "flipSpriteY", "onlyOnce", "spriteRotation",
 
     "redirectDirX", "redirectDirY",
     "minShootSpeed", "maxShootSpeed",
