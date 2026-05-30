@@ -22,7 +22,7 @@ public class TimerModule
 
     private static void PlayerOnUpdate(Player.orig_Update orig, Celeste.Player self)
     {
-        LuckyHelperModule.Session.CurrentCheckpointTime.AddFloat(LuckyHelperModule.Session.PlayerLastCheckPoint, Engine.DeltaTime);
+        LuckyHelperModule.Session.CurrentCheckpointTime.AddFloat(LuckyHelperModule.Session.PlayerLastCheckPoint_FixNull, Engine.DeltaTime);
         LuckyHelperModule.Session.CurrentRoomTime.AddFloat(self.CurrentRoomName(), Engine.DeltaTime);
         LuckyHelperModule.Session.TotalTime += Engine.DeltaTime;
 

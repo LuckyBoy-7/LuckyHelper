@@ -25,6 +25,17 @@ public class LuckyHelperSession : EverestModuleSession
     // checkpoint
     public string PlayerLastCheckPoint = "StartCheckpoint";
 
+    public string PlayerLastCheckPoint_FixNull
+    {
+        get
+        {
+            PlayerLastCheckPoint ??= "";
+            return PlayerLastCheckPoint;
+        }
+
+        set => PlayerLastCheckPoint = value;
+    }
+
     // custom water
     public float KillPlayerElapse = 0;
 
@@ -50,6 +61,6 @@ public class LuckyHelperSession : EverestModuleSession
 
     public string DisablePlayerCameraUpdateFlag = "LuckyHelper_DisablePlayerCameraUpdate";
     public string DisableCameraUpdateOnTeleportFlag = "LuckyHelper_DisableCameraUpdateOnTeleportFlag";
-    
+
     public bool InvincibleOnStartDashInSpikes = false;
 }

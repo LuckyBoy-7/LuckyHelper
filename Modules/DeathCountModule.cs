@@ -21,7 +21,7 @@ public class DeathCountModule
     private static PlayerDeadBody PlayerOnDie(On.Celeste.Player.orig_Die orig, Celeste.Player self, Vector2 direction, bool evenifinvincible,
         bool registerdeathinstats)
     {
-        LuckyHelperModule.Session.CurrentCheckpointDeathCount.AddInt(LuckyHelperModule.Session.PlayerLastCheckPoint, 1);
+        LuckyHelperModule.Session.CurrentCheckpointDeathCount.AddInt(LuckyHelperModule.Session.PlayerLastCheckPoint_FixNull, 1);
         LuckyHelperModule.Session.CurrentRoomDeathCount.AddInt(self.CurrentRoomName(), 1);
         LuckyHelperModule.Session.TotalDeathCount += 1;
 

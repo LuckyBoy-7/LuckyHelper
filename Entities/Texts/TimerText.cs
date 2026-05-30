@@ -23,7 +23,7 @@ public class TimerText : ShowDataText
             ShowTypes.FromSavedPath => TimeSpan.FromSeconds(LuckyHelperModule.Session.SavedPathTime.GetFloat(savedPath)).ToString(format),
             ShowTypes.SinceStart => TimeSpan.FromSeconds(LuckyHelperModule.Session.TotalTime).ToString(format),
             ShowTypes.SinceLastCheckpoint => TimeSpan
-                .FromSeconds(LuckyHelperModule.Session.CurrentCheckpointTime.GetFloat(LuckyHelperModule.Session.PlayerLastCheckPoint))
+                .FromSeconds(LuckyHelperModule.Session.CurrentCheckpointTime.GetFloat(LuckyHelperModule.Session.PlayerLastCheckPoint_FixNull))
                 .ToString(format),
             _ => throw new ArgumentOutOfRangeException()
         };
@@ -40,7 +40,7 @@ public class TimerText : ShowDataText
                 LuckyHelperModule.Session.SavedPathTime[savedPath] = 0;
                 break;
             case ShowTypes.SinceLastCheckpoint:
-                LuckyHelperModule.Session.CurrentCheckpointTime[LuckyHelperModule.Session.PlayerLastCheckPoint] = 0;
+                LuckyHelperModule.Session.CurrentCheckpointTime[LuckyHelperModule.Session.PlayerLastCheckPoint_FixNull] = 0;
                 break;
             case ShowTypes.SinceStart:
                 LuckyHelperModule.Session.TotalTime = 0;

@@ -18,7 +18,7 @@ public class DeathCountText : ShowDataText
             ShowTypes.CurrentRoom => LuckyHelperModule.Session.CurrentRoomDeathCount.GetInt(currentRoom).ToString(),
             ShowTypes.SinceStart => LuckyHelperModule.Session.TotalDeathCount.ToString(),
             ShowTypes.FromSavedPath => LuckyHelperModule.Session.SavedPathDeathCount.GetInt(savedPath).ToString(),
-            ShowTypes.SinceLastCheckpoint => LuckyHelperModule.Session.CurrentCheckpointDeathCount.GetInt(LuckyHelperModule.Session.PlayerLastCheckPoint).ToString(),
+            ShowTypes.SinceLastCheckpoint => LuckyHelperModule.Session.CurrentCheckpointDeathCount.GetInt(LuckyHelperModule.Session.PlayerLastCheckPoint_FixNull).ToString(),
             _ => throw new ArgumentOutOfRangeException()
         };
     }
@@ -34,7 +34,7 @@ public class DeathCountText : ShowDataText
                 LuckyHelperModule.Session.SavedPathDeathCount[savedPath] = 0;
                 break;
             case ShowTypes.SinceLastCheckpoint:
-                LuckyHelperModule.Session.CurrentCheckpointDeathCount[LuckyHelperModule.Session.PlayerLastCheckPoint] = 0;
+                LuckyHelperModule.Session.CurrentCheckpointDeathCount[LuckyHelperModule.Session.PlayerLastCheckPoint_FixNull] = 0;
                 break;
             case ShowTypes.SinceStart:
                 LuckyHelperModule.Session.TotalDeathCount = 0;
