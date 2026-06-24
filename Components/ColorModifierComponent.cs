@@ -1,5 +1,6 @@
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using LuckyHelper.Entities.EeveeLike;
 using LuckyHelper.Extensions;
 using LuckyHelper.Handlers;
@@ -67,6 +68,8 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
     public bool AffectParticle;
     public ColorBlendMode ColorBlendMode;
     public static ColorBlendMode CommonColorBlendMode;
+    
+    public static ConditionalWeakTable<ParticleSystem, DynamicData> ParticleSystemToDyn =new ();
 
 
     public override void Removed(Entity entity)
@@ -409,7 +412,13 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
     private static void ParticleSystemOnUpdate(On.Monocle.ParticleSystem.orig_Update orig, ParticleSystem self)
     {
         orig(self);
-        if (new DynamicData(self).TryGet("LuckyHelper_Entities", out Entity[] lst))
+        if (!ParticleSystemToDyn.TryGetValue(self, out var dyn))
+        {
+            dyn = new DynamicData(self);
+            ParticleSystemToDyn.Add(self, dyn);
+        }
+        
+        if (dyn.TryGet("LuckyHelper_Entities", out Entity[] lst))
         {
             for (var i = 0; i < lst.Length; i++)
             {
@@ -436,7 +445,13 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
             cursor.EmitDelegate<Func<ParticleSystem, int, bool>>((particleSystem, index) =>
             {
                 OrigParticleColor = particleSystem.particles[index].Color;
-                if (new DynamicData(particleSystem).TryGet("LuckyHelper_Entities", out Entity[] lst))
+                if (!ParticleSystemToDyn.TryGetValue(particleSystem, out var dyn))
+                {
+                    dyn = new DynamicData(particleSystem);
+                    ParticleSystemToDyn.Add(particleSystem, dyn);
+                }
+
+                if (dyn.TryGet("LuckyHelper_Entities", out Entity[] lst))
                 {
                     if (lst[index] != null && EntityToModifier.TryGetValue(lst[index], out ColorModifierComponent modifier) && modifier.AffectParticle)
                     {
