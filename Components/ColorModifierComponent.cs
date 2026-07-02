@@ -440,7 +440,6 @@ public class ColorModifierComponent(bool active = true, bool visible = true) : C
             // int i
             cursor.EmitLdarg0();
             cursor.EmitLdloc(1);
-
             // 尝试修改颜色
             cursor.EmitDelegate<Func<ParticleSystem, int, bool>>((particleSystem, index) =>
             {

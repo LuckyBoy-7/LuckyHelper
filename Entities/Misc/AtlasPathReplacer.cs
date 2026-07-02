@@ -121,6 +121,7 @@ public class AtlasPathReplacer : Entity
 
     private static Hook atlasGetItemHook;
     private static MapData lastMapData;
+    private static ConditionalWeakTable<MapData, DynamicData> mapDataToDynamicData = new();
 
     [Load]
     public static void Load()
@@ -158,10 +159,15 @@ public class AtlasPathReplacer : Entity
 
         atlasGetItemHook?.Dispose();
         atlasGetItemHook = null;
-        
+
         if (lastMapData != null)
         {
-            DynamicData dd = DynamicData.For(lastMapData); 
+            if (!mapDataToDynamicData.TryGetValue(lastMapData, out DynamicData dd))
+            {
+                dd = DynamicData.For(lastMapData);
+                mapDataToDynamicData.Add(lastMapData, dd);
+            }
+
             dd.Data.Remove("LuckyHelper_AtlasPathReplacer_atlasPathReplacerHelper");
             lastMapData = null;
         }
@@ -170,7 +176,12 @@ public class AtlasPathReplacer : Entity
     private static void EventsOnOnMapDataLoad(MapData mapData)
     {
         lastMapData = mapData;
-        var dd = DynamicData.For(mapData);
+        if (!mapDataToDynamicData.TryGetValue(mapData, out DynamicData dd))
+        {
+            dd = DynamicData.For(mapData);
+            mapDataToDynamicData.Add(mapData, dd);
+        }
+
         AtlasPathReplacerHelper atlasPathReplacerHelper = new();
         dd.Set("LuckyHelper_AtlasPathReplacer_atlasPathReplacerHelper", atlasPathReplacerHelper);
 
@@ -205,7 +216,12 @@ public class AtlasPathReplacer : Entity
     {
         if (MiscUtils.TryGetSession(out Session session))
         {
-            var dd = DynamicData.For(session.MapData);
+            if (!mapDataToDynamicData.TryGetValue(session.MapData, out DynamicData dd))
+            {
+                dd = DynamicData.For(session.MapData);
+                mapDataToDynamicData.Add(session.MapData, dd);
+            }
+
             if (dd.TryGet("LuckyHelper_AtlasPathReplacer_atlasPathReplacerHelper", out var atlasPathReplacerHelperObject))
             {
                 var atlasPathReplacerHelper = atlasPathReplacerHelperObject as AtlasPathReplacerHelper;
