@@ -1,8 +1,11 @@
 using Celeste.Mod.Entities;
 using LuckyHelper.Components;
+using LuckyHelper.Extensions;
+using LuckyHelper.Module;
 using LuckyHelper.Modules;
 using LuckyHelper.Utils;
 using MonoMod.Utils;
+using Level = On.Celeste.Level;
 
 namespace LuckyHelper.Entities.Misc;
 
@@ -27,11 +30,45 @@ public class EntityPinner : Entity
     private bool showBackground;
     private Entity bg = new Entity();
 
+    private int ID;
 
-    public EntityPinner(EntityData data, Vector2 offset) : base(data.Position + offset)
+    [Load]
+    public static void Load()
+    {
+        On.Celeste.Level.LoadLevel += LevelOnLoadLevel;
+    }
+
+    private static void LevelOnLoadLevel(Level.orig_LoadLevel orig, Celeste.Level self, Player.IntroTypes playerIntro, bool isFromLoader)
+    {
+        List<string> countersToRemove = new();
+        foreach (var counter in self.Session.Counters)
+        {
+            if (counter.Key.StartsWith("EntityPinner"))
+            {
+                countersToRemove.Add(counter.Key);
+            }
+        }
+        
+        foreach (var counter in countersToRemove)
+        {
+            self.Session.SetCounter(counter, 0);    
+        }
+
+        orig(self, playerIntro, isFromLoader);
+    }
+
+
+    [Unload]
+    public static void Unload()
+    {
+        On.Celeste.Level.LoadLevel -= LevelOnLoadLevel;
+    }
+
+    public EntityPinner(EntityData data, Vector2 offset, EntityID entityId) : base(data.Position + offset)
     {
         Depth = -1;
         colliderType = data.Enum<ColliderType>("colliderType");
+        ID = entityId.ID;
 
         Collider c;
         if (colliderType == ColliderType.Circle)
@@ -103,15 +140,17 @@ public class EntityPinner : Entity
     {
         base.Update();
 
+
+        int pinnedEntityNumber = 0;
         foreach (var entity in Scene.Entities)
         {
             if (entity == this)
                 continue;
             if (!briefTypes.Contains(entity.GetType().Name))
                 continue;
-            if (!entity.CollideCheck(this)) 
+            if (!entity.CollideCheck(this))
                 continue;
-            
+
             var config = GetHandler(entity);
             if (config == null)
                 continue;
@@ -120,8 +159,13 @@ public class EntityPinner : Entity
             config.Position = targetPos;
             var dyn = new DynamicData(entity);
             config.PinnedAction(dyn);
+
+            pinnedEntityNumber += 1;
         }
+
+        this.Session().SetCounter($"EntityPinner_{ID}", pinnedEntityNumber);
     }
+    
 
     public override void Render()
     {
