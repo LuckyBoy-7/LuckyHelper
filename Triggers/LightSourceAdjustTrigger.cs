@@ -16,7 +16,7 @@ public class LightSourceAdjustTrigger : PositionTrigger
 
     public LightSourceAdjustTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
-        targets = ParseUtils.ParseTypesStringToBriefNames(data.Attr("targets")); 
+        targets = ParseUtils.ParseTypesStringToBriefNames(data.Attr("targets"));
 
         affectRadius = data.Bool("affectRadius");
         affectAlpha = data.Bool("affectAlpha");
@@ -49,11 +49,17 @@ public class LightSourceAdjustTrigger : PositionTrigger
             Entity entity = bloomPoint.Entity;
             string entityTypeName = entity.GetType().Name;
 
-            backup.Add(new(bloomPoint, bloomPoint.Alpha, bloomPoint.Radius));
-            if (targetToAlpha.TryGetValue(entityTypeName, out var alpha))
-                bloomPoint.Alpha *= alpha;
-            if (targetToRadius.TryGetValue(entityTypeName, out var radius))
+
+            float alpha = 1;
+            float radius = 1;
+            if (targetToAlpha.TryGetValue(entityTypeName, out var a))
+                alpha = a;
+            if (targetToRadius.TryGetValue(entityTypeName, out var r))
+                radius = r;
+            if (alpha != 1 || radius != 1)
             {
+                backup.Add(new(bloomPoint, bloomPoint.Alpha, bloomPoint.Radius));
+                bloomPoint.Alpha *= alpha;
                 bloomPoint.Radius *= radius;
             }
         }
@@ -78,11 +84,17 @@ public class LightSourceAdjustTrigger : PositionTrigger
             Entity entity = vertexLight.Entity;
             string entityTypeName = entity.GetType().Name;
 
-            backup.Add(new(vertexLight, vertexLight.Alpha, vertexLight.StartRadius, vertexLight.EndRadius));
-            if (targetToAlpha.TryGetValue(entityTypeName, out var alpha))
-                vertexLight.Alpha *= alpha;
-            if (targetToRadius.TryGetValue(entityTypeName, out var radius))
+
+            float alpha = 1;
+            float radius = 1;
+            if (targetToAlpha.TryGetValue(entityTypeName, out var a))
+                alpha = a;
+            if (targetToRadius.TryGetValue(entityTypeName, out var r))
+                radius = r;
+            if (alpha != 1 || radius != 1)
             {
+                backup.Add(new(vertexLight, vertexLight.Alpha, vertexLight.StartRadius, vertexLight.EndRadius));
+                vertexLight.Alpha *= alpha;
                 vertexLight.StartRadius *= radius;
                 vertexLight.EndRadius *= radius;
             }
