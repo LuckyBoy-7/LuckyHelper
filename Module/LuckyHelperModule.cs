@@ -30,6 +30,12 @@ public class LuckyHelperModule : EverestModule
         AttributeUtils.CollectMethods<InitializeAttribute>();
     }
 
+    public override void OnInputInitialize()
+    {
+        base.OnInputInitialize();
+        Settings.LayerViewerStepForward.SetRepeat(0.4f, 0.1f);
+        Settings.LayerViewerStepBackward.SetRepeat(0.4f, 0.1f);
+    }
 
     public override void Initialize()
     {

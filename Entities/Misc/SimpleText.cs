@@ -2,25 +2,47 @@ namespace LuckyHelper.Entities.Misc;
 
 public class SimpleText : Entity
 {
-    private string text;
+    public string Content;
     public float Scale = 1f;
+    public Color InnerColor = Color.White;
+    public Color OutlineColor = Color.White;
+    public float Alpha = 1f;
+    public Vector2 Justify = new Vector2(0.5f, 0.5f);
 
-    public SimpleText(string text) 
+    public bool UseScreenPosition;
+
+    public Vector2 ScreenPosition(Level level)
     {
-        Tag = Tags.HUD;
-        this.text = text;
-    }
-
-
-    public override void Render()
-    {
-        Vector2 cameraPosition = SceneAs<Level>().Camera.Position;
+        Vector2 cameraPosition = level.Camera.Position;
         Vector2 screenPosition = (Position - cameraPosition) * 6f;
+        if (UseScreenPosition)
+            screenPosition = Position;
         if (SaveData.Instance != null && SaveData.Instance.Assists.MirrorMode)
         {
             screenPosition.X = 1920f - screenPosition.X;
         }
 
-        ActiveFont.DrawOutline(text, screenPosition, new Vector2(0.5f, 0.5f), Vector2.One * Scale, Color.White, 1, Color.Black);
+        return screenPosition;
+    }
+
+    public float FontWidth => ActiveFont.Measure(Content).X * Scale;
+    public float FontHeight => ActiveFont.Measure(Content).Y * Scale;
+
+
+    public SimpleText(string content)
+    {
+        Tag = Tags.HUD;
+        Content = content;
+    }
+
+
+    public override void Render()
+    {
+        RawRender(SceneAs<Level>());
+    }
+
+    public void RawRender(Level level)
+    {
+        ActiveFont.DrawOutline(Content, ScreenPosition(level), Justify, Vector2.One * Scale, InnerColor * Alpha, 1, OutlineColor * Alpha);
     }
 }

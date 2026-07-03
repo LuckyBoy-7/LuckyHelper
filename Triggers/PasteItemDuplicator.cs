@@ -72,6 +72,7 @@ public class PasteItemDuplicator : Trigger
                 SimpleText simpleText = new SimpleText(order.ToString())
                 {
                     Position = pasteItem.Center + extraOffset,
+                    OutlineColor = Color.Black,
                     Scale = 0.5f
                 };
                 Scene.Add(simpleText);
