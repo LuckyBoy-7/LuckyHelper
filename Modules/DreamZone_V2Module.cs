@@ -32,7 +32,7 @@ public class DreamZone_V2Module
 
     private static bool PlayerOnDreamDashCheck(On.Celeste.Player.orig_DreamDashCheck orig, Player self, Vector2 dir)
     {
-        SetDreamZone_V2Collidable(self, true, zone => zone.playerHasDreamDash);
+        SetDreamZone_V2Collidable(self, true, zone => !zone.DisableInteraction && !zone.DisableInsideDreamJump && zone.playerHasDreamDash);
         bool ans = orig(self, dir);
         SetDreamZone_V2Collidable(self, false);
         return ans;
