@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using Celeste.Mod.EeveeHelper.Handlers;
 using LuckyHelper.Components;
 using LuckyHelper.Entities.Misc;
 using LuckyHelper.Extensions;
@@ -34,7 +35,22 @@ public class LayerViewerModule
 
     private static SimpleTextWithRectWrapped lastBackdropContentText;
 
-    
+    private static HashSet<Type> UnvisibleTypes = new()
+    {
+        typeof(GameplayStats),
+        typeof(WindController),
+        typeof(Lightning),
+        typeof(SeekerEffectsController),
+        typeof(SimpleTextWithRectWrapped),
+        typeof(WaterSurface),
+    };
+
+    private static HashSet<string> UnvisibleTypeNames = new()
+    {
+        "SelectedAreaEntity",
+    };
+
+
     [Initialize]
     public static void Initialize()
     {
@@ -183,7 +199,7 @@ public class LayerViewerModule
                 if (Index + 1 >= Sequence.Count || GetPriority(Sequence[Index].RawValue, level) != GetPriority(Sequence[Index + 1].RawValue, level))
                     CreateBottomCenterHint(GetCategory(Sequence[Index].RawValue, level, true), level);
 
-                Sequence[Index].Show(true);
+                Sequence[Index].Show();
                 Index++;
             }
         }
@@ -218,7 +234,7 @@ public class LayerViewerModule
         {
             var wrapper = Sequence[Index];
             CreateBottomCenterHint(GetCategory(wrapper.RawValue, level, false), level);
-            wrapper.Show(true);
+            wrapper.Show();
             Index++;
         }
         else
@@ -234,9 +250,9 @@ public class LayerViewerModule
 
     private static void StepBackward()
     {
-        Index--;
-        if (Index >= 0 && Index < Sequence.Count)
+        if (Index > 0 && Index <= Sequence.Count)
         {
+            Index--;
             var wrapper = Sequence[Index];
             wrapper.Hide();
         }
@@ -253,7 +269,7 @@ public class LayerViewerModule
         level.Remove(onOffText);
         foreach (Wrapper wrapper in Sequence)
         {
-            wrapper.Show(false);
+            wrapper.Show();
         }
 
         Sequence.Clear();
@@ -275,11 +291,13 @@ public class LayerViewerModule
 
         Sequence.Add(new RendererWrapper(level.Lighting, level));
         Sequence.Add(new RendererWrapper(level.Bloom, level));
-        Sequence.Add(new RendererWrapper(level.Displacement, level));
+        if (level.Displacement.HasDisplacement(level))
+            Sequence.Add(new RendererWrapper(level.Displacement, level));
+
 
         foreach (var entity in level.Entities)
         {
-            if (entity.Visible)
+            if (entity.Visible && EntityIsVisibleValid(entity, level))
                 Sequence.Add(new EntityWrapper(entity, level));
         }
 
@@ -290,12 +308,96 @@ public class LayerViewerModule
                 Sequence.Add(new BackdropWrapper(backdrop, level));
         }
 
-        Sequence.Sort((w1, w2) => GetPriority(w1.RawValue, level) - GetPriority(w2.RawValue, level));
+        Sequence.Sort((w1, w2) =>
+        {
+            int delta = GetPriority(w1.RawValue, level) - GetPriority(w2.RawValue, level);
+            if (delta != 0)
+                return delta;
+            return string.Compare(w1.RawValue.GetType().Name, w2.RawValue.GetType().Name, StringComparison.Ordinal);
+        });
 
         foreach (Wrapper wrapper in Sequence)
         {
             wrapper.Hide();
         }
+    }
+
+    private static bool EntityIsVisibleValid(Entity entity, Level level)
+    {
+        Type entityType = entity.GetType();
+        if (UnvisibleTypes.Contains(entityType))
+            return false;
+        if (UnvisibleTypeNames.Contains(entityType.Name))
+            return false;
+
+        if (entity is ParticleSystem ps)
+        {
+            // 如果粒子系统有在跑的话那就将其算入观察对象之一
+            foreach (var particle in ps.particles)
+            {
+                if (particle.Active)
+                    return true;
+            }
+
+            return false;
+        }
+
+        if (entity is TrailManager tm)
+        {
+            // 如果粒子系统有在跑的话那就将其算入观察对象之一
+            foreach (var snapshot in tm.snapshots)
+            {
+                if (snapshot != null)
+                    return true;
+            }
+
+            return false;
+        }
+
+        if (entity is DustEdges)
+        {
+            return level.Tracker.GetComponents<DustEdge>().Count > 0;
+        }
+
+        if (entity is GlassBlockBg)
+        {
+            return level.Tracker.GetEntities<GlassBlock>().Count > 0;
+        }
+
+        if (entity is GrabbyIcon grabbyIcon)
+        {
+            return grabbyIcon.enabled;
+        }
+
+        if (entity is LightningRenderer lightningRenderer)
+        {
+            return lightningRenderer.list.Count > 0;
+        }
+
+        if (entity is MirrorSurfaces mirrorSurfaces)
+        {
+            return mirrorSurfaces.hasReflections;
+        }
+
+        if (entity is SeekerBarrierRenderer seekerBarrierRenderer)
+        {
+            return seekerBarrierRenderer.list.Count > 0;
+        }
+
+        if (entity is SpeedrunTimerDisplay speedrunTimerDisplay)
+        {
+            return speedrunTimerDisplay.DrawLerp > 0;
+        }
+
+        if (entity == level.HelperEntity)
+            return false;
+
+        // 吃心结算的半透明铺底用的 Panel, 这个时候 player 都不 update 了, 所以可以直接排除掉
+        if (entity == level.FormationBackdrop)
+            return false;
+
+
+        return true;
     }
 
     private static string GetCategory(object obj, Level level, bool quickForward)
@@ -322,19 +424,24 @@ public class LayerViewerModule
         }
 
         if (obj == level.Lighting)
-            return "Lighting/Darkness";
+            return $"Lighting | Darkness: {level.Lighting.Alpha}";
 
         if (obj == level.Bloom)
-            return "Bloom";
+            return $"Bloom | Base: {level.Bloom.Base} Strength: {level.Bloom.Strength}";
 
         if (obj == level.Displacement)
-            return "Displacement";
+            return "Displacement(handles localized distortion effects like bursts)";
 
         if (obj is Decal decal)
         {
-            if (decal.Depth > 0)
-                return "Background Decals";
-            return "Foreground Decals";
+            string message = decal.Depth > 0 ? "Background Decals" : "Foreground Decals";
+            if (!quickForward)
+            {
+                string decalPath = decal.Name;
+                message += $" | path: {decalPath}";
+            }
+
+            return message;
         }
 
 
@@ -343,14 +450,38 @@ public class LayerViewerModule
 
         if (quickForward)
             return "Entities";
-        return $"Entity: {obj.GetType().Name}";
+        return $"Entity: {GetDetailedEntityCategory(obj as Entity, level)}";
+    }
+
+    private static string GetDetailedEntityCategory(Entity entity, Level level)
+    {
+        Type entityType = entity.GetType();
+
+        if (entity is ParticleSystem ps)
+        {
+            if (entity == level.Particles)
+                return "ParticleSystem For Entities(Depth -8000)";
+            if (entity == level.ParticlesFG)
+                return "ParticleSystem For Foreground(Depth -50000)";
+            if (entity == level.ParticlesBG)
+                return "ParticleSystem For Background(Depth 8000)";
+        }
+
+        if (entity is Strawberry strawberry)
+        {
+            if (strawberry.Golden)
+                return "Strawberry(Golden)";
+            return "Strawberry";
+        }
+
+        return entityType.Name;
     }
 
     private static string GetBackdropContent(Celeste.Backdrop backdrop)
     {
         if (backdrop is Parallax parallax)
         {
-            return $"Parallax| texture path: {parallax.Name}";
+            return $"Parallax | texture path: {parallax.Name}";
         }
 
         if (!string.IsNullOrEmpty(backdrop.Name))
@@ -428,7 +559,7 @@ public class LayerViewerModule
             this.level = level;
         }
 
-        public abstract void Show(bool showHintToo);
+        public abstract void Show();
         public abstract void Hide();
     }
 
@@ -445,31 +576,10 @@ public class LayerViewerModule
         }
 
 
-        public override void Show(bool showHintToo)
+        public override void Show()
         {
             entity.Visible = true;
             UnvisibleWrappers.Remove(this);
-            if (!showHintToo || LuckyHelperModule.Settings.HideLayerViewerDetailedMessage)
-                return;
-
-            SimpleText text = new SimpleText(GetEntityContent(entity))
-            {
-                Position = entity.Center,
-                OutlineColor = Color.Black,
-                Scale = 0.7f
-            };
-            text.Add(new FadeOutComponent(5, f => text.Alpha = MathF.Min(1, f * 4), () => text.RemoveSelf()));
-            level.Add(text);
-        }
-
-        private string GetEntityContent(Entity e)
-        {
-            if (e is Decal decal)
-            {
-                return decal.Name;
-            }
-
-            return e.GetType().Name;
         }
 
         public override void Hide()
@@ -489,7 +599,7 @@ public class LayerViewerModule
             this.backdrop = backdrop;
         }
 
-        public override void Show(bool showHintToo)
+        public override void Show()
         {
             backdrop.Visible = true;
             UnvisibleWrappers.Remove(this);
@@ -513,7 +623,7 @@ public class LayerViewerModule
             this.renderer = renderer;
         }
 
-        public override void Show(bool showHintToo)
+        public override void Show()
         {
             renderer.Visible = true;
             UnvisibleWrappers.Remove(this);

@@ -5,7 +5,6 @@ namespace LuckyHelper.Module;
 public class LuckyHelperSettings : EverestModuleSettings
 {
     public bool EnablePlayerFallingThroughJumpThru { get; set; }
-    public bool HideLayerViewerDetailedMessage { get; set; }
 
     [DefaultButtonBinding(Buttons.A, Keys.Enter)]
     public ButtonBinding PlayerFallingThroughJumpThruButton { get; set; }

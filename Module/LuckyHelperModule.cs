@@ -35,6 +35,9 @@ public class LuckyHelperModule : EverestModule
         base.OnInputInitialize();
         Settings.LayerViewerStepForward.SetRepeat(0.4f, 0.1f);
         Settings.LayerViewerStepBackward.SetRepeat(0.4f, 0.1f);
+        
+        Settings.LayerViewerQuickStepForward.SetRepeat(0.4f, 0.2f);
+        Settings.LayerViewerQuickStepBackward.SetRepeat(0.4f, 0.2f);
     }
 
     public override void Initialize()
