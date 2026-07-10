@@ -335,6 +335,10 @@ entities.LuckyHelper/CrackAdder.attributes.description.hideFlag=If the flag exis
 entities.LuckyHelper/CrackAdder.attributes.description.color=Determines the color of the cracks
 entities.LuckyHelper/CrackAdder.attributes.description.targetAppliedTileIDs=Comma-seperated tile id to specify what tile you want to add cracks, if left empty, the cracks will be added to all tiles\nz -> template\n1 -> dirt\n3 -> snow\n4 -> girder\n5 -> tower\n6 -> stone\n7 -> cement\n8 -> rock\n9 -> wood\na -> woodStoneEdges\nb -> cliffside\nc -> poolEdges\nd -> templeA\ne -> templeB\nf -> cliffsideAlt\ng -> reflection\nG -> reflectionAlt\nh -> grass\ni -> summit\nj -> summitNoSnow\nm -> lostlevels\nk -> core\nl -> deadgrass\nn -> scifi
 
+
+# Always Allow Jellyfish Pushed
+entities.LuckyHelper/AlwaysAllowJellyfishPushed.placements.name.normal=Always Allow Jellyfish Pushed
+
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger
 triggers.LuckyHelper/SetPassByRefillDashesTrigger.placements.name.normal=SetPassByRefillDashesTrigger
