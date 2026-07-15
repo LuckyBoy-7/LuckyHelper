@@ -498,3 +498,7 @@ triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.fadeOutSound=
 triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.fadeOutTalk=Do you want to fade out interaction icon of dispersed entities?
 triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.dontLoadAfterFade=Dispersed entitiepaddings and the trigger self will not load afterwards(you may need to restart chapter to clear the data to load them again)
 triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.padding=Because the disperse will only render entity that is inside of view, if you found an entity was clipped, you can increase the render padding to contain them even they are out of the view
+
+
+# Force Grab Zone
+triggers.LuckyHelper/ForceGrabZone.placements.name.normal=Force Grab Zone
