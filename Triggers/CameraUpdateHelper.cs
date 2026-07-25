@@ -67,16 +67,22 @@ public class CameraUpdateHelper : Trigger
     private static void OnPlayerOrigUpdate(ILContext il)
     {
         ILCursor cursor = new ILCursor(il);
+        if (!cursor.TryGotoNext(
+                ins => ins.MatchStfld(typeof(Player), "StrawberriesBlocked"),
+                ins => ins.MatchLdarg0(),
+                ins => ins.MatchCallvirt<Player>("get_InControl")))
+            return;
+        int insertIndex = cursor.Index + 1;
+
+
         ILLabel outLabel = null;
         if (cursor.TryGotoNext(
-                ins => ins.MatchLdarg0(),
-                ins => ins.MatchCallvirt(out _),
-                ins => ins.MatchBrtrue(out _),
-                ins => ins.MatchLdarg0(),
-                ins => ins.MatchLdfld(out _),
+                ins => ins.MatchLdfld<Player>(nameof(Player.ForceCameraUpdate)),
                 ins => ins.MatchBrfalse(out outLabel)
             ))
         {
+            cursor.Index = insertIndex;
+
             // 为了让 player 传送的时候 camera 不乱动
             cursor.EmitLdarg0();
             cursor.EmitDelegate<Func<Player, bool>>((player) => player.Session().GetFlag(LuckyHelperModule.Session.DisablePlayerCameraUpdateFlag));
