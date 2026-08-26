@@ -18,7 +18,7 @@ entity.placements = {
         texture = "LuckyHelper/test_decal00",
 
         rotation = 0,
-        color = "ffffff",
+        color = "ffffffff",
 
 
         decalRegistryPaths = "lucky_scale_big,lucky_rotate,lucky_floaty,lucky_smoke,lucky_banner,lucky_bloom,lucky_animationSpeed,lucky_mirror,lucky_small_staticMover",
