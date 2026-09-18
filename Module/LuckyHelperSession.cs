@@ -63,4 +63,7 @@ public class LuckyHelperSession : EverestModuleSession
     public string DisableCameraUpdateOnTeleportFlag = "LuckyHelper_DisableCameraUpdateOnTeleportFlag";
 
     public bool InvincibleOnStartDashInSpikes = false;
+    
+    // heart gem poem dialog id
+    public Dictionary<int, int> CurrentRoomHeartGemIDToIndex = new();
 }

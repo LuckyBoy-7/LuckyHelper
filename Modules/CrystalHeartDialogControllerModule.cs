@@ -1,6 +1,7 @@
 using System.Reflection;
 using LuckyHelper.Entities.Misc;
 using LuckyHelper.Module;
+using LuckyHelper.Utils;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
@@ -13,7 +14,7 @@ public class CrystalHeartDialogControllerModule
     private static ILHook heartGemCollectCoroutineHook;
 
     // 因为水晶之心被收集之后就不会再生成了, 所以只在进房间的时候加载一次也不会有问题
-    private static Dictionary<HeartGem, int> currentRoomHeartGemToIndex = new();
+    private static Dictionary<int, int> CurrentRoomHeartGemIDToIndex => LuckyHelperModule.Session.CurrentRoomHeartGemIDToIndex;
 
     [Load]
     public static void Load()
@@ -36,11 +37,12 @@ public class CrystalHeartDialogControllerModule
     {
         orig(self, playerIntro, isFromLoader);
 
-        currentRoomHeartGemToIndex.Clear();
         int i = 0;
         foreach (HeartGem heart in self.Tracker.GetEntities<HeartGem>())
         {
-            currentRoomHeartGemToIndex[heart] = i++;
+            int id = heart.SourceId.ID;
+            if (!CurrentRoomHeartGemIDToIndex.ContainsKey(id))
+                CurrentRoomHeartGemIDToIndex[id] = i++;
         }
     }
 
@@ -55,8 +57,10 @@ public class CrystalHeartDialogControllerModule
             ))
         {
             cursor.Index += 2;
+            // heart gem
+            cursor.EmitLdloc1();
             cursor.EmitLdloc(14);
-            cursor.EmitDelegate<Func<string, string>>(origDialog =>
+            cursor.EmitDelegate<Func<HeartGem, string, string>>((gem, origDialog) =>
             {
                 Tracker tracker = Engine.Scene.Tracker;
                 CrystalHeartDialogController controller = tracker.GetEntity<CrystalHeartDialogController>();
@@ -65,11 +69,14 @@ public class CrystalHeartDialogControllerModule
                     return origDialog;
                 }
 
-                HeartGem collectedHeartGem = currentRoomHeartGemToIndex.Keys.ToList().Find(gem => gem != null && gem.collected);
-                int i = currentRoomHeartGemToIndex[collectedHeartGem];
-                currentRoomHeartGemToIndex.Remove(collectedHeartGem);
-                i = Math.Min(controller.Dialogs.Count - 1, i);
-                return Dialog.Clean(controller.Dialogs[i]);
+                int id = gem.SourceId.ID;
+                if (CurrentRoomHeartGemIDToIndex.TryGetValue(id, out int index))
+                {
+                    index = Math.Min(controller.Dialogs.Count - 1, index);
+                    return Dialog.Clean(controller.Dialogs[index]);
+                }
+
+                return origDialog;
             });
             cursor.EmitStloc(14);
         }
