@@ -199,6 +199,7 @@ local moveContainer = {
             options ={
                 "StopAtEnd",
                 "Loop",
+                "LoopButSkipEnd",
                 "PingPong",
                 "ToCertainFlag",
             },

@@ -182,8 +182,7 @@ public class MoveInListHelperMovePart
         public Ease.Easer EaseFunc;
 
 
-        public Func<int, int> NextIndexFunc;
-        public Func<int> MoveDirFunc;
+        public MoveInListHelperDirectionPart Direction;
     }
 
     private MovePartData data;
@@ -214,13 +213,13 @@ public class MoveInListHelperMovePart
     public void Update()
     {
         // 说明当前已经禁止移动了
-        int idealNextIndex = data.NextIndexFunc(currentIndex);
+        int idealNextIndex = data.Direction.GetNextIndex(currentIndex);
         if (idealNextIndex == -1 || idealNextIndex == currentIndex)
             return;
 
         if (!Moving)
         {
-            int moveDir = data.MoveDirFunc();
+            int moveDir = data.Direction.GetMoveDirIndex();
             pathCalculator.InitWithIndices(currentIndex, idealNextIndex, moveDir);
             Moving = true;
         }
@@ -232,6 +231,10 @@ public class MoveInListHelperMovePart
         {
             Moving = false;
             currentIndex = pathCalculator.NextIndex;
+            if (currentIndex == data.Positions.Count - 1 && data.Direction.directionType == MoveInListHelperDirectionPart.DirectionTypes.LoopButSkipEnd)
+            {
+                ResetToStart();
+            }
         }
     }
 
@@ -250,11 +253,12 @@ public class MoveInListHelperDirectionPart
     {
         StopAtEnd,
         Loop,
+        LoopButSkipEnd,
         PingPong,
         ToCertainFlag
     }
 
-    private DirectionTypes directionType;
+    public DirectionTypes directionType;
     private int dir = 1;
     private int positionCount;
     private Session session;
@@ -273,7 +277,7 @@ public class MoveInListHelperDirectionPart
     public int GetNextIndex(int currentIndex)
     {
         int n = positionCount;
-        if (directionType == DirectionTypes.Loop)
+        if (directionType == DirectionTypes.Loop || directionType == DirectionTypes.LoopButSkipEnd)
         {
             return (currentIndex + 1) % n;
         }
@@ -383,8 +387,7 @@ public class MoveContainer : Actor, IContainer
             Speed = data.Float("speed"),
             Duration = data.Float("duration"),
             EaseFunc = EaseModule.EaseTypes[data.Attr("ease", "Linear")],
-            NextIndexFunc = moveHelper.Direction.GetNextIndex,
-            MoveDirFunc = moveHelper.Direction.GetMoveDirIndex,
+            Direction = moveHelper.Direction,
             MoveAlongType = data.Enum<MoveInListHelperMovePart.MovePartData.MoveAlongTypes>("moveAlongType")
         });
 
