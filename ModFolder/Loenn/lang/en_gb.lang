@@ -339,6 +339,9 @@ entities.LuckyHelper/CrackAdder.attributes.description.targetAppliedTileIDs=Comm
 # Always Allow Jellyfish Pushed
 entities.LuckyHelper/AlwaysAllowJellyfishPushed.placements.name.normal=Always Allow Jellyfish Pushed
 
+# Show Camera Offset
+entities.LuckyHelper/ShowCameraOffset.placements.name.normal=Show Camera Offset
+
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger
 triggers.LuckyHelper/SetPassByRefillDashesTrigger.placements.name.normal=SetPassByRefillDashesTrigger
@@ -499,6 +502,8 @@ triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.fadeOutTalk=D
 triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.dontLoadAfterFade=Dispersed entitiepaddings and the trigger self will not load afterwards(you may need to restart chapter to clear the data to load them again)
 triggers.LuckyHelper/DisperseSpritesTrigger.attributes.description.padding=Because the disperse will only render entity that is inside of view, if you found an entity was clipped, you can increase the render padding to contain them even they are out of the view
 
-
 # Force Grab Zone
 triggers.LuckyHelper/ForceGrabZone.placements.name.normal=Force Grab Zone
+
+# Note Trigger
+triggers.LuckyHelper/NoteTrigger.placements.name.normal=Note Trigger
