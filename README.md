@@ -25,28 +25,29 @@
 * Set Condition Flag(Trigger): 在玩家做出某种行为时设置 flag -- by Shynnie
 * Invert Flag(Trigger): 反转某个 flag
 * Logic Flag(Trigger): 根据逻辑判断是否设置 flag, 比如如果条件 (flag1 && (flag2 || !flag3)) 成立, 则设置对应 flag
-* FollowerContainer(Entity): 类 Eevee 的跟随容器, 可以像草莓那样被收集 -- by Shynnie(抄了 [Eevee](https://github.com/CommunalHelper/EeveeHelper)代码, 原谅我😭)
-* DetachFollowerContainer(Trigger): 可以解绑 FollowerContainer -- by Shynnie
-* AudioAdjust(Trigger): 调整特定音频的音量(其他属性等有需求了再说) -- by NaCline, 底龙
-* ColorModifier(Entity): 改实体颜色的
-* OrderedFlag(Trigger): 按顺序触发 flag -- by Shynnie
-* ToggleOrbitContainer(Entity): 框选一部分实体沿着圆周运动, 可用 flag 操控并受风的影响 -- by ShadowRo
-* CameraUpdateHelper(Trigger): 控制摄像机部分的运动 -- by NaCline
-* PlayerInvincibleController(Trigger): 设置玩家在某些情况下的无敌状态, 比如在碰到刺的时候冲刺瞬间不会死 -- by ShadowRo
-* MenuButtonController(Entity): 开启某些 flag 后可以禁用 pause 菜单中的特定 button -- by ShadowRo
-* MoveContainer(Entity): 更高级的 Flag Mover(也许
-* QuantumContainer(Entity): 类似 ow 里的量子碎片
+* Follower Container(Entity): 类 Eevee 的跟随容器, 可以像草莓那样被收集 -- by Shynnie(抄了 [Eevee](https://github.com/CommunalHelper/EeveeHelper)代码, 原谅我😭)
+* Detach Follower Container(Trigger): 可以解绑 FollowerContainer -- by Shynnie
+* Audio Adjust(Trigger): 调整特定音频的音量(其他属性等有需求了再说) -- by NaCline, 底龙
+* Color Modifier(Entity): 改实体颜色的
+* Ordered Flag(Trigger): 按顺序触发 flag -- by Shynnie
+* Toggle Orbit Container(Entity): 框选一部分实体沿着圆周运动, 可用 flag 操控并受风的影响 -- by ShadowRo
+* Camera Update Helper(Trigger): 控制摄像机部分的运动 -- by NaCline
+* Player Invincible Controller(Trigger): 设置玩家在某些情况下的无敌状态, 比如在碰到刺的时候冲刺瞬间不会死 -- by ShadowRo
+* Menu Button Controller(Entity): 开启某些 flag 后可以禁用 pause 菜单中的特定 button -- by ShadowRo
+* Move Container(Entity): 更高级的 Flag Mover(也许
+* Quantum Container(Entity): 类似 ow 里的量子碎片
 * Ball(Entity): 球 -- by 底龙
-* AtlasPathReplacer(Entity): 替换 Atlas 中的一些硬编码 -- by Myn, 底龙
-* LinkedWire(Entity): 可以相互链接的 Wire -- by 底龙
-* DummyPlayer(Entity): Player 木偶, 用来触发各种 Trigger -- by Riki(云雀)
-* PasteRoom(Entity): 粘贴房间实体 
-* CopyItem(Trigger): 复制 entity, trigger, decal 的实体 
-* PasteItem(Entity): 粘贴 CopyItem 复制的东西 
-* PasteItemDuplicator(Trigger): 使用 PasteItem 来等距的生成多个复制品(小豹猫awa 114514 系列😱)
-* CrackAdder(Entity): 自动为砖添加裂纹 -- by 北极星(Nacline) 
-* AudioPlay(Trigger): 播放音效 -- (懒得开 Helper 导致的) 
-* DisperseSprites(Trigger): 消散对象(剧情向) -- 云起时(tmszzzzz)
+* Atlas Path Replacer(Entity): 替换 Atlas 中的一些硬编码 -- by Myn, 底龙
+* Linked Wire(Entity): 可以相互链接的 Wire -- by 底龙
+* Dummy Player(Entity): Player 木偶, 用来触发各种 Trigger -- by Riki(云雀)
+* Paste Room(Entity): 粘贴房间实体 
+* Copy Item(Trigger): 复制 entity, trigger, decal 的实体 
+* Paste Item(Entity): 粘贴 CopyItem 复制的东西 
+* Paste Item Duplicator(Trigger): 使用 PasteItem 来等距的生成多个复制品(小豹猫awa 114514 系列😱)
+* Crack Adder(Entity): 自动为砖添加裂纹 -- by 北极星(Nacline) 
+* Audio Play(Trigger): 播放音效 -- (懒得开 Helper 导致的) 
+* Disperse Sprites(Trigger): 消散对象(剧情向) -- 云起时(tmszzzzz)
+* Set Flag On Switch Gate Activated(Entity): 原版 Switch Gate 触发时触发一个 Flag -- RogerNF
 
 ### GhostTranspose -- by Molong
 

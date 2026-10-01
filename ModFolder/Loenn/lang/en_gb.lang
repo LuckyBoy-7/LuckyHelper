@@ -342,6 +342,9 @@ entities.LuckyHelper/AlwaysAllowJellyfishPushed.placements.name.normal=Always Al
 # Show Camera Offset
 entities.LuckyHelper/ShowCameraOffset.placements.name.normal=Show Camera Offset
 
+# Set Flag On Switch Gate Activated
+entities.LuckyHelper/SetFlagOnSwitchGateActivated.placements.name.normal=Set Flag On Switch Gate Activated
+
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger
 triggers.LuckyHelper/SetPassByRefillDashesTrigger.placements.name.normal=SetPassByRefillDashesTrigger
