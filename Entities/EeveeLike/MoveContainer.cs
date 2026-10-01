@@ -343,6 +343,7 @@ public class MoveContainer : Actor, IContainer
     private Vector2 offset;
     private bool generatContainerAlongPath;
     private string resetToStartPositionFlag;
+    private string stopFlag;
 
 
     public MoveContainer(EntityData data, Vector2 offset) : base(data.Position + offset + new Vector2(data.Width / 2f, data.Height / 2f))
@@ -351,6 +352,7 @@ public class MoveContainer : Actor, IContainer
         this.offset = offset;
         generatContainerAlongPath = data.Bool("generateContainerAlongPath");
         resetToStartPositionFlag = data.Attr("resetToStartPositionFlag", "LuckyHelper_ResetToStartPositionFlag");
+        stopFlag = data.Attr("stopFlag", "LuckyHelper_MoveContainer_StopFlag");
         Collider = new Hitbox(data.Width, data.Height);
         Collider.Position = new Vector2(-Width / 2f, -Height / 2f);
         AllowPushing = false;
@@ -422,8 +424,12 @@ public class MoveContainer : Actor, IContainer
             session.SetFlag(resetToStartPositionFlag, false);
             moveHelper.Move.ResetToStart();
         }
-
-        moveHelper.Update();
+        
+        if (!session.GetFlag(stopFlag))
+        {
+            moveHelper.Update();
+        }
+        
         Vector2 targetPosition = moveHelper.Move.CurrentPosition;
         if (targetPosition != Position)
             _Container.DoMoveAction(() => { NaiveMove(targetPosition - ExactPosition); });

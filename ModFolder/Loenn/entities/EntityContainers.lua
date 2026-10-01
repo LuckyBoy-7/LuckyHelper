@@ -184,6 +184,7 @@ local moveContainer = {
             generateContainerAlongPath = false,
 
             resetToStartPositionFlag = "LuckyHelper_ResetToStartPositionFlag",
+            stopFlag = "LuckyHelper_MoveContainer_StopFlag",
         }
     },
     fieldInformation = {
@@ -234,6 +235,7 @@ local moveContainer = {
         "moveType", "moveAlongType",
         "speed", "duration",
         "ease", "resetToStartPositionFlag",
+        "stopFlag", "",
     }
 }
 local quantumContainer = {
