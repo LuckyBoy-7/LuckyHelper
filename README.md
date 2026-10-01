@@ -139,3 +139,4 @@ LuckyHelperAreaMetaData:
 * 9nm(rifs)
 * Maxgood
 * 故乃九二
+* RogerNF
