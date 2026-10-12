@@ -1,3 +1,4 @@
+using System.Reflection;
 using Celeste.Mod.Entities;
 using LuckyHelper.Extensions;
 using LuckyHelper.Module;
@@ -55,6 +56,7 @@ public class DreamZone_V2 : DreamBlock
     public bool UseEntrySpeedAngle;
     public bool UseOldFeature;
     public bool PlayerUncrouch;
+    public bool NoReversedGrab;
     public RefillDashMode RefillDashMode;
 
     private bool setAttachedItemAbove;
@@ -114,6 +116,7 @@ public class DreamZone_V2 : DreamBlock
         }
 
         setAttachedItemAbove = data.Bool("setAttachedItemAbove");
+        NoReversedGrab = data.Bool("noReversedGrab");
 
         Collidable = false;
     }
@@ -357,6 +360,7 @@ public class DreamZone_V2 : DreamBlock
                         {
                             num = move - (int)(actor.Right - left);
                         }
+
                         Collidable = false;
                         actor.MoveHExact(num, actor.SquishCallback, this);
                         actor.LiftSpeed = LiftSpeed;
@@ -373,13 +377,16 @@ public class DreamZone_V2 : DreamBlock
                         {
                             actor.MoveHExact(move);
                         }
+
                         actor.LiftSpeed = LiftSpeed;
                         Collidable = true;
                     }
+
                     actor.Collidable = collidable;
                 }
             }
         }
+
         riders.Clear();
     }
 
@@ -388,6 +395,7 @@ public class DreamZone_V2 : DreamBlock
     {
         IL.Celeste.Player.DreamDashBegin += PlayerOnDreamDashBegin;
         IL.Celeste.Player.DreamDashEnd += PlayerOnDreamDashEnd;
+        IL.Celeste.Player.DreamDashUpdate += PlayerOnDreamDashUpdate;
         Player.DreamDashBegin += PlayerOnDreamDashBegin;
         Player.DreamDashEnd += PlayerOnDreamDashEnd;
     }
@@ -398,8 +406,30 @@ public class DreamZone_V2 : DreamBlock
     {
         IL.Celeste.Player.DreamDashBegin -= PlayerOnDreamDashBegin;
         IL.Celeste.Player.DreamDashEnd -= PlayerOnDreamDashEnd;
+        IL.Celeste.Player.DreamDashUpdate -= PlayerOnDreamDashUpdate;
         Player.DreamDashBegin -= PlayerOnDreamDashBegin;
         Player.DreamDashEnd -= PlayerOnDreamDashEnd;
+    }
+
+    private static void PlayerOnDreamDashUpdate(ILContext il)
+    {
+        ILCursor cursor = new ILCursor(il);
+
+        var inputGrab = typeof(Input).GetProperty("GrabCheck", BindingFlags.Static | BindingFlags.Public).GetGetMethod();
+        if (cursor.TryGotoNext(
+                ins => ins.MatchCall(inputGrab),
+                ins => ins.MatchBrfalse(out _)
+            ))
+        {
+            cursor.Index += 1;
+
+            cursor.EmitDelegate<Func<bool, bool>>((grab) =>
+            {
+                if (DreamZone_V2Module.CurrentOverlappingDreamZone == null || !DreamZone_V2Module.CurrentOverlappingDreamZone.NoReversedGrab)
+                    return grab;
+                return false;
+            });
+        }
     }
 
     private static void PlayerOnDreamDashEnd(Player.orig_DreamDashEnd orig, Celeste.Player self)

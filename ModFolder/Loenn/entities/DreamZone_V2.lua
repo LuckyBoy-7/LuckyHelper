@@ -44,6 +44,7 @@ dreamBlock.placements = {
         playerUncrouch = false,
         setAttachedItemAbove = false,
         refillDashMode = "TrySet",
+        noReversedGrab = true,
     }
 }
 
