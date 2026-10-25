@@ -345,6 +345,14 @@ entities.LuckyHelper/ShowCameraOffset.placements.name.normal=Show Camera Offset
 # Set Flag On Switch Gate Activated
 entities.LuckyHelper/SetFlagOnSwitchGateActivated.placements.name.normal=Set Flag On Switch Gate Activated
 
+# Actor Pushed Behavior Controller
+entities.LuckyHelper/ActorPushedBehaviorController.placements.name.normal=Actor Pushed Behavior Controller
+entities.LuckyHelper/ActorPushedBehaviorController.attributes.description.allowPushed=Comma-separated list of actor entity class names to contain (e.g. Player, TheoCrystal, Glider,etc)
+entities.LuckyHelper/ActorPushedBehaviorController.attributes.description.allowPushed=Whether actor can be pushed by solids
+entities.LuckyHelper/ActorPushedBehaviorController.attributes.description.pushedOut=Will actor be pushed out of the solids or move with solids with same speed?
+entities.LuckyHelper/ActorPushedBehaviorController.attributes.description.activeFlag=When flag is enabled or left blanked, this controller will work
+entities.LuckyHelper/ActorPushedBehaviorController.attributes.description.onlyActiveInSolid=Whether this controller only affects when actors in solid
+
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger
 triggers.LuckyHelper/SetPassByRefillDashesTrigger.placements.name.normal=SetPassByRefillDashesTrigger
