@@ -353,6 +353,22 @@ entities.LuckyHelper/ActorPushedBehaviorController.attributes.description.pushed
 entities.LuckyHelper/ActorPushedBehaviorController.attributes.description.activeFlag=When flag is enabled or left blanked, this controller will work
 entities.LuckyHelper/ActorPushedBehaviorController.attributes.description.onlyActiveInSolid=Whether this controller only affects when actors in solid
 
+# Film Text Pivot
+entities.LuckyHelper/FilmTextPivot.placements.name.normal=Film Text Pivot
+
+# Film Text
+entities.LuckyHelper/FilmTextRaw.placements.name.normal=Film Text
+entities.LuckyHelper/FilmTextRaw.attributes.description.positionMode=World: text will render at certain position in world.\nScreen: you should put `Film Text Pivot` entity in the scene, and text will render at screen with same relative position.
+
+entities.LuckyHelper/FilmTextBSide.placements.name.normal=Film Text (B-Side, slide in/out)
+entities.LuckyHelper/FilmTextBSide.attributes.description.positionMode=World: text will render at certain position in world.\nScreen: you should put `Film Text Pivot` entity in the scene, and text will render at screen with same relative position.
+
+entities.LuckyHelper/FilmTextTypeInOut.placements.name.normal=Film Text (Type In/Out)
+entities.LuckyHelper/FilmTextTypeInOut.attributes.description.positionMode=World: text will render at certain position in world.\nScreen: you should put `Film Text Pivot` entity in the scene, and text will render at screen with same relative position.
+
+entities.LuckyHelper/FilmTextTypeInFadeOut.placements.name.normal=Film Text (Type In Fade Out)
+entities.LuckyHelper/FilmTextTypeInFadeOut.attributes.description.positionMode=World: text will render at certain position in world.\nScreen: you should put `Film Text Pivot` entity in the scene, and text will render at screen with same relative position.
+
 #todo Triggers =======================================================================================================================================
 # SetPassByRefillDashesTrigger
 triggers.LuckyHelper/SetPassByRefillDashesTrigger.placements.name.normal=SetPassByRefillDashesTrigger

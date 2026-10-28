@@ -55,6 +55,7 @@
 {e15162c0-8d07-4a4a-86b2-31a4143ef96c} event:/char/dialogue/theo
 {06f37413-874a-4d3a-b325-e43d5835bded} event:/char/dialogue/theo_mirror
 {b778a405-ac7f-440e-8754-aef888736b87} event:/char/dialogue/theo_webcam
+{d786f23b-e6d0-453e-90cb-4cc29c12af0b} event:/char/dialogue/wiki_granny
 {baf0c37e-6b25-4b7f-8bcf-653b7ffbb4a5} event:/char/granny/cane_tap
 {e6fcb1bd-e802-4b86-ba6a-4d5b4f9d1d8e} event:/char/granny/laugh_firstphrase
 {7d86252d-c88c-4317-865e-430792def883} event:/char/granny/laugh_oneha
@@ -491,6 +492,8 @@
 {7c01de41-a31a-43c3-9c0f-9ae85ad94c68} event:/game/general/wall_break_ice
 {92f75010-4e90-428e-834c-1315ddbd9460} event:/game/general/wall_break_stone
 {634bdd66-3f53-4679-8ced-fadfc60d412f} event:/game/general/wall_break_wood
+{8a462914-cb53-4d38-bfcf-04bd58d3b99c} event:/LuckyHelper/StrawberryJam/TestJamJarFilled
+{bb1e0aca-b4b7-40c5-9a01-016261d938d4} event:/LuckyHelper/FilmText/Type
 {51873fdd-604e-4810-9db1-8c6e5a6049b5} event:/music/cassette/01_forsaken_city
 {e44a2aa5-f96e-4d75-8018-8bee278017ad} event:/music/cassette/02_old_site
 {bb2ac8fc-6353-4127-bc7b-7439262508da} event:/music/cassette/03_resort
@@ -687,6 +690,7 @@
 {7d16c138-146a-4337-97b7-777ec6146448} event:/new_content/timeline_bubble_to_remembered
 {b5fd173e-9a58-4412-9be1-094108b82157} event:/state/cafe_computer_active
 {d85a0635-cbcf-4ba3-8466-b6e24aa45894} event:/state/underwater
+{7bb74b44-16e8-441c-a10c-bd361cd94438} event:/Test/music_event
 {c4d2289a-859e-42e9-ba38-eee1791a3a62} event:/ui/game/chatoptions_appear
 {dd4cb027-0132-4039-9303-c9ad8589683e} event:/ui/game/chatoptions_roll_down
 {1b030b2e-c125-40d5-b582-5819c6c29584} event:/ui/game/chatoptions_roll_up
@@ -812,7 +816,6 @@
 {ca8ffe65-72eb-4fb3-9c3d-27fef47bc3d1} event:/ui/world_map/whoosh/700ms_forward
 {2dca99b6-dcf5-40e6-8cd1-c72f97d364cd} event:/ui/world_map/whoosh/900ms_back
 {21a98c43-8e79-4b8a-8963-a269735f3989} event:/ui/world_map/whoosh/900ms_forward
-{8a462914-cb53-4d38-bfcf-04bd58d3b99c} event:/LuckyHelper/StrawberryJam/TestJamJarFilled
 {ea595d6d-cb07-4897-81cb-4830bf5823cb} event:/!!!_README_FIRST
 {c7aad72f-9796-42d3-980b-d093fd765716} bus:/
 {aac396d1-a63f-418a-810a-5d5a59fb2c43} bus:/gameplay_sfx
@@ -993,10 +996,12 @@
 {641d4a72-8e6e-41a8-8f3d-b28219bd4cd7} snapshot:/berry_cooperation/3000s_down
 {365efe2d-29e7-4d45-988e-451406863f9a} snapshot:/berry_cooperation/4000s_down
 {1aa61ee8-68fc-4c62-9a54-35743044bafe} snapshot:/berry_cooperation/5000s_down
+{2ee96f51-ce98-481a-87da-4e470e0b8cad} bank:/Bank A
 {a327f717-e8b5-4fb0-b4dd-84bd8a585fe0} bank:/dlc_music
 {e85b3c9e-428d-41b7-82c0-37814f3cbf15} bank:/dlc_sfx
+{7e95a589-5864-4dbc-ae59-3f859b8e37ca} bank:/LuckyHelper
 {7916fdbf-1253-451d-a369-6dfd34341e4e} bank:/music
 {98263171-3ea2-482b-abb7-9af01e4c002a} bank:/sfx
+{602647f5-1c7e-4877-a2a0-7bf88e5593e5} bank:/TestBank
 {f0efde81-92ec-4f1a-8b48-815f4d8a3255} bank:/ui
 {f42d1384-f9ea-4ba4-9e08-a4d067c55b3b} bank:/Master Bank
-{7e95a589-5864-4dbc-ae59-3f859b8e37ca} bank:/LuckyHelper

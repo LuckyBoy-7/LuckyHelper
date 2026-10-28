@@ -3,12 +3,13 @@ namespace LuckyHelper.Utils;
 public class Timer
 {
     private float timer = -1;
-    private float duration;
+    private float _duration;
+    public float Duration => _duration;
     private Action callback;
 
     public Timer(float duration, Action callback = null)
     {
-        this.duration = duration;
+        this._duration = duration;
         this.callback = callback;
     }
 
@@ -19,7 +20,7 @@ public class Timer
 
     public void Restart()
     {
-        timer = duration;
+        timer = _duration;
     }
 
     public void Restart(float targetDuration)
@@ -35,6 +36,7 @@ public class Timer
 
     public bool Over => !InTime;
     public float Value => timer;
+    public float Percent => timer < 0 ? 1 : (_duration - timer) / _duration;
 
 
     /// <summary>
@@ -44,7 +46,7 @@ public class Timer
     /// <returns></returns>
     public bool Update(float deltaTime)
     {
-        if (duration <= 0f || timer == -1)
+        if (_duration <= 0f || timer == -1)
             return false;
 
         timer -= deltaTime;
